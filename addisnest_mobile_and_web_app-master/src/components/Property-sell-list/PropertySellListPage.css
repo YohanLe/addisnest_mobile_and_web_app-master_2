@@ -1,0 +1,176 @@
+.property-sell-list-page {
+  padding: 40px 0;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.page-header h1 {
+  font-size: 32px;
+  color: #2e3d40;
+  margin-bottom: 10px;
+}
+
+.page-header p {
+  font-size: 16px;
+  color: #666;
+}
+
+.sell-info-section {
+  margin-bottom: 40px;
+}
+
+.sell-benefits h2,
+.how-it-works h2 {
+  font-size: 24px;
+  color: #2e3d40;
+  margin-bottom: 20px;
+}
+
+.benefits-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.benefit-item {
+  flex: 1 1 200px;
+  text-align: center;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.benefit-icon {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.benefit-item h3 {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #2e3d40;
+}
+
+.benefit-item p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.cta-section {
+  margin-top: 30px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.primary-btn {
+  background-color: #b9f73e;
+  color: #2e3d40;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  display: inline-block;
+  min-width: 220px;
+}
+
+.primary-btn:hover {
+  background-color: #a8e82d;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.steps-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.step {
+  flex: 1 1 200px;
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-bottom: 15px;
+}
+
+.step-number {
+  background-color: #b9f73e;
+  color: #2e3d40;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.step h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #2e3d40;
+}
+
+.step p {
+  font-size: 14px;
+  color: #666;
+}
+
+.cta-section:last-child {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 60px;
+  padding: 30px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+}
+
+.cta-section:last-child .primary-btn {
+  padding: 16px 32px;
+  font-size: 18px;
+  min-width: 250px;
+}
+
+.subtext {
+  margin-bottom: 20px;
+  color: #666;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .property-sell-list-page {
+    padding: 20px 0;
+  }
+  
+  .page-header {
+    margin-bottom: 30px;
+  }
+  
+  .page-header h1 {
+    font-size: 28px;
+  }
+  
+  .benefit-item, .step {
+    flex: 1 1 100%;
+  }
+  
+  .cta-section:last-child {
+    padding: 20px;
+  }
+}

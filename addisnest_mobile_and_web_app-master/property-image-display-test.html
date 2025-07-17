@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Property Image Display Fix Tester</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 600px;
+      margin-bottom: 30px;
+    }
+    h1 {
+      color: #4a6cf7;
+      margin-bottom: 20px;
+    }
+    .progress {
+      margin: 20px 0;
+      height: 10px;
+      background-color: #e0e0e0;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: #4a6cf7;
+      animation: progress 2s ease-in-out forwards;
+    }
+    @keyframes progress {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+    .details {
+      text-align: left;
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f0f7ff;
+      border-radius: 4px;
+      font-size: 14px;
+      border-left: 4px solid #4a6cf7;
+    }
+    .property-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      background-color: white;
+      width: 100%;
+      max-width: 600px;
+    }
+    .property-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .property-info {
+      display: flex;
+      justify-content: space-between;
+    }
+    .property-title {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+    .property-price {
+      font-weight: bold;
+      color: #4a6cf7;
+    }
+    .property-address {
+      color: #666;
+      margin-bottom: 10px;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      background-color: #e8f5e8;
+      color: #28a745;
+    }
+    .code-block {
+      background-color: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      padding: 15px;
+      font-family: monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      margin: 15px 0;
+      overflow: auto;
+      max-height: 300px;
+    }
+    .test-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-primary {
+      background-color: #4a6cf7;
+      color: white;
+    }
+    .btn-success {
+      background-color: #28a745;
+      color: white;
+    }
+    .explanation {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Property Image Display Fix Tester</h1>
+    <p>This page tests the fix for property images in the account management grid.</p>
+    
+    <div class="progress">
+      <div class="progress-bar"></div>
+    </div>
+    
+    <div class="details">
+      <p><strong>Issue:</strong> Property images weren't displaying correctly in the account management listings.</p>
+      <p><strong>Fix:</strong> Updated image path handling to ensure paths properly include leading slashes when needed.</p>
+    </div>
+    
+    <div class="explanation">
+      <h3>How the fix works:</h3>
+      <p>The original code wasn't correctly handling image paths that lacked leading slashes. The updated code now checks if paths start with '/' and adds it if missing.</p>
+      <p>This prevents broken image references in the account management grid.</p>
+    </div>
+    
+    <div class="code-block">// Example of the fixed code:
+if (typeof mainImage === 'string') {
+  console.log("Using string URL from media_paths");
+  return mainImage.startsWith('/') ? mainImage : `/${mainImage}`;
+} else if (mainImage.url) {
+  console.log("Using url from media_paths object");
+  const path = mainImage.url;
+  return path.startsWith('/') ? path : `/${path}`;
+}</div>
+  </div>
+  
+  <h2>Visual Test</h2>
+  <p>Below is a simulation of how property images now appear in the account management:</p>
+  
+  <div class="property-card">
+    <img src="/uploads/1749428928268-710498473-genMid.731631728_27_0.jpg" class="property-image" 
+         onerror="this.onerror=null; this.src='https://placehold.co/600x200?text=Fallback+Image'">
+    <div class="property-title">Image Test Property</div>
+    <div class="property-address">Test Address, Addis Ababa</div>
+    <div class="property-info">
+      <div class="status-badge">ACTIVE</div>
+      <div class="property-price">5,000,000 ETB</div>
+    </div>
+  </div>
+  
+  <div class="test-buttons">
+    <button class="btn btn-primary" onclick="setupAndRedirect()">Test in Account Management</button>
+    <button class="btn btn-success" onclick="window.location.href='http://localhost:5173'">Go to Homepage</button>
+  </div>
+
+  <script>
+    // Sample property data with image paths
+    const sampleProperty = {
+      _id: "test-property-" + Date.now(),
+      title: "Image Test Property",
+      description: "Property created to test image display in account management",
+      price: 5000000,
+      offeringType: "For Sale",
+      propertyType: "House",
+      status: "active",
+      bedrooms: 3,
+      bathrooms: 2,
+      area: 180,
+      address: {
+        street: "Test Address, Addis Ababa",
+        city: "Addis Ababa",
+        state: "Addis Ababa City Administration",
+        country: "Ethiopia"
+      },
+      media_paths: [
+        {
+          url: "/uploads/1749428928268-710498473-genMid.731631728_27_0.jpg",
+          caption: "Test Property Main Image",
+          _id: "img-" + Date.now() + "-main"
+        },
+        {
+          url: "/uploads/1749428932303-180111256-731631728_0.jpg",
+          caption: "Test Property Second Image",
+          _id: "img-" + Date.now() + "-second"
+        }
+      ],
+      images: [
+        {
+          url: "/uploads/1749428928268-710498473-genMid.731631728_27_0.jpg",
+          caption: "Test Property Main Image",
+          _id: "img-" + Date.now() + "-main-img"
+        },
+        {
+          url: "/uploads/1749428932303-180111256-731631728_0.jpg",
+          caption: "Test Property Second Image",
+          _id: "img-" + Date.now() + "-second-img"
+        }
+      ],
+      createdAt: new Date()
+    };
+
+    // Test variation with different image path formats
+    const testVariation = {
+      ...sampleProperty,
+      _id: "test-variation-" + Date.now(),
+      title: "Image Path Variation Test",
+      media_paths: [
+        {
+          url: "uploads/1749428928268-710498473-genMid.731631728_27_0.jpg", // Note: no leading slash
+          caption: "Test Property Main Image (no leading slash)",
+          _id: "img-" + Date.now() + "-main-no-slash"
+        }
+      ],
+      images: [
+        {
+          url: "uploads/1749428928268-710498473-genMid.731631728_27_0.jpg", // Note: no leading slash
+          caption: "Test Property Main Image (no leading slash)",
+          _id: "img-" + Date.now() + "-main-img-no-slash"
+        }
+      ]
+    };
+
+    function setupAndRedirect() {
+      // Store the properties in multiple localStorage keys for redundancy
+      localStorage.setItem('propertyListings', JSON.stringify([sampleProperty, testVariation]));
+      localStorage.setItem('property_listings', JSON.stringify([sampleProperty, testVariation]));
+      localStorage.setItem('test_property', JSON.stringify(sampleProperty));
+      
+      // Mock user authentication (required to view account management)
+      localStorage.setItem('access_token', 'test-token-for-image-display-test');
+      localStorage.setItem('user', JSON.stringify({
+        _id: "test-user-123",
+        email: "test@example.com",
+        firstName: "Test",
+        lastName: "User",
+        role: "user"
+      }));
+      
+      // Redirect to account management
+      window.location.href = 'http://localhost:5173/account-management';
+    }
+  </script>
+</body>
+</html>

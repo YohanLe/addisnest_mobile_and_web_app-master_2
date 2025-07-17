@@ -1,0 +1,3 @@
+@echo off
+echo Running property submission fix test...
+node test-property-submission-flow.js

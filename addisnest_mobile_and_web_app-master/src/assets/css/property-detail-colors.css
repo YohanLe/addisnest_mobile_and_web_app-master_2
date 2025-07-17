@@ -1,0 +1,141 @@
+/* Property Detail Colors and Styling */
+
+/* Main property info box */
+.property-info-box {
+  background-color: #f8f9fa !important;
+  border-radius: 8px !important;
+  padding: 24px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+.property-info-box h2 {
+  color: #2c3e50 !important;
+}
+
+.property-info-box h1 {
+  color: #2c3e50 !important;
+}
+
+.property-info-box p {
+  color: #5d6778 !important;
+}
+
+/* Property features */
+.property-info-box div[style*="grid-template-columns: repeat(4, 1fr)"] > div {
+  background-color: #edf2f7 !important;
+  border-radius: 8px !important;
+  padding: 10px 12px !important;
+  color: #4a5568 !important;
+}
+
+/* Property specifications */
+.property-info-box div[style*="display: flex"] > div + div > div:first-child {
+  color: #718096 !important;
+}
+
+.property-info-box div[style*="display: flex"] > div + div > div:last-child {
+  color: #2d3748 !important;
+  font-weight: 600 !important;
+}
+
+/* Safety Tips Box */
+.safety-tips-box {
+  background-color: #fff8f0 !important;
+  border-radius: 8px !important;
+  padding: 24px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+.safety-tips-box h3 {
+  color: #e67e22 !important;
+}
+
+.safety-tips-box ul li {
+  color: #5d6778 !important;
+}
+
+/* Message the Agent Box */
+div[style*="width: 30%"] > div {
+  background-color: #f0f7ff !important;
+  border-radius: 8px !important;
+  padding: 24px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+div[style*="width: 30%"]:nth-child(1) > div h2 {
+  color: #3182ce !important;
+}
+
+/* Schedule Visit Box */
+div[style*="width: 30%"]:nth-child(2) > div {
+  background-color: #f0fff4 !important;
+}
+
+div[style*="width: 30%"]:nth-child(2) > div h2 {
+  color: #38a169 !important;
+}
+
+/* Mortgage Calculator Box */
+div[style*="width: 30%"]:nth-child(3) > div {
+  background-color: #f7fafc !important;
+}
+
+div[style*="width: 30%"]:nth-child(3) > div h2 {
+  color: #4a5568 !important;
+}
+
+/* Post Ad Button */
+button[style*="backgroundColor: '#4CAF50'"] {
+  background-color: #38a169 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 6px rgba(56, 161, 105, 0.3) !important;
+}
+
+/* Send Message Button */
+button[style*="backgroundColor: '#2196F3'"] {
+  background-color: #3182ce !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 6px rgba(49, 130, 206, 0.3) !important;
+}
+
+/* Schedule Now Button */
+div[style*="width: 30%"]:nth-child(2) button {
+  background-color: #38a169 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 6px rgba(56, 161, 105, 0.3) !important;
+}
+
+/* Calculate Button */
+div[style*="width: 30%"]:nth-child(3) button {
+  background-color: #4a5568 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 6px rgba(74, 85, 104, 0.3) !important;
+}
+
+/* Form inputs */
+input, textarea, select {
+  border-radius: 8px !important;
+  border-color: #e2e8f0 !important;
+  padding: 10px 12px !important;
+}
+
+/* Tour type selection */
+div[style*="border: `2px solid ${selectedTourType"] {
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Selected tour type */
+div[style*="backgroundColor: selectedTourType"] {
+  background-color: #ebf8ff !important;
+  border-color: #3182ce !important;
+}
+
+/* Mobile-specific adjustments */
+@media screen and (max-width: 767px) {
+  .property-info-box, 
+  .safety-tips-box, 
+  div[style*="width: 30%"] > div {
+    padding: 16px !important;
+  }
+}

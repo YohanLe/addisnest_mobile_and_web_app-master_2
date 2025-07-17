@@ -1,0 +1,267 @@
+[33mcommit 9faa5dcb5f3a9990a5b6cb279b271d72277da13f[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: Yohan <jonegrow143@gmail.com>
+Date:   Tue Jun 17 22:49:09 2025 -0700
+
+    Fix CORS policy issues for Netlify deploy previews
+
+[1mdiff --git a/NETLIFY_CORS_FIXES_DOCUMENTATION.md b/NETLIFY_CORS_FIXES_DOCUMENTATION.md[m
+[1mnew file mode 100644[m
+[1mindex 0000000..2b429ef[m
+[1m--- /dev/null[m
+[1m+++ b/NETLIFY_CORS_FIXES_DOCUMENTATION.md[m
+[36m@@ -0,0 +1,103 @@[m
+[32m+[m[32m# CORS Fixes for Netlify Deploy Previews[m
+[32m+[m
+[32m+[m[32m## Problem[m
+[32m+[m
+[32m+[m[32mThe application was experiencing CORS (Cross-Origin Resource Sharing) policy errors when trying to fetch data from API endpoints. This was particularly problematic in Netlify deploy previews, which use different subdomains (like `685251fd33ae8b811b577985--addisnesttest.netlify.app`) than the main production site.[m
+[32m+[m
+[32m+[m[32mThe error message was:[m
+[32m+[m[32m```[m
+[32m+[m[32mAccess to XMLHttpRequest at 'https://addisnesttest.netlify.app/properties?...' from origin 'https://685251fd33ae8b811b577985--addisnesttest.netlify.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m## Solution[m
+[32m+[m
+[32m+[m[32mWe implemented enhanced CORS configurations in all Netlify function files to ensure proper access across different environments:[m
+[32m+[m
+[32m+[m[32m### 1. Functions Enhanced with CORS Fixes:[m
+[32m+[m
+[32m+[m[32m- `functions/properties.js`[m
+[32m+[m[32m- `functions/getListings.js`[m
+[32m+[m[32m- `functions/api.js`[m
+[32m+[m
+[32m+[m[32m### 2. Key Changes:[m
+[32m+[m
+[32m+[m[32m#### Comprehensive CORS Configuration:[m
+[32m+[m[32m```javascript[m
+[32m+[m[32mapp.use(cors({[m
+[32m+[m[32m  origin: function(origin, callback) {[m
+[32m+[m[32m    // Allow requests with no origin (like mobile apps, curl requests)[m
+[32m+[m[32m    if (!origin) return callback(null, true);[m
+[32m+[m[41m    [m
+[32m+[m[32m    // Allow any subdomain of netlify.app[m
+[32m+[m[32m    if (origin.endsWith('netlify.app') || origin.includes('--addisnesttest.netlify.app')) {[m
+[32m+[m[32m      return callback(null, true);[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+[32m+[m[32m    // Allow localhost for development[m
+[32m+[m[32m    if (origin.match(/^https?:\/\/localhost(:\d+)?$/)) {[m
+[32m+[m[32m      return callback(null, true);[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+[32m+[m[32m    // Production domain[m
+[32m+[m[32m    if (origin === 'https://addisnesttest.netlify.app') {[m
+[32m+[m[32m      return callback(null, true);[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+[32m+[m[32m    callback(null, true); // Temporarily allow all origins while debugging[m
+[32m+[m[32m  },[m
+[32m+[m[32m  credentials: true,[m
+[32m+[m[32m  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],[m
+[32m+[m[32m  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'][m
+[32m+[m[32m}));[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m#### Additional CORS Headers:[m
+[32m+[m[32m```javascript[m
+[32m+[m[32mapp.use((req, res, next) => {[m
+[32m+[m[32m  res.header('Access-Control-Allow-Origin', '*');[m
+[32m+[m[32m  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');[m
+[32m+[m[32m  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');[m
+[32m+[m[32m  if (req.method === 'OPTIONS') {[m
+[32m+[m[32m    return res.status(200).end();[m
+[32m+[m[32m  }[m
+[32m+[m[32m  next();[m
+[32m+[m[32m});[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m#### Enhanced Function Response Headers:[m
+[32m+[m[32m```javascript[m
+[32m+[m[32mreturn {[m
+[32m+[m[32m  statusCode: 200,[m
+[32m+[m[32m  headers: {[m
+[32m+[m[32m    'Content-Type': 'application/json',[m
+[32m+[m[32m    'Access-Control-Allow-Origin': '*',[m
+[32m+[m[32m    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',[m
+[32m+[m[32m    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization'[m
+[32m+[m[32m  },[m
+[32m+[m[32m  body: JSON.stringify({[m
+[32m+[m[32m    // Response data here[m
+[32m+[m[32m  })[m
+[32m+[m[32m};[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m## Deployment[m
+[32m+[m
+[32m+[m[32mTo deploy these changes:[m
+[32m+[m
+[32m+[m[32m1. Run the `deploy-cors-fixes.bat` script which will:[m
+[32m+[m[32m   - Commit the changes to Git[m
+[32m+[m[32m   - Deploy the changes to Netlify[m
+[32m+[m
+[32m+[m[32m## Testing[m
+[32m+[m
+[32m+[m[32mAfter deployment, verify that:[m
+[32m+[m
+[32m+[m[32m1. The main site can fetch property data without CORS errors[m
+[32m+[m[32m2. Deploy previews can fetch property data without CORS errors[m
+[32m+[m[32m3. Localhost development environment can fetch property data without CORS errors[m
+[32m+[m
+[32m+[m[32m## Notes for Future Development[m
+[32m+[m
+[32m+[m[32m- The current configuration allows all origins (`*`) for CORS as a temporary measure while debugging. For production environments, consider restricting this to only the necessary domains.[m
+[32m+[m[32m- The configuration specifically handles Netlify deploy previews by allowing any subdomain of `netlify.app`.[m
+[32m+[m[32m- If you add new Netlify functions in the future, be sure to apply the same CORS configuration to ensure consistent behavior.[m
+[1mdiff --git a/deploy-cors-fixes.bat b/deploy-cors-fixes.bat[m
+[1mnew file mode 100644[m
+[1mindex 0000000..12b5987[m
+[1m--- /dev/null[m
+[1m+++ b/deploy-cors-fixes.bat[m
+[36m@@ -0,0 +1,18 @@[m
+[32m+[m[32m@echo off[m
+[32m+[m[32mecho ===================================================[m
+[32m+[m[32mecho Deploying CORS fixes to Netlify[m
+[32m+[m[32mecho ===================================================[m
+[32m+[m
+[32m+[m[32mecho.[m
+[32m+[m[32mecho 1. Committing changes to git...[m
+[32m+[m[32mgit add functions/properties.js functions/getListings.js functions/api.js[m
+[32m+[m[32mgit commit -m "Fix CORS policy issues for Netlify deploy previews"[m
+[32m+[m
+[32m+[m[32mecho.[m
+[32m+[m[32mecho 2. Deploying to Netlify...[m
+[32m+[m[32mnetlify deploy --prod[m
+[32m+[m
+[32m+[m[32mecho.[m
+[32m+[m[32mecho ===================================================[m
+[32m+[m[32mecho Deployment complete! CORS issues should be fixed.[m
+[32m+[m[32mecho ===================================================[m
+[1mdiff --git a/functions/api.js b/functions/api.js[m
+[1mindex ec1358c..86eeabd 100644[m
+[1m--- a/functions/api.js[m
+[1m+++ b/functions/api.js[m
+[36m@@ -14,8 +14,44 @@[m [mdotenv.config();[m
+ // Create Express app[m
+ const app = express();[m
+ [m
+[31m-// Enable CORS[m
+[31m-app.use(cors());[m
+[32m+[m[32m// Enable CORS with specific configuration[m
+[32m+[m[32mapp.use(cors({[m
+[32m+[m[32m  origin: function(origin, callback) {[m
+[32m+[m[32m    // Allow requests with no origin (like mobile apps, curl requests)[m
+[32m+[m[32m    if (!origin) return callback(null, true);[m
+[32m+[m[41m    [m
+[32m+[m[32m    // Allow any subdomain of netlify.app[m
+[32m+[m[32m    if (origin.endsWith('netlify.app') || origin.includes('--addisnesttest.netlify.app')) {[m
+[32m+[m[32m      return callback(null, true);[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+[32m+[m[32m    // Allow localhost for development[m
+[32m+[m[32m    if (origin.match(/^https?:\/\/localhost(:\d+)?$/)) {[m
+[32m+[m[32m      return callback(null, true);[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+[32m+[m[32m    // Add your production domain here if needed[m
+[32m+[m[32m    if (origin === 'https://addisnesttest.netlify.app') {[m
+[32m+[m[32m      return callback(null, true);[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+[32m+[m[32m    callback(null, true); // Temporarily allow all origins while debugging[m
+[32m+[m[32m  },[m
+[32m+[m[32m  credentials: true,[m
+[32m+[m[32m  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],[m
+[32m+[m[32m  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'][m
+[32m+[m[32m}));[m
+[32m+[m
+[32m+[m[32m// Set additional CORS headers for all responses[m
+[32m+[m[32mapp.use((req, res, next) => {[m
+[32m+[m[32m  res.header('Access-Control-Allow-Origin', '*');[m
+[32m+[m[32m  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');[m
+[32m+[m[32m  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');[m
+[32m+[m[32m  if (req.method === 'OPTIONS') {[m
+[32m+[m[32m    return res.status(200).end();[m
+[32m+[m[32m  }[m
+[32m+[m[32m  next();[m
+[32m+[m[32m});[m
+ [m
+ // Body parser[m
+ app.use(express.json());[m
+[1mdiff --git a/functions/getListings.js b/functions/getListings.js[m
+[1mindex f2c6741..a85e872 100644[m
+[1m--- a/functions/getListings.js[m
+[1m+++ b/functions/getListings.js[m
+[36m@@ -72,7 +72,9 @@[m [mexports.handler = async (event, context) => {[m
+       statusCode: 200,[m
+       headers: {[m
+         'Content-Type': 'application/json',[m
+[31m-        'Access-Control-Allow-Origin': '*'[m
+[32m+[m[32m        'Access-Control-Allow-Origin': '*',[m
+[32m+[m[32m        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',[m
+[32m+[m[32m        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization'[m
+       },[m
+       body: JSON.stringify({[m
+         success: true,[m
+[36m@@ -90,7 +92,9 @@[m [mexports.handler = async (event, context) => {[m
+       statusCode: 500,[m
+       headers: {[m
+         'Content-Type': 'application/json',[m
+[31m-        'Access-Control-Allow-Origin': '*'[m
+[32m+[m[32m        'Access-Control-Allow-Origin': '*',[m
+[32m+[m[32m        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',[m
+[32m+[m[32m        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization'[m
+       },[m
+       body: JSON.stringify({[m
+         success: false,[m
+[1mdiff --git a/functions/properties.js b/functions/properties.js[m
+[1mindex 398d54f..28f3ec1 100644[m
+[1m--- a/functions/properties.js[m
+[1m+++ b/functions/properties.js[m
+[36m@@ -10,8 +10,44 @@[m [mdotenv.config();[m
+ // Create Express app[m
+ const app = express();[m
+ [m
+[31m-// Enable CORS[m
+[31m-app.use(cors());[m
+[32m+[m[32m// Enable CORS with specific configuration[m
+[32m+[m[32mapp.use(cors({[m
+[32m+[m[32m  origin: function(origin, callback) {[m
+[32m+[m[32m    // Allow requests with no origin (like mobile apps, curl requests)[m
+[32m+[m[32m    if (!origin) return callback(null, true);[m
+[32m+[m[41m    [m
+[32m+[m[32m    // Allow any subdomain of netlify.app[m
+[32m+[m[32m    if (origin.endsWith('netlify.app') || origin.includes('--addisnesttest.netlify.app')) {[m
+[32m+[m[32m      return callback(null, true);[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+[32m+[m[32m    // Allow localhost for development[m
+[32m+[m[32m    if (origin.match(/^https?:\/\/localhost(:\d+)?$/)) {[m
+[32m+[m[32m      return callback(null, true);[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+[32m+[m[32m    // Add your production domain here if needed[m
+[32m+[m[32m    if (origin === 'https://addisnesttest.netlify.app') {[m
+[32m+[m[32m      return callback(null, true);[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+[32m+[m[32m    callback(null, true); // Temporarily allow all origins while debugging[m
+[32m+[m[32m  },[m
+[32m+[m[32m  credentials: true,[m
+[32m+[m[32m  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],[m
+[32m+[m[32m  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'][m
+[32m+[m[32m}));[m
+[32m+[m
+[32m+[m[32m// Set additional CORS headers for all responses[m
+[32m+[m[32mapp.use((req, res, next) => {[m
+[32m+[m[32m  res.header('Access-Control-Allow-Origin', '*');[m
+[32m+[m[32m  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');[m
+[32m+[m[32m  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');[m
+[32m+[m[32m  if (req.method === 'OPTIONS') {[m
+[32m+[m[32m    return res.status(200).end();[m
+[32m+[m[32m  }[m
+[32m+[m[32m  next();[m
+[32m+[m[32m});[m
+ [m
+ // Body parser[m
+ app.use(express.json());[m

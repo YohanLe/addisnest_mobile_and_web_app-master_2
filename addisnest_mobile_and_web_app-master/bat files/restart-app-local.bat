@@ -1,0 +1,3 @@
+@echo off
+echo Restarting AddisnEst application with local configuration...
+node restart-app-local.js

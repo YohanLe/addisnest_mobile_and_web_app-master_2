@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./uploads:/usr/src/app/uploads
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      # Add your production environment variables here
+      - MONGO_URI=mongodb+srv://addisnest_admin:40057200$aA@cluster0.erzzpdo.mongodb.net/addisnest?retryWrites=true&w=majority
+      - JWT_SECRET=addinest_super_secret_jwt_key_12345
+      - SENDGRID_API_KEY=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
+      - EMAIL_FROM=contact@addisnest.com
+      - FRONTEND_URL=http://3.144.240.220/
+    restart: unless-stopped

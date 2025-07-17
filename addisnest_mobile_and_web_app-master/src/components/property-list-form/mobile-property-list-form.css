@@ -1,0 +1,281 @@
+/* Mobile Property List Form Styles */
+@media screen and (max-width: 767px) {
+  /* Reduce white space above the 'Property Listing Form' heading */
+  .property-form-section {
+    padding: 10px 0 30px; /* Reduced top padding from 40px to 10px */
+  }
+  
+  .property-heading-form {
+    margin-bottom: 15px; /* Reduced from 30px */
+    padding-top: 0; /* Remove top padding */
+    margin-top: 0; /* Ensure no top margin */
+  }
+  
+  .property-heading-form h3 {
+    font-size: 22px; /* Smaller font size */
+    margin-top: 0; /* Remove top margin */
+  }
+  
+  .property-heading-form h3:after {
+    width: 100px; /* Slightly smaller underline */
+  }
+  
+  /* Adjust step headers for mobile view - horizontal alignment */
+  .form-step-section .step-header {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    margin-bottom: 15px;
+    gap: 15px; /* Increased spacing between number and title */
+    width: 100%;
+    position: relative;
+  }
+  
+  .form-step-section .step-indicator {
+    margin: 0 !important; /* Remove all margins */
+    padding: 0 !important;
+    flex: 0 0 auto; /* Don't grow or shrink */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .form-step-section .step-number {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .form-step-section .step-header h4 {
+    font-size: 16px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.3 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    height: 32px !important; /* Match height of step number */
+    vertical-align: middle !important;
+  }
+  
+  /* Ensure header content is properly aligned */
+  .form-step-section .header-content {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    flex: 1 !important; /* Take remaining space */
+  }
+  
+  /* Ensure collapsible toggle is properly positioned */
+  .form-step-section .collapse-toggle {
+    position: absolute !important;
+    right: 0 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+  }
+  
+  .step-description {
+    margin-top: 3px;
+    margin-left: 40px; /* Align with the heading text */
+    font-size: 13px;
+  }
+  
+  /* Adjust step content padding for mobile - align with section title */
+  .step-content {
+    padding-left: 0; /* Remove left padding to align with section title */
+    margin-top: 15px; /* Add some space between header and content */
+  }
+  
+  /* Single column layout for form fields on mobile */
+  .form-row, 
+  .form-row-3-cols,
+  .form-row-4-cols {
+    display: flex;
+    flex-direction: column;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+  }
+  
+  .form-col-25,
+  .form-col-33,
+  .form-col-50,
+  .form-col-100 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 0 0 15px 0; /* Remove horizontal padding, add bottom spacing */
+  }
+  
+  /* Form field styling */
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
+    font-size: 14px;
+  }
+  
+  .form-group input,
+  .form-group textarea,
+  .form-group .select-wrapper .react-select__control {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  
+  /* Remove ETB prefix from price input for mobile view */
+  .price-input::before {
+    content: none !important; /* Remove the ETB prefix */
+  }
+  
+  .price-input input {
+    padding-left: 12px !important; /* Reset padding to normal */
+  }
+  
+  /* Error styling */
+  .form-group.has-error input,
+  .form-group.has-error textarea,
+  .form-group.has-error .select-wrapper .react-select__control {
+    border-color: #e74c3c !important;
+    background-color: #ffebee !important;
+  }
+  
+  /* Adjust collapsible header for mobile */
+  .collapsible-header {
+    align-items: center;
+  }
+  
+  .collapse-toggle {
+    margin-left: auto;
+  }
+  
+  /* Adjust the offering options to be side by side in one row - with !important to override any conflicting styles */
+  .form-step-section .offering-options {
+    display: flex !important;
+    flex-direction: row !important; /* Force row layout on mobile */
+    justify-content: space-between !important; /* Even spacing */
+    gap: 15px !important; /* Increased spacing between cards */
+    margin: 15px 0 !important; /* Consistent vertical margins */
+    width: 100% !important; /* Full width container */
+    padding: 0 !important; /* Remove any padding */
+    flex-wrap: nowrap !important; /* Prevent wrapping */
+  }
+  
+  .form-step-section .offering-card {
+    flex: 1 1 calc(50% - 8px) !important; /* Equal width with gap consideration */
+    min-height: 50px !important; /* Slightly taller for better touch targets */
+    max-width: calc(50% - 8px) !important; /* Ensure cards don't exceed half width */
+    padding: 10px !important; /* Consistent padding */
+    display: flex !important;
+    flex-direction: row !important; /* Horizontal layout */
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 8px !important; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important; /* Subtle shadow */
+    transition: all 0.2s ease !important; /* Smooth transitions */
+    margin: 0 !important; /* Remove any margin */
+  }
+  
+  /* Improve selected state visibility */
+  .offering-card.selected {
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* Enhanced shadow when selected */
+  }
+  
+  /* Adjust icon and text for horizontal layout */
+  .card-icon {
+    margin-right: 5px;
+    margin-bottom: 0;
+  }
+  
+  .icon-circle {
+    width: 24px; /* Smaller icon */
+    height: 24px;
+    font-size: 12px;
+    margin: 0 5px 0 0;
+  }
+  
+  .offering-card h5 {
+    font-size: 14px; /* Smaller text */
+    margin: 0;
+    display: inline-block;
+  }
+  
+  /* Hide description text to save space */
+  .offering-card p {
+    display: none;
+  }
+  
+  /* Adjust corner ribbons for selected cards */
+  .offering-options div:nth-child(1).offering-card.selected::after,
+  .offering-options div:nth-child(2).offering-card.selected::after {
+    border-width: 0 20px 20px 0; /* Smaller corner ribbon */
+  }
+  
+  /* Adjust image upload grid for mobile */
+  .image-upload-grid-horizontal {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 columns on mobile */
+    gap: 10px; /* Reduced gap */
+  }
+  
+  .main-photo-slot {
+    grid-column: span 2; /* Main photo spans both columns */
+    min-height: 200px; /* Reduced height */
+  }
+  
+  .image-upload-slot {
+    height: 120px; /* Reduced height */
+  }
+  
+  /* Hide upload tips in mobile view */
+  .upload-tips-box {
+    display: none !important;
+  }
+  
+  .add-more-section {
+    margin-top: 15px;
+    text-align: center;
+  }
+  
+  .add-more-btn {
+    padding: 8px 16px !important; /* Smaller button */
+    font-size: 14px !important;
+  }
+  
+  .add-more-section p {
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  
+  /* Make sure cards stack on very small screens */
+  @media screen and (max-width: 359px) {
+    .offering-options {
+      flex-direction: column;
+      max-width: 280px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .offering-card {
+      min-height: 36px;
+    }
+    
+    .image-upload-grid-horizontal {
+      grid-template-columns: 1fr; /* Single column on very small screens */
+    }
+    
+    .main-photo-slot {
+      grid-column: span 1; /* Main photo spans single column */
+    }
+  }
+}

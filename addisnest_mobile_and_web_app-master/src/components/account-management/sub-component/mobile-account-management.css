@@ -1,0 +1,406 @@
+/* Mobile Account Management Styles */
+
+@media (max-width: 767px) {
+  /* Main layout changes */
+  .account-management {
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* Header with hamburger menu */
+  .mobile-account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  .mobile-header-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+  }
+
+  .hamburger-menu {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+  }
+
+  .user-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-weight: bold;
+  }
+
+  /* Sidebar transformed into drawer */
+  .account-sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100vh;
+    background-color: #fff;
+    z-index: 1000;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    overflow-y: auto;
+  }
+
+  .account-sidebar.open {
+    left: 0;
+  }
+
+  .sidebar-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    font-size: 24px;
+    color: #666;
+  }
+
+  /* Overlay when drawer is open */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 999;
+    display: none;
+  }
+
+  .sidebar-overlay.open {
+    display: block;
+  }
+
+  /* Content area adjustments */
+  .account-content {
+    padding: 15px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Improved touch targets */
+  .account-tab-title {
+    padding: 15px 20px;
+  }
+
+  .account-tab-title em {
+    width: 28px;
+    height: 28px;
+  }
+
+  .tab-title {
+    font-size: 16px;
+  }
+
+  /* Active indicator for mobile */
+  .account-tab-title.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: currentColor;
+  }
+
+  /* Dashboard adjustments */
+  .dashboard-container {
+    padding: 10px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .date-filter {
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  .metrics-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .metric-item {
+    padding: 12px;
+  }
+
+  .number {
+    font-size: 20px;
+  }
+
+  .metrics-chart {
+    padding: 15px;
+    margin-top: 15px;
+  }
+
+  .placeholder-chart {
+    height: 200px;
+  }
+
+  /* Property Alert adjustments */
+  .property-alert-container {
+    padding: 10px;
+  }
+
+  .alert-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .alert-actions {
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  .alert-item {
+    flex-direction: column;
+  }
+
+  .alert-badge {
+    margin-bottom: 10px;
+  }
+
+  .alert-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .alert-actions {
+    margin-top: 10px;
+  }
+
+  /* Test Mode Widget */
+  .test-mode-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 10px 15px;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    border: 1px solid #eee;
+  }
+
+  .test-mode-widget.collapsed {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .test-mode-icon {
+    font-size: 20px;
+    margin-right: 10px;
+  }
+
+  .test-mode-widget.collapsed .test-mode-icon {
+    margin-right: 0;
+  }
+
+  .test-mode-label {
+    font-weight: 500;
+    margin-right: 10px;
+  }
+
+  .test-mode-widget.collapsed .test-mode-label,
+  .test-mode-widget.collapsed .test-mode-toggle {
+    display: none;
+  }
+
+  .test-mode-toggle {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+  }
+
+  .test-mode-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+  }
+
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .toggle-slider {
+    background-color: #8DC63F;
+  }
+
+  input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+  }
+
+  /* Add New Property Button */
+  .add-property-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #8DC63F;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    margin: 15px 0;
+    width: 100%;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  .add-property-button svg {
+    margin-right: 8px;
+  }
+
+  /* Property Stats Cards */
+  .property-stats-cards {
+    display: flex;
+    overflow-x: auto;
+    padding: 5px 0 15px;
+    margin: 0 -15px;
+    padding: 0 15px;
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .property-stats-cards::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
+
+  .property-stat-card {
+    min-width: 200px;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    margin-right: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    flex-shrink: 0;
+  }
+
+  .property-stat-card:last-child {
+    margin-right: 0;
+  }
+
+  .stat-card-title {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 10px 0;
+  }
+
+  .stat-card-value {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .stat-card-change {
+    font-size: 12px;
+    color: #45b36b;
+    margin: 5px 0 0 0;
+  }
+
+  /* Collapsible sections */
+  .collapsible-section {
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  }
+
+  .collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .collapsible-title {
+    font-weight: 500;
+    margin: 0;
+  }
+
+  .collapsible-icon {
+    transition: transform 0.3s ease;
+  }
+
+  .collapsible-icon.open {
+    transform: rotate(180deg);
+  }
+
+  .collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .collapsible-content.open {
+    max-height: 1000px;
+  }
+
+  .collapsible-body {
+    padding: 15px;
+  }
+}

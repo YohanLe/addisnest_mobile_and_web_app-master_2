@@ -1,0 +1,153 @@
+/* Web Messages Styles */
+
+@media (min-width: 768px) {
+  .chat-container {
+    padding: 20px;
+    height: calc(100vh - 120px);
+  }
+  
+  .chat-panel {
+    height: 100%;
+    max-height: 800px;
+  }
+  
+  .conversations-panel {
+    min-width: 320px;
+    max-width: 350px;
+  }
+  
+  .chat-view {
+    flex: 1;
+  }
+  
+  .message-history {
+    min-height: 300px;
+  }
+  
+  .message-bubble {
+    max-width: 70%;
+  }
+  
+  .message-input-container {
+    padding: 15px 20px;
+  }
+  
+  .message-input-wrapper {
+    padding: 0 15px;
+  }
+  
+  .message-input {
+    padding: 12px 0;
+    font-size: 15px;
+  }
+  
+  .send-btn {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .conversation-item {
+    padding: 15px;
+  }
+  
+  .avatar {
+    width: 50px;
+    height: 50px;
+    font-size: 18px;
+  }
+  
+  .conversation-name {
+    font-size: 15px;
+  }
+  
+  .conversation-time {
+    font-size: 12px;
+  }
+  
+  .conversation-message {
+    font-size: 14px;
+  }
+  
+  .unread-count {
+    min-width: 20px;
+    height: 20px;
+    font-size: 12px;
+  }
+  
+  .role-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+  }
+  
+  .conversations-header h3 {
+    font-size: 18px;
+  }
+  
+  .conversation-count {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+  
+  .search-input {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+  
+  .no-conversations-icon, .no-messages-icon {
+    font-size: 48px;
+  }
+  
+  .no-conversations p:first-child, .no-messages h4 {
+    font-size: 18px;
+  }
+  
+  .no-conversations p, .no-messages p {
+    font-size: 14px;
+  }
+  
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .loading-container p, .loading-messages p {
+    font-size: 14px;
+  }
+  
+  .error-message {
+    font-size: 16px;
+  }
+  
+  .error-help-text {
+    font-size: 14px;
+  }
+  
+  .retry-button, .login-button, .clear-search-button {
+    padding: 8px 20px;
+    font-size: 14px;
+  }
+  
+  .date-divider span {
+    font-size: 13px;
+  }
+  
+  .message-meta {
+    font-size: 12px;
+  }
+  
+  .user-info h3 {
+    font-size: 16px;
+  }
+  
+  .user-status {
+    font-size: 13px;
+  }
+  
+  /* Hide mobile-specific elements */
+  .mobile-footer-menu,
+  .test-mode-container,
+  .back-button {
+    display: none;
+  }
+}

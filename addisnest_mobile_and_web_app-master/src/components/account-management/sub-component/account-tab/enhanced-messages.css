@@ -1,0 +1,240 @@
+/* Enhanced Messages Styling */
+
+/* Pending Messages Section */
+.pending-messages-section {
+  margin: 15px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #ffc107;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.pending-messages-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.pending-messages-icon {
+  font-size: 20px;
+  margin-right: 10px;
+  color: #ffc107;
+}
+
+.pending-messages-section h4 {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.pending-count {
+  background-color: #ffc107;
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+}
+
+.pending-messages-description {
+  color: #6c757d;
+  font-size: 14px;
+  margin: 0 0 15px 0;
+}
+
+.pending-messages-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.pending-message-item {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  border-left: 3px solid #ffc107;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.pending-message-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pending-message-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.sender-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #e9ecef;
+  color: #495057;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 12px;
+  font-size: 16px;
+}
+
+.sender-info {
+  flex: 1;
+}
+
+.sender-info .sender-name {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.sender-info .message-time {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.property-reference {
+  display: flex;
+  align-items: center;
+  background-color: #f0f7ff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.property-icon {
+  margin-right: 6px;
+}
+
+.property-title {
+  font-size: 13px;
+  color: #0056b3;
+}
+
+.pending-message-content {
+  margin-bottom: 15px;
+  padding: 0 5px;
+}
+
+.pending-message-content p {
+  margin: 0;
+  color: #444;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.pending-message-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.pending-message-actions .ignore-btn,
+.pending-message-actions .accept-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.pending-message-actions .ignore-btn {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+}
+
+.pending-message-actions .accept-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+}
+
+.pending-message-actions .ignore-btn:hover {
+  background-color: #e9ecef;
+  border-color: #ced4da;
+}
+
+.pending-message-actions .accept-btn:hover {
+  background-color: #218838;
+}
+
+.action-icon {
+  margin-right: 6px;
+  font-size: 12px;
+}
+
+/* Message Status Indicators */
+.message-status-pending {
+  color: #ffc107;
+  font-size: 0.8em;
+  margin-left: 5px;
+}
+
+.message-status-accepted {
+  color: #28a745;
+  font-size: 0.8em;
+  margin-left: 5px;
+}
+
+.message-status-ignored {
+  color: #6c757d;
+  font-size: 0.8em;
+  margin-left: 5px;
+}
+
+/* Conversation Status Indicators */
+.conversation-item.pending {
+  border-left: 3px solid #ffc107;
+}
+
+.conversation-item.accepted {
+  border-left: 3px solid #28a745;
+}
+
+.conversation-item.ignored {
+  border-left: 3px solid #6c757d;
+  opacity: 0.7;
+}
+
+/* Status notification in chat view */
+.conversation-status-notification {
+  text-align: center;
+  padding: 8px;
+  margin: 10px 0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.conversation-status-notification.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.conversation-status-notification.accepted {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.conversation-status-notification.ignored {
+  background-color: #f8f9fa;
+  color: #6c757d;
+}

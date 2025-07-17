@@ -1,0 +1,76 @@
+.mobile-bottom-nav {
+  display: none; /* Hidden by default, will be shown on mobile via media query */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #ffffff;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 0 5px;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid #e0e0e0;
+  flex-wrap: wrap;
+  overflow-x: auto;
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 60px;
+  height: 100%;
+  text-decoration: none;
+  color: #555555;
+  font-size: 11px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 8px 0;
+}
+
+.mobile-nav-item.active {
+  color: #84c800;
+}
+
+.mobile-nav-item.active .mobile-nav-icon svg {
+  fill: #84c800;
+}
+
+.mobile-nav-icon {
+  margin-bottom: 4px;
+}
+
+.mobile-nav-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: #555555;
+  transition: fill 0.2s ease;
+}
+
+.mobile-nav-item:hover {
+  color: #84c800;
+}
+
+.mobile-nav-item:hover .mobile-nav-icon svg {
+  fill: #84c800;
+}
+
+/* Add padding to the bottom of the page content to prevent the mobile nav from covering content */
+@media screen and (max-width: 767px) {
+  body {
+    padding-bottom: 60px;
+  }
+  
+  .mobile-bottom-nav {
+    display: flex;
+  }
+  
+  /* Hide the navigation in the header on mobile */
+  .nav-main {
+    display: none;
+  }
+}

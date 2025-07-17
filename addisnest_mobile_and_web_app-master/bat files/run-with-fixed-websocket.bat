@@ -1,0 +1,3 @@
+@echo off
+echo Starting AddisnEst with fixed WebSocket configuration...
+node restart-with-fixed-websocket.js
