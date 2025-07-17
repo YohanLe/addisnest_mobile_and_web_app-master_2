@@ -393,18 +393,7 @@ const EditPropertyForm = () => {
             }
         }
 
-        // Enhanced Sub-city data retrieval and setting
-        console.log('🔍 ENHANCED SUB-CITY DATA RETRIEVAL:');
-        console.log('📋 Available city data from database:', {
-            city: formData.city,
-            subCity: propertyData.subCity || propertyData.sub_city,
-            location_city: propertyData.location_city,
-            cityName: propertyData.cityName,
-            address_city: propertyData.address?.city || propertyData.address?.subCity,
-            nested_address: propertyData.address
-        });
-
-        // Set regional state with enhanced sub-city handling
+        // Set regional state
         const regionalStateValue = formData.regional_state;
         if (regionalStateValue) {
             // First try exact match
@@ -430,72 +419,14 @@ const EditPropertyForm = () => {
                 setRegionalStateType(regionalState);
                 setInps(prev => ({ ...prev, regional_state: regionalState.value }));
                 
-                // Enhanced Sub-city handling for Addis Ababa
-                if (regionalState.value === "Addis Ababa City Administration") {
-                    console.log('🔍 Processing Sub-city for Addis Ababa...');
-                    
-                    // Try multiple field names for sub-city data from database
-                    const possibleSubCityValues = [
-                        formData.city,
-                        propertyData.subCity,
-                        propertyData.sub_city,
-                        propertyData.cityName,
-                        propertyData.location_city,
-                        propertyData.address?.city,
-                        propertyData.address?.subCity,
-                        propertyData.address?.sub_city
-                    ].filter(Boolean); // Remove null/undefined values
-                    
-                    console.log('🔍 Possible sub-city values from database:', possibleSubCityValues);
-                    
-                    let matchedSubCity = null;
-                    
-                    // Try to find exact match first
-                    for (const subCityValue of possibleSubCityValues) {
-                        if (subCityValue && typeof subCityValue === 'string') {
-                            const exactMatch = SubCityList.find(s => 
-                                s.value.toLowerCase() === subCityValue.toLowerCase().trim()
-                            );
-                            if (exactMatch) {
-                                matchedSubCity = exactMatch;
-                                console.log(`✅ Found exact sub-city match: "${exactMatch.value}" from database field: "${subCityValue}"`);
-                                break;
-                            }
-                        }
-                    }
-                    
-                    // If no exact match, try partial matching
-                    if (!matchedSubCity) {
-                        for (const subCityValue of possibleSubCityValues) {
-                            if (subCityValue && typeof subCityValue === 'string') {
-                                const partialMatch = SubCityList.find(s => 
-                                    s.value.toLowerCase().includes(subCityValue.toLowerCase().trim()) ||
-                                    subCityValue.toLowerCase().includes(s.value.toLowerCase())
-                                );
-                                if (partialMatch) {
-                                    matchedSubCity = partialMatch;
-                                    console.log(`✅ Found partial sub-city match: "${partialMatch.value}" from database field: "${subCityValue}"`);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    
-                    // Set the matched sub-city
-                    if (matchedSubCity) {
-                        console.log('✅ Setting sub-city dropdown to:', matchedSubCity.value);
-                        setSubCityType(matchedSubCity);
-                        // Update the form input to match the dropdown selection
-                        setInps(prev => ({ ...prev, city: matchedSubCity.value }));
-                    } else {
-                        console.log('⚠️ No matching sub-city found in dropdown list');
-                        console.log('📋 Available sub-cities:', SubCityList.map(s => s.value));
-                        
-                        // If we have city data but no dropdown match, keep it as text input
-                        if (formData.city) {
-                            console.log(`ℹ️ Keeping original city value as text: "${formData.city}"`);
-                            // Don't set SubCityType, let it fall back to text input
-                        }
+                // If this is Addis Ababa, also set the sub-city dropdown
+                if (regionalState.value === "Addis Ababa City Administration" && formData.city) {
+                    const subCity = SubCityList.find(s => 
+                        s.value.toLowerCase() === formData.city.toLowerCase()
+                    );
+                    if (subCity) {
+                        console.log('✅ Setting sub-city to:', subCity.value);
+                        setSubCityType(subCity);
                     }
                 }
             } else {
@@ -526,17 +457,14 @@ const EditPropertyForm = () => {
                 setRegionalStateType(defaultState);
                 setInps(prev => ({ ...prev, regional_state: defaultState.value }));
                 
-                // Enhanced sub-city handling even without regional state
+                // Also try to set sub-city if we have city data
                 if (formData.city) {
-                    console.log('🔍 Attempting to set sub-city from city data:', formData.city);
                     const subCity = SubCityList.find(s => 
                         s.value.toLowerCase() === formData.city.toLowerCase()
                     );
                     if (subCity) {
                         console.log('✅ Setting sub-city to:', subCity.value);
                         setSubCityType(subCity);
-                    } else {
-                        console.log('⚠️ City value does not match any sub-city in dropdown:', formData.city);
                     }
                 }
             }

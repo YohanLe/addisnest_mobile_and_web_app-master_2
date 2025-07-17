@@ -393,18 +393,7 @@ const EditPropertyForm = () => {
             }
         }
 
-        // Enhanced Sub-city data retrieval and setting
-        console.log('🔍 ENHANCED SUB-CITY DATA RETRIEVAL:');
-        console.log('📋 Available city data from database:', {
-            city: formData.city,
-            subCity: propertyData.subCity || propertyData.sub_city,
-            location_city: propertyData.location_city,
-            cityName: propertyData.cityName,
-            address_city: propertyData.address?.city || propertyData.address?.subCity,
-            nested_address: propertyData.address
-        });
-
-        // Set regional state with enhanced sub-city handling
+        // Set regional state
         const regionalStateValue = formData.regional_state;
         if (regionalStateValue) {
             // First try exact match
@@ -430,72 +419,14 @@ const EditPropertyForm = () => {
                 setRegionalStateType(regionalState);
                 setInps(prev => ({ ...prev, regional_state: regionalState.value }));
                 
-                // Enhanced Sub-city handling for Addis Ababa
-                if (regionalState.value === "Addis Ababa City Administration") {
-                    console.log('🔍 Processing Sub-city for Addis Ababa...');
-                    
-                    // Try multiple field names for sub-city data from database
-                    const possibleSubCityValues = [
-                        formData.city,
-                        propertyData.subCity,
-                        propertyData.sub_city,
-                        propertyData.cityName,
-                        propertyData.location_city,
-                        propertyData.address?.city,
-                        propertyData.address?.subCity,
-                        propertyData.address?.sub_city
-                    ].filter(Boolean); // Remove null/undefined values
-                    
-                    console.log('🔍 Possible sub-city values from database:', possibleSubCityValues);
-                    
-                    let matchedSubCity = null;
-                    
-                    // Try to find exact match first
-                    for (const subCityValue of possibleSubCityValues) {
-                        if (subCityValue && typeof subCityValue === 'string') {
-                            const exactMatch = SubCityList.find(s => 
-                                s.value.toLowerCase() === subCityValue.toLowerCase().trim()
-                            );
-                            if (exactMatch) {
-                                matchedSubCity = exactMatch;
-                                console.log(`✅ Found exact sub-city match: "${exactMatch.value}" from database field: "${subCityValue}"`);
-                                break;
-                            }
-                        }
-                    }
-                    
-                    // If no exact match, try partial matching
-                    if (!matchedSubCity) {
-                        for (const subCityValue of possibleSubCityValues) {
-                            if (subCityValue && typeof subCityValue === 'string') {
-                                const partialMatch = SubCityList.find(s => 
-                                    s.value.toLowerCase().includes(subCityValue.toLowerCase().trim()) ||
-                                    subCityValue.toLowerCase().includes(s.value.toLowerCase())
-                                );
-                                if (partialMatch) {
-                                    matchedSubCity = partialMatch;
-                                    console.log(`✅ Found partial sub-city match: "${partialMatch.value}" from database field: "${subCityValue}"`);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    
-                    // Set the matched sub-city
-                    if (matchedSubCity) {
-                        console.log('✅ Setting sub-city dropdown to:', matchedSubCity.value);
-                        setSubCityType(matchedSubCity);
-                        // Update the form input to match the dropdown selection
-                        setInps(prev => ({ ...prev, city: matchedSubCity.value }));
-                    } else {
-                        console.log('⚠️ No matching sub-city found in dropdown list');
-                        console.log('📋 Available sub-cities:', SubCityList.map(s => s.value));
-                        
-                        // If we have city data but no dropdown match, keep it as text input
-                        if (formData.city) {
-                            console.log(`ℹ️ Keeping original city value as text: "${formData.city}"`);
-                            // Don't set SubCityType, let it fall back to text input
-                        }
+                // If this is Addis Ababa, also set the sub-city dropdown
+                if (regionalState.value === "Addis Ababa City Administration" && formData.city) {
+                    const subCity = SubCityList.find(s => 
+                        s.value.toLowerCase() === formData.city.toLowerCase()
+                    );
+                    if (subCity) {
+                        console.log('✅ Setting sub-city to:', subCity.value);
+                        setSubCityType(subCity);
                     }
                 }
             } else {
@@ -526,17 +457,14 @@ const EditPropertyForm = () => {
                 setRegionalStateType(defaultState);
                 setInps(prev => ({ ...prev, regional_state: defaultState.value }));
                 
-                // Enhanced sub-city handling even without regional state
+                // Also try to set sub-city if we have city data
                 if (formData.city) {
-                    console.log('🔍 Attempting to set sub-city from city data:', formData.city);
                     const subCity = SubCityList.find(s => 
                         s.value.toLowerCase() === formData.city.toLowerCase()
                     );
                     if (subCity) {
                         console.log('✅ Setting sub-city to:', subCity.value);
                         setSubCityType(subCity);
-                    } else {
-                        console.log('⚠️ City value does not match any sub-city in dropdown:', formData.city);
                     }
                 }
             }
@@ -1531,6 +1459,19 @@ const EditPropertyForm = () => {
         try {
             console.log('🔄 Starting property update process...');
             
+            // Check authentication status first
+            const authStatus = checkAuthenticationStatus();
+            console.log('🔐 Authentication Status:', authStatus);
+            
+            if (!authStatus.isAuthenticated) {
+                console.error('❌ User not authenticated');
+                toast.error('You must be logged in to update properties. Please log in and try again.');
+                setLoading(false);
+                // Redirect to login page
+                navigate('/login');
+                return;
+            }
+            
             const validation = ValidatePropertyForm(inps);
             if (!validation.isValid) {
                 setError(validation);
@@ -1581,10 +1522,25 @@ const EditPropertyForm = () => {
             try {
                 console.log(`🔄 Attempting to update property via: ${endpoint}`);
                 
+                // Double-check authentication before making the request
+                const token = localStorage.getItem('addisnest_token');
+                const isLogin = localStorage.getItem('isLogin') === '1';
+                
+                console.log('🔑 Token exists:', !!token);
+                console.log('🔑 Login status:', isLogin);
+                console.log('🔑 Token preview:', token ? token.substring(0, 20) + '...' : 'No token');
+                
+                if (!token || !isLogin) {
+                    console.error('❌ Missing authentication credentials');
+                    toast.error('Authentication expired. Please log in again.');
+                    navigate('/login');
+                    return;
+                }
+                
                 const response = await Api.putWithtoken(endpoint, updateData);
                 
                 console.log('✅ Property update successful:', response);
-                toast.success('Property updated successfully!');
+                toast.success('Property updated successfully in database!');
                 
                 // Save the updated data to localStorage for offline access
                 const updatedPropertyData = {
@@ -1604,20 +1560,27 @@ const EditPropertyForm = () => {
                     // Don't fail the entire operation if refresh fails
                 }
                 
-                // Navigate back to listed properties immediately after success
-                console.log('🔄 Navigating to account management page...');
-                navigate('/account-management');
+                toast.success('Property updated successfully!');
                 
-                // Exit the function successfully - don't continue to error handling
-                return;
+                // Navigate back to property listings after a short delay
+                setTimeout(() => {
+                    navigate('/my-property-listings');
+                }, 1500);
                 
             } catch (apiError) {
                 console.error('❌ API update failed:', apiError);
                 
-                // Handle specific error cases
+                // Enhanced error handling for authentication issues
                 if (apiError?.response?.status === 401) {
-                    console.error('❌ 401 Unauthorized - Authentication issue');
-                    toast.error('Authentication expired. Please log in again.');
+                    console.error('❌ 401 Unauthorized - Token may be expired or invalid');
+                    
+                    // Clear potentially invalid auth data
+                    localStorage.removeItem('addisnest_token');
+                    localStorage.removeItem('isLogin');
+                    localStorage.removeItem('userId');
+                    
+                    const authErrorMsg = getAuthErrorMessage(apiError);
+                    toast.error(authErrorMsg);
                     
                     // Save changes locally before redirecting
                     const fallbackData = {
@@ -1630,7 +1593,7 @@ const EditPropertyForm = () => {
                         media: MediaPaths,
                         amenities: getSelectedAmenitiesArray(),
                         updated_at: new Date().toISOString(),
-                        pending_sync: true
+                        pending_sync: true // Flag to indicate this needs to be synced to server
                     };
                     saveToLocalStorage(fallbackData);
                     console.log('💾 Changes saved locally before redirect');
@@ -1656,7 +1619,7 @@ const EditPropertyForm = () => {
                         media: MediaPaths,
                         amenities: getSelectedAmenitiesArray(),
                         updated_at: new Date().toISOString(),
-                        pending_sync: true
+                        pending_sync: true // Flag to indicate this needs to be synced to server
                     };
                     saveToLocalStorage(fallbackData);
                     console.log('💾 Changes saved locally as fallback');

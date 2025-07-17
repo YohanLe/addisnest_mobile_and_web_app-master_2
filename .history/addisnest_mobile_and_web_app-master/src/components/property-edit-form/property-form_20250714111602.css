@@ -407,13 +407,8 @@
   position: relative;
 }
 
-/* Remove ETB prefix from price input in edit form */
-.price-input::before {
-  content: none !important;
-}
-
 .price-input input {
-  padding-left: 15px !important;
+  padding-left: 15px;
 }
 
 .error-message {

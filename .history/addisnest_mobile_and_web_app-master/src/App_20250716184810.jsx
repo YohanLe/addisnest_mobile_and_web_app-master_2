@@ -85,6 +85,7 @@ const App = () => {
   return (
     <div className="app-wrapper" style={{ minHeight: '100vh' }}>
       <Header />
+      <EnableTestMode />
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />

@@ -8,6 +8,22 @@ const initialState = {
 export const AuthUserDetails = createAsyncThunk("userdataupdate",
     async (state) => {
         try {
+            // Check if this is a test mode with mock token
+            if (localStorage.getItem('addisnest_token') === 'test-token-123456') {
+                console.log('Using mock user data for test mode');
+                // Return mock user data directly
+                return { 
+                    data: {
+                        _id: localStorage.getItem('userId') || 'test-user-id',
+                        firstName: 'Test',
+                        lastName: 'User',
+                        email: 'test@example.com',
+                        isVerified: true,
+                        userType: 'customer'
+                    }
+                };
+            }
+            
             // Get user data directly from OTP verification response if available
             const userData = localStorage.getItem('userData');
             if (userData) {

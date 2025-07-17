@@ -745,6 +745,66 @@ const ChoosePromotion = () => {
         </button>
       </div>
 
+      {/* Test Mode Button */}
+      <div className="test-mode-container" style={{ 
+        textAlign: 'center', 
+        marginTop: '20px', 
+        padding: '15px',
+        border: isTestMode ? '2px dashed #dc3545' : '1px solid #ddd',
+        borderRadius: '8px',
+        backgroundColor: isTestMode ? '#fff8f8' : '#f8f9fa'
+      }}>
+        <div className="test-mode-label" style={{ 
+          marginBottom: '10px',
+          fontWeight: 'bold',
+          fontSize: '16px',
+          color: isTestMode ? '#dc3545' : '#6c757d'
+        }}>
+          {isTestMode ? '⚠️ TEST MODE ACTIVE ⚠️' : 'Developer Test Mode'}
+        </div>
+        
+        {isTestMode && (
+          <div style={{ 
+            backgroundColor: '#dc3545', 
+            color: 'white',
+            padding: '10px',
+            borderRadius: '5px',
+            marginBottom: '15px',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            textAlign: 'left'
+          }}>
+            <p style={{ margin: '0 0 8px 0' }}>WARNING: Test Mode is currently active!</p>
+            <p style={{ margin: '0', fontSize: '13px', fontWeight: 'normal' }}>
+              Your actual property information will be replaced with test data.
+              To use your real property data, please disable test mode.
+            </p>
+          </div>
+        )}
+        
+        <button 
+          className={`test-mode-button ${isTestMode ? 'active' : ''}`}
+          onClick={toggleTestMode}
+          style={{
+            padding: '10px 16px',
+            backgroundColor: isTestMode ? '#dc3545' : '#6c757d',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          {isTestMode ? 'Disable Test Mode & Use My Data' : 'Enable Test Mode'}
+        </button>
+        
+        {isTestMode && (
+          <p style={{ fontSize: '13px', color: '#dc3545', marginTop: '10px', fontStyle: 'italic' }}>
+            Mock data ("Test Address, Addis Ababa") will be used instead of your actual property data
+          </p>
+        )}
+      </div>
       
       {/* Fix Information Box */}
       <div style={{

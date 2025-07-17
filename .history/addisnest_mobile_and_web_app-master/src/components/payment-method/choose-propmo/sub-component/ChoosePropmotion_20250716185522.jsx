@@ -337,8 +337,8 @@ const ChoosePromotion = () => {
     
     console.log("Scrolled to top, preparing to save property with plan:", selectedPlan);
     
-    // Use the actual property data
-    let dataToUse = propertyData;
+    // If in test mode, use mock data
+    let dataToUse = isTestMode ? createMockPropertyData() : propertyData;
     
     // ALWAYS ensure required address fields are present to avoid 500 errors
     console.log("Ensuring all required address fields are present to prevent API validation errors");
@@ -404,7 +404,7 @@ const ChoosePromotion = () => {
       });
     }
     
-    console.log("Using data for property submission: Real property data");
+    console.log("Using data for property submission:", isTestMode ? "Mock data (test mode)" : "Real property data");
     console.log("Complete property data being submitted:", dataToUse);
 
     try {
@@ -412,15 +412,21 @@ const ChoosePromotion = () => {
       setSavingProperty(true);
       
       let savedProperty;
-      // Save to the backend
-      try {
-        savedProperty = await savePropertyToDatabase(dataToUse, selectedPlan);
-        console.log("Property saved successfully via API:", savedProperty);
-      } catch (saveError) {
-        toast.error('Failed to save property to the server. Please try again.');
-        console.error('Error during property saving in handleContinue:', saveError);
-        setSavingProperty(false);
-        return;
+      if (isTestMode) {
+        // Use simulation in test mode
+        savedProperty = simulateSavePropertyInTestMode(dataToUse, selectedPlan);
+        console.log("Using simulated property data (test mode):", savedProperty);
+      } else {
+        // Actually save to the backend in real mode
+        try {
+          savedProperty = await savePropertyToDatabase(dataToUse, selectedPlan);
+          console.log("Property saved successfully via API:", savedProperty);
+        } catch (saveError) {
+          toast.error('Failed to save property to the server. Please try again.');
+          console.error('Error during property saving in handleContinue:', saveError);
+          setSavingProperty(false);
+          return;
+        }
       }
       
       // Only add default images to saved property if absolutely no images exist
@@ -745,6 +751,66 @@ const ChoosePromotion = () => {
         </button>
       </div>
 
+      {/* Test Mode Button */}
+      <div className="test-mode-container" style={{ 
+        textAlign: 'center', 
+        marginTop: '20px', 
+        padding: '15px',
+        border: isTestMode ? '2px dashed #dc3545' : '1px solid #ddd',
+        borderRadius: '8px',
+        backgroundColor: isTestMode ? '#fff8f8' : '#f8f9fa'
+      }}>
+        <div className="test-mode-label" style={{ 
+          marginBottom: '10px',
+          fontWeight: 'bold',
+          fontSize: '16px',
+          color: isTestMode ? '#dc3545' : '#6c757d'
+        }}>
+          {isTestMode ? '⚠️ TEST MODE ACTIVE ⚠️' : 'Developer Test Mode'}
+        </div>
+        
+        {isTestMode && (
+          <div style={{ 
+            backgroundColor: '#dc3545', 
+            color: 'white',
+            padding: '10px',
+            borderRadius: '5px',
+            marginBottom: '15px',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            textAlign: 'left'
+          }}>
+            <p style={{ margin: '0 0 8px 0' }}>WARNING: Test Mode is currently active!</p>
+            <p style={{ margin: '0', fontSize: '13px', fontWeight: 'normal' }}>
+              Your actual property information will be replaced with test data.
+              To use your real property data, please disable test mode.
+            </p>
+          </div>
+        )}
+        
+        <button 
+          className={`test-mode-button ${isTestMode ? 'active' : ''}`}
+          onClick={toggleTestMode}
+          style={{
+            padding: '10px 16px',
+            backgroundColor: isTestMode ? '#dc3545' : '#6c757d',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          {isTestMode ? 'Disable Test Mode & Use My Data' : 'Enable Test Mode'}
+        </button>
+        
+        {isTestMode && (
+          <p style={{ fontSize: '13px', color: '#dc3545', marginTop: '10px', fontStyle: 'italic' }}>
+            Mock data ("Test Address, Addis Ababa") will be used instead of your actual property data
+          </p>
+        )}
+      </div>
       
       {/* Fix Information Box */}
       <div style={{

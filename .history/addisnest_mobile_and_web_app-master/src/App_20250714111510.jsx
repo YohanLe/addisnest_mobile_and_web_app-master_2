@@ -38,6 +38,7 @@ import TestPropertyDetail from './components/property-detail/TestPropertyDetail'
 import ChoosePromotion from './components/payment-method/choose-propmo/sub-component/ChoosePropmotion';
 import PaymentMethod from './components/payment-method/payment-process/sub-component/PaymentMethod';
 // import BuyPropertyPage from './components/Property-list/BuyPropertyPage';
+import EnableTestMode from './helper/EnableTestMode';
 import PropertyListForm from './components/property-list-form';
 import EditPropertyForm from './components/property-edit-form/sub-component/EditPropertyForm';
 import MyListProperty from './components/Property-list/sub-component/MyListProperty';
@@ -85,6 +86,7 @@ const App = () => {
   return (
     <div className="app-wrapper" style={{ minHeight: '100vh' }}>
       <Header />
+      <EnableTestMode />
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />

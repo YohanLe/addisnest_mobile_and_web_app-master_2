@@ -156,6 +156,72 @@ const ChoosePromotion = () => {
     });
   };
 
+  // Enable/disable test mode for development and testing
+  const toggleTestMode = () => {
+    const newState = !isTestMode;
+    console.log(newState ? "Test mode enabled" : "Test mode disabled");
+    setIsTestMode(newState);
+    toast.info(newState ? 
+      "⚠️ Test Mode Enabled - Mock data will be used instead of your property data" : 
+      "✅ Test Mode Disabled - Your actual property data will be used", {
+      autoClose: 3000,
+      position: "top-center"
+    });
+  };
+
+  // Create mock property data for testing
+  const createMockPropertyData = () => {
+    console.log("Creating mock property data for test mode");
+    return {
+      title: "Test Property",
+      propertyType: "House",
+      offeringType: "For Sale",
+      price: 5000000,
+      property_type: "House", // Legacy field name
+      property_for: "For Sale", // Legacy field name
+      total_price: 5000000, // Legacy field name
+      property_address: "Test Address, Addis Ababa",
+      number_of_bedrooms: "3",
+      bedrooms: 3, // Explicit bedrooms field
+      number_of_bathrooms: "2",
+      bathrooms: 2, // Explicit bathrooms field
+      property_size: "250",
+      area: 250, // Explicit area field
+      description: "Test property created in test mode",
+      subCity: "Akaki Kality", // Use subCity instead of city
+      regional_state: "Addis Ababa City Administration",
+      country: "Ethiopia",
+      address: { // Include nested address structure
+        subCity: "Akaki Kality",
+        regionalState: "Addis Ababa City Administration",
+        country: "Ethiopia"
+      },
+      amenities: ["Parking", "Security", "Garden"],
+      features: { // Explicit features object
+        "parking-space": true,
+        "24-7-security": true,
+        "gym-fitness-center": true
+      },
+      furnishingStatus: "Unfurnished", // Explicit furnishingStatus field
+      media_paths: ["https://via.placeholder.com/300x200?text=Test+Property"],
+      images: DEFAULT_IMAGES // Always include default images in test mode
+    };
+  };
+  
+  // Simulate saving property in test mode
+  const simulateSavePropertyInTestMode = (data, plan) => {
+    console.log("Simulating property save in test mode with data:", data);
+    
+    // Return a mock saved property object
+    return {
+      _id: "test-property-" + Date.now(),
+      ...data,
+      isFeatured: plan !== 'basic',
+      priority: plan === 'diamond' ? 10 : (plan === 'vip' ? 5 : 0),
+      status: "active",
+      createdAt: new Date().toISOString()
+    };
+  };
 
   /**
    * FIXED VERSION OF savePropertyToDatabase
@@ -294,6 +360,7 @@ const ChoosePromotion = () => {
   const handleContinue = async () => {
     console.log("handleContinue called with selectedPlan:", selectedPlan);
     console.log("propertyData available:", propertyData);
+    console.log("Test mode status:", isTestMode);
     
     // Required data fields for successful property submission:
     const requiredFields = [
@@ -304,8 +371,8 @@ const ChoosePromotion = () => {
       'media_paths'         // At least one property image
     ];
     
-  // Check if propertyData is valid
-  if (!propertyData || Object.keys(propertyData).length === 0) {
+  // Check if propertyData is valid, but allow proceeding in test mode
+  if (!isTestMode && (!propertyData || Object.keys(propertyData).length === 0)) {
     console.log("No property data available:", propertyData);
     
     // Display prominent error message
@@ -337,8 +404,8 @@ const ChoosePromotion = () => {
     
     console.log("Scrolled to top, preparing to save property with plan:", selectedPlan);
     
-    // Use the actual property data
-    let dataToUse = propertyData;
+    // If in test mode, use mock data
+    let dataToUse = isTestMode ? createMockPropertyData() : propertyData;
     
     // ALWAYS ensure required address fields are present to avoid 500 errors
     console.log("Ensuring all required address fields are present to prevent API validation errors");
@@ -404,7 +471,7 @@ const ChoosePromotion = () => {
       });
     }
     
-    console.log("Using data for property submission: Real property data");
+    console.log("Using data for property submission:", isTestMode ? "Mock data (test mode)" : "Real property data");
     console.log("Complete property data being submitted:", dataToUse);
 
     try {
@@ -412,15 +479,21 @@ const ChoosePromotion = () => {
       setSavingProperty(true);
       
       let savedProperty;
-      // Save to the backend
-      try {
-        savedProperty = await savePropertyToDatabase(dataToUse, selectedPlan);
-        console.log("Property saved successfully via API:", savedProperty);
-      } catch (saveError) {
-        toast.error('Failed to save property to the server. Please try again.');
-        console.error('Error during property saving in handleContinue:', saveError);
-        setSavingProperty(false);
-        return;
+      if (isTestMode) {
+        // Use simulation in test mode
+        savedProperty = simulateSavePropertyInTestMode(dataToUse, selectedPlan);
+        console.log("Using simulated property data (test mode):", savedProperty);
+      } else {
+        // Actually save to the backend in real mode
+        try {
+          savedProperty = await savePropertyToDatabase(dataToUse, selectedPlan);
+          console.log("Property saved successfully via API:", savedProperty);
+        } catch (saveError) {
+          toast.error('Failed to save property to the server. Please try again.');
+          console.error('Error during property saving in handleContinue:', saveError);
+          setSavingProperty(false);
+          return;
+        }
       }
       
       // Only add default images to saved property if absolutely no images exist
@@ -745,6 +818,66 @@ const ChoosePromotion = () => {
         </button>
       </div>
 
+      {/* Test Mode Button */}
+      <div className="test-mode-container" style={{ 
+        textAlign: 'center', 
+        marginTop: '20px', 
+        padding: '15px',
+        border: isTestMode ? '2px dashed #dc3545' : '1px solid #ddd',
+        borderRadius: '8px',
+        backgroundColor: isTestMode ? '#fff8f8' : '#f8f9fa'
+      }}>
+        <div className="test-mode-label" style={{ 
+          marginBottom: '10px',
+          fontWeight: 'bold',
+          fontSize: '16px',
+          color: isTestMode ? '#dc3545' : '#6c757d'
+        }}>
+          {isTestMode ? '⚠️ TEST MODE ACTIVE ⚠️' : 'Developer Test Mode'}
+        </div>
+        
+        {isTestMode && (
+          <div style={{ 
+            backgroundColor: '#dc3545', 
+            color: 'white',
+            padding: '10px',
+            borderRadius: '5px',
+            marginBottom: '15px',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            textAlign: 'left'
+          }}>
+            <p style={{ margin: '0 0 8px 0' }}>WARNING: Test Mode is currently active!</p>
+            <p style={{ margin: '0', fontSize: '13px', fontWeight: 'normal' }}>
+              Your actual property information will be replaced with test data.
+              To use your real property data, please disable test mode.
+            </p>
+          </div>
+        )}
+        
+        <button 
+          className={`test-mode-button ${isTestMode ? 'active' : ''}`}
+          onClick={toggleTestMode}
+          style={{
+            padding: '10px 16px',
+            backgroundColor: isTestMode ? '#dc3545' : '#6c757d',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          {isTestMode ? 'Disable Test Mode & Use My Data' : 'Enable Test Mode'}
+        </button>
+        
+        {isTestMode && (
+          <p style={{ fontSize: '13px', color: '#dc3545', marginTop: '10px', fontStyle: 'italic' }}>
+            Mock data ("Test Address, Addis Ababa") will be used instead of your actual property data
+          </p>
+        )}
+      </div>
       
       {/* Fix Information Box */}
       <div style={{

@@ -655,32 +655,36 @@ const PropertyListForm = () => {
     }
     
     let data = {
-        title: inps?.title || '',
-        description: inps?.description || '',
-        price: inps?.total_price || '',
+        title: inps?.title || (testMode ? 'Test Property' : ''),
+        description: inps?.description || (testMode ? 'This is a test property listing created using test mode.' : ''),
+        price: inps?.total_price || (testMode ? '5000000' : ''),
         offeringType: activeTab, // "For Sale" or "For Rent"
-        propertyType: PropertyType?.value || '',
-        furnishingStatus: FurnishingType?.value || '',
+        propertyType: PropertyType?.value || (testMode ? 'House' : ''),
+        furnishingStatus: FurnishingType?.value || (testMode ? 'Furnished' : ''),
         
         // Add owner name to property data
         ownerName: ownerName,
         
         // Use nested address structure
         address: {
-            subCity: inps?.subCity || '',
-            regionalState: RegionalStateType?.value || '',
+            subCity: inps?.subCity || (testMode ? 'Addis Ababa' : ''),
+            regionalState: RegionalStateType?.value || (testMode ? 'Addis Ababa City Administration' : ''),
             country: inps?.country || 'Ethiopia',
-            city: inps?.subCity || ''
+            city: inps?.subCity || (testMode ? 'Addis Ababa' : '')
         },
         
         
-        bedrooms: inps.number_of_bedrooms || '',
-        bathrooms: inps.number_of_bathrooms || '',
-        area: inps?.property_size || '',
+        bedrooms: inps.number_of_bedrooms || (testMode ? '3' : ''),
+        bathrooms: inps.number_of_bathrooms || (testMode ? '2' : ''),
+        area: inps?.property_size || (testMode ? '150' : ''),
         // Pass MediaPaths directly as the media_paths field for ChoosePropmotion to process
         media_paths: MediaPaths,
         // Also include images field with same data for redundancy
-        images: MediaPaths,
+        images: MediaPaths.length > 0 ? MediaPaths : (testMode ? [{
+            url: '/uploads/test-property-image-1749260861596-438465535.jpg',
+            caption: 'Test Property Image',
+            _id: 'test-image-id'
+        }] : []),
         amenities: getSelectedAmenitiesArray()
     };
     
@@ -1458,8 +1462,13 @@ const PropertyListForm = () => {
                             <button
                                 type="button"
                                 onClick={NextPage}
-                                className={`${hasUploadsInProgress() ? 'uploads-in-progress' : ''}`}
+                                className={`${testMode ? 'test-mode-active' : ''} ${hasUploadsInProgress() ? 'uploads-in-progress' : ''}`}
                                 style={{
+                                    ...(testMode ? {
+                                        backgroundColor: '#4CAF50',
+                                        borderColor: '#2E7D32',
+                                        position: 'relative'
+                                    } : {}),
                                     ...(hasUploadsInProgress() ? {
                                         backgroundColor: '#ffc107',
                                         borderColor: '#e0a800',
@@ -1468,7 +1477,8 @@ const PropertyListForm = () => {
                                 }}
                                 disabled={Loading || hasUploadsInProgress()}
                                 title={
-                                    hasUploadsInProgress() ? "Please wait for all image uploads to complete" : ""
+                                    hasUploadsInProgress() ? "Please wait for all image uploads to complete" :
+                                    testMode ? "Test Mode Enabled - Form validation will be bypassed" : ""
                                 }
                             >
                                 {Loading ? (
@@ -1492,6 +1502,70 @@ const PropertyListForm = () => {
                         
                         <div className="form-progress">
                             <p>Step 5 of 6 - Choose your property promotion package next</p>
+                        </div>
+                        
+                        {/* Test Mode Switch */}
+                        <div className="test-mode-container" style={{ 
+                            position: 'fixed', 
+                            bottom: '20px', 
+                            right: '20px',
+                            backgroundColor: testMode ? '#e8f5e9' : '#f1f1f1',
+                            padding: '10px 15px',
+                            borderRadius: '8px',
+                            boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                            zIndex: 1000,
+                            border: testMode ? '1px solid #4CAF50' : '1px solid #ddd'
+                        }}>
+                            <div style={{ 
+                                fontWeight: 'bold', 
+                                marginBottom: '5px',
+                                color: testMode ? '#2E7D32' : '#333'
+                            }}>
+                                Test Mode {testMode && '✅'}
+                            </div>
+                            <button 
+                                onClick={() => {
+                                    const newTestMode = !testMode;
+                                    console.log("Setting test mode to:", newTestMode);
+                                    setTestMode(newTestMode);
+                                    if (newTestMode) {
+                                        toast.success('Test Mode enabled! Form validation will be bypassed.', {
+                                            position: "top-center",
+                                            autoClose: 3000
+                                        });
+                                    } else {
+                                        toast.info('Test Mode disabled. Normal validation resumed.', {
+                                            position: "top-center"
+                                        });
+                                    }
+                                    // Force a re-render to ensure UI updates
+                                    setTimeout(() => {
+                                        setInps({...inps});
+                                    }, 50);
+                                }} 
+                                style={{
+                                    backgroundColor: testMode ? '#4CAF50' : '#ddd',
+                                    color: testMode ? 'white' : '#333',
+                                    border: 'none',
+                                    padding: '8px 15px',
+                                    borderRadius: '20px',
+                                    cursor: 'pointer',
+                                    fontWeight: 'bold',
+                                    transition: 'all 0.3s ease'
+                                }}
+                            >
+                                {testMode ? 'Enabled' : 'Enable Test Mode'}
+                            </button>
+                            {testMode && (
+                                <div style={{ 
+                                    fontSize: '11px', 
+                                    marginTop: '8px', 
+                                    color: '#4CAF50',
+                                    fontStyle: 'italic'
+                                }}>
+                                    Validation bypassed. Test data will be used.
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

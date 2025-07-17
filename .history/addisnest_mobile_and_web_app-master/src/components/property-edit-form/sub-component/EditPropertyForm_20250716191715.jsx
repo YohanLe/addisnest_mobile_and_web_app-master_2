@@ -19,7 +19,6 @@ import {
   extractImages,
   normalizePropertyData 
 } from "./property-edit-fix";
-import { checkAuthenticationStatus, getAuthErrorMessage } from "../../../utils/tokenHandler";
 
 const PropertyTypeList = [
     { value: 'House', label: 'House' },
@@ -393,18 +392,7 @@ const EditPropertyForm = () => {
             }
         }
 
-        // Enhanced Sub-city data retrieval and setting
-        console.log('🔍 ENHANCED SUB-CITY DATA RETRIEVAL:');
-        console.log('📋 Available city data from database:', {
-            city: formData.city,
-            subCity: propertyData.subCity || propertyData.sub_city,
-            location_city: propertyData.location_city,
-            cityName: propertyData.cityName,
-            address_city: propertyData.address?.city || propertyData.address?.subCity,
-            nested_address: propertyData.address
-        });
-
-        // Set regional state with enhanced sub-city handling
+        // Set regional state
         const regionalStateValue = formData.regional_state;
         if (regionalStateValue) {
             // First try exact match
@@ -430,72 +418,14 @@ const EditPropertyForm = () => {
                 setRegionalStateType(regionalState);
                 setInps(prev => ({ ...prev, regional_state: regionalState.value }));
                 
-                // Enhanced Sub-city handling for Addis Ababa
-                if (regionalState.value === "Addis Ababa City Administration") {
-                    console.log('🔍 Processing Sub-city for Addis Ababa...');
-                    
-                    // Try multiple field names for sub-city data from database
-                    const possibleSubCityValues = [
-                        formData.city,
-                        propertyData.subCity,
-                        propertyData.sub_city,
-                        propertyData.cityName,
-                        propertyData.location_city,
-                        propertyData.address?.city,
-                        propertyData.address?.subCity,
-                        propertyData.address?.sub_city
-                    ].filter(Boolean); // Remove null/undefined values
-                    
-                    console.log('🔍 Possible sub-city values from database:', possibleSubCityValues);
-                    
-                    let matchedSubCity = null;
-                    
-                    // Try to find exact match first
-                    for (const subCityValue of possibleSubCityValues) {
-                        if (subCityValue && typeof subCityValue === 'string') {
-                            const exactMatch = SubCityList.find(s => 
-                                s.value.toLowerCase() === subCityValue.toLowerCase().trim()
-                            );
-                            if (exactMatch) {
-                                matchedSubCity = exactMatch;
-                                console.log(`✅ Found exact sub-city match: "${exactMatch.value}" from database field: "${subCityValue}"`);
-                                break;
-                            }
-                        }
-                    }
-                    
-                    // If no exact match, try partial matching
-                    if (!matchedSubCity) {
-                        for (const subCityValue of possibleSubCityValues) {
-                            if (subCityValue && typeof subCityValue === 'string') {
-                                const partialMatch = SubCityList.find(s => 
-                                    s.value.toLowerCase().includes(subCityValue.toLowerCase().trim()) ||
-                                    subCityValue.toLowerCase().includes(s.value.toLowerCase())
-                                );
-                                if (partialMatch) {
-                                    matchedSubCity = partialMatch;
-                                    console.log(`✅ Found partial sub-city match: "${partialMatch.value}" from database field: "${subCityValue}"`);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    
-                    // Set the matched sub-city
-                    if (matchedSubCity) {
-                        console.log('✅ Setting sub-city dropdown to:', matchedSubCity.value);
-                        setSubCityType(matchedSubCity);
-                        // Update the form input to match the dropdown selection
-                        setInps(prev => ({ ...prev, city: matchedSubCity.value }));
-                    } else {
-                        console.log('⚠️ No matching sub-city found in dropdown list');
-                        console.log('📋 Available sub-cities:', SubCityList.map(s => s.value));
-                        
-                        // If we have city data but no dropdown match, keep it as text input
-                        if (formData.city) {
-                            console.log(`ℹ️ Keeping original city value as text: "${formData.city}"`);
-                            // Don't set SubCityType, let it fall back to text input
-                        }
+                // If this is Addis Ababa, also set the sub-city dropdown
+                if (regionalState.value === "Addis Ababa City Administration" && formData.city) {
+                    const subCity = SubCityList.find(s => 
+                        s.value.toLowerCase() === formData.city.toLowerCase()
+                    );
+                    if (subCity) {
+                        console.log('✅ Setting sub-city to:', subCity.value);
+                        setSubCityType(subCity);
                     }
                 }
             } else {
@@ -526,17 +456,14 @@ const EditPropertyForm = () => {
                 setRegionalStateType(defaultState);
                 setInps(prev => ({ ...prev, regional_state: defaultState.value }));
                 
-                // Enhanced sub-city handling even without regional state
+                // Also try to set sub-city if we have city data
                 if (formData.city) {
-                    console.log('🔍 Attempting to set sub-city from city data:', formData.city);
                     const subCity = SubCityList.find(s => 
                         s.value.toLowerCase() === formData.city.toLowerCase()
                     );
                     if (subCity) {
                         console.log('✅ Setting sub-city to:', subCity.value);
                         setSubCityType(subCity);
-                    } else {
-                        console.log('⚠️ City value does not match any sub-city in dropdown:', formData.city);
                     }
                 }
             }
@@ -1580,11 +1507,10 @@ const EditPropertyForm = () => {
             
             try {
                 console.log(`🔄 Attempting to update property via: ${endpoint}`);
-                
                 const response = await Api.putWithtoken(endpoint, updateData);
                 
                 console.log('✅ Property update successful:', response);
-                toast.success('Property updated successfully!');
+                toast.success('Property updated successfully in database!');
                 
                 // Save the updated data to localStorage for offline access
                 const updatedPropertyData = {
@@ -1604,46 +1530,23 @@ const EditPropertyForm = () => {
                     // Don't fail the entire operation if refresh fails
                 }
                 
-                // Navigate back to listed properties immediately after success
-                console.log('🔄 Navigating to account management page...');
-                navigate('/account-management');
+                toast.success('Property updated successfully!');
                 
-                // Exit the function successfully - don't continue to error handling
-                return;
+                // Navigate back to property listings after a short delay
+                setTimeout(() => {
+                    navigate('/my-property-listings');
+                }, 1500);
                 
             } catch (apiError) {
                 console.error('❌ API update failed:', apiError);
                 
-                // Handle specific error cases
-                if (apiError?.response?.status === 401) {
-                    console.error('❌ 401 Unauthorized - Authentication issue');
-                    toast.error('Authentication expired. Please log in again.');
-                    
-                    // Save changes locally before redirecting
-                    const fallbackData = {
-                        ...inps,
-                        id: propertyId,
-                        propertyId: propertyId,
-                        property_type: PropertyType?.value || PropertyType,
-                        furnishing: FurnishingType?.value || FurnishingType,
-                        property_for: activeTab,
-                        media: MediaPaths,
-                        amenities: getSelectedAmenitiesArray(),
-                        updated_at: new Date().toISOString(),
-                        pending_sync: true
-                    };
-                    saveToLocalStorage(fallbackData);
-                    console.log('💾 Changes saved locally before redirect');
-                    
-                    // Redirect to login after a short delay
-                    setTimeout(() => {
-                        navigate('/login');
-                    }, 2000);
-                    
-                } else if (apiError?.response?.status === 403) {
-                    toast.error('Access forbidden. You may not have permission to edit this property.');
-                } else if (apiError?.response?.status === 404) {
+                // Check if it's a 404 error (property not found)
+                if (apiError?.response?.status === 404) {
                     toast.error('Property not found. It may have been deleted or the ID is incorrect.');
+                } else if (apiError?.response?.status === 401) {
+                    toast.error('You are not authorized to update this property.');
+                } else if (apiError?.response?.status === 403) {
+                    toast.error('Access forbidden. Please check your permissions.');
                 } else {
                     // For other errors, save locally and show appropriate message
                     const fallbackData = {
@@ -1656,7 +1559,7 @@ const EditPropertyForm = () => {
                         media: MediaPaths,
                         amenities: getSelectedAmenitiesArray(),
                         updated_at: new Date().toISOString(),
-                        pending_sync: true
+                        pending_sync: true // Flag to indicate this needs to be synced to server
                     };
                     saveToLocalStorage(fallbackData);
                     console.log('💾 Changes saved locally as fallback');
@@ -1965,16 +1868,6 @@ const EditPropertyForm = () => {
                                                     onChange={(e) => {
                                                         setSubCityType(e);
                                                         setInps(prev => ({ ...prev, city: e?.value || '' }));
-                                                        // Clear city validation error when selection is made
-                                                        if (e?.value) {
-                                                            setError(prev => {
-                                                                const newError = { ...prev };
-                                                                if (newError?.errors?.city) {
-                                                                    delete newError.errors.city;
-                                                                }
-                                                                return newError;
-                                                            });
-                                                        }
                                                     }}
                                                     className="react-select"
                                                 />
