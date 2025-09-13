@@ -92,18 +92,18 @@ const connectDB = async () => {
 };
 
 // Mount specific routes before general routes to avoid conflicts
-app.use('/api/agents', routes.agentRoutes);
-app.use('/api/users', routes.userRoutes);
-app.use('/api/auth', routes.authRoutes);
-app.use('/api/properties/count', routes.propertyCountRoutes);
-app.use('/api/properties', routes.propertyRoutes);
-app.use('/api/property-submit', routes.propertySubmitRoute);
-app.use('/api/conversations', routes.conversationRoutes);
-app.use('/api/messages', routes.messageRoutes);
-app.use('/api/notifications', routes.notificationRoutes);
-app.use('/api/payments', routes.paymentRoutes);
-app.use('/api/connectiontests', routes.connectionTestRoutes);
-app.use('/api/media', routes.mediaRoutes);
+app.use('/agents', routes.agentRoutes);
+app.use('/users', routes.userRoutes);
+app.use('/auth', routes.authRoutes);
+app.use('/properties/count', routes.propertyCountRoutes);
+app.use('/properties', routes.propertyRoutes);
+app.use('/property-submit', routes.propertySubmitRoute);
+app.use('/conversations', routes.conversationRoutes);
+app.use('/messages', routes.messageRoutes);
+app.use('/notifications', routes.notificationRoutes);
+app.use('/payments', routes.paymentRoutes);
+app.use('/connectiontests', routes.connectionTestRoutes);
+app.use('/media', routes.mediaRoutes);
 
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));

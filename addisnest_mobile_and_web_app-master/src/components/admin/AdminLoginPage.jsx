@@ -71,7 +71,7 @@ const AdminLoginPage = () => {
                 
                 // Use the regular login endpoint with axios directly
                 // For development, hardcode the API base URL to ensure it works
-                const API_BASE_URL = 'http://localhost:7000/api';
+                const API_BASE_URL = 'import.meta.env.VITE_API_BASE_URL';
                 
                 const response = await axios.post(`${API_BASE_URL}/users/login`, body, {
                     headers: {

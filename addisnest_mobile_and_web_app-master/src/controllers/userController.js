@@ -522,7 +522,14 @@ class UserController extends BaseController {
   requestOTP = this.asyncHandler(async (req, res) => {
     try {
       console.log('requestOTP called with body:', req.body);
-      const { email } = req.body;
+    //  const { email } = req.body;
+
+if (!req.body) {
+  console.error('Request body is undefined. This indicates a middleware issue.');
+  return this.sendError(res, new ErrorResponse('Request body is missing. Please ensure you are sending a valid JSON request with Content-Type: application/json header.', 400));
+}
+
+const { email } = req.body;
       
       if (!email) {
         return this.sendError(res, new ErrorResponse('Email is required', 400));

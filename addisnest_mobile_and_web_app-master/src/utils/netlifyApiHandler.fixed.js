@@ -6,7 +6,7 @@ const isNetlify = import.meta.env.VITE_API_BASE_URL &&
                   import.meta.env.VITE_API_BASE_URL.includes('.netlify.app');
 
 // Set base URLs for different environments
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'import.meta.env.VITE_API_BASE_URL';
 // For Netlify, we'll use the simplified paths that will be redirected via _redirects
 const NETLIFY_BASE_URL = isNetlify ? import.meta.env.VITE_API_BASE_URL.replace('/.netlify/functions/api', '') : '';
 

@@ -6,7 +6,11 @@ const isNetlify = import.meta.env.VITE_API_BASE_URL &&
                   import.meta.env.VITE_API_BASE_URL.includes('.netlify.app');
 
 // Set base URLs for different environments
-const API_BASE_URL = import.meta.env.MODE === 'production' ? 'http://3.144.240.220:3000/api' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:7001/api');
+
+//const API_BASE_URL = import.meta.env.MODE === 'production' ? 'import.meta.env.VITE_API_BASE_URL' : (import.meta.env.VITE_API_BASE_URL || 'import.meta.env.VITE_API_BASE_URL');
+
+const API_BASE_URL = import.meta.env.MODE === 'production' ? 'http://3.132.32.40:3000/api' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:7001/api');
+
 // For Netlify, we'll use the simplified paths that will be redirected via _redirects
 const NETLIFY_BASE_URL = isNetlify ? import.meta.env.VITE_API_BASE_URL.replace('/.netlify/functions/api', '') : '';
 

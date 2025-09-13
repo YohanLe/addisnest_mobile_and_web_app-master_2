@@ -172,7 +172,7 @@ const Messages = () => {
         }
         
         const token = getToken();
-        const response = await fetch('http://localhost:7001/api/messages?status=pending', {
+        const response = await fetch('import.meta.env.VITE_API_BASE_URL/messages?status=pending', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -213,7 +213,7 @@ const Messages = () => {
         }
         
         const token = getToken();
-        const response = await fetch('http://localhost:7001/api/conversations', {
+        const response = await fetch('import.meta.env.VITE_API_BASE_URL/conversations', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -311,7 +311,7 @@ const Messages = () => {
           }
           
           const token = getToken();
-          const response = await fetch(`http://localhost:7001/api/messages/conversation/${selectedConversation}`, {
+          const response = await fetch(`import.meta.env.VITE_API_BASE_URL/messages/conversation/${selectedConversation}`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -385,7 +385,7 @@ const Messages = () => {
       }
       
       const token = getToken();
-      const response = await fetch(`http://localhost:7001/api/messages/${messageId}/accept`, {
+      const response = await fetch(`import.meta.env.VITE_API_BASE_URL/messages/${messageId}/accept`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -423,7 +423,7 @@ const Messages = () => {
       }
       
       const token = getToken();
-      const response = await fetch(`http://localhost:7001/api/messages/${messageId}/ignore`, {
+      const response = await fetch(`import.meta.env.VITE_API_BASE_URL/messages/${messageId}/ignore`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -504,7 +504,7 @@ const Messages = () => {
         
         // Send the message
         const token = getToken();
-        const response = await fetch('http://localhost:7001/api/messages', {
+        const response = await fetch('import.meta.env.VITE_API_BASE_URL/messages', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

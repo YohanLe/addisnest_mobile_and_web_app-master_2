@@ -291,7 +291,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
   };
   
   const getArea = (property) => {
-    const size = property.specifications?.area?.size || property.squareFeet || 0;
+    const size = property.specifications?.area?.size || property.squareFeet || property.area || 0;
     const unit = property.specifications?.area?.unit || 'sqft';
     return { size, unit };
   };

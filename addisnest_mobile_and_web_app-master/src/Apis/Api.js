@@ -24,7 +24,7 @@ export const checkAuthStatus = () => {
 };
 
 // Configure base URL for all API requests
-const API_BASE_URL = 'http://localhost:7001/api';
+const API_BASE_URL = 'import.meta.env.VITE_API_BASE_URL';
 
 // Create axios instance with base configuration
 const api = axios.create({
