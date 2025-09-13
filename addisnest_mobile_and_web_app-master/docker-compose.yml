@@ -11,10 +11,10 @@ services:
       - NODE_ENV=production
       - PORT=3000
       # Add your production environment variables here
-      - MONGO_URI=mongodb+srv://addisnest_admin:40057200%24aA@cluster0.erzzpdo.mongodb.net/addisnest?retryWrites=true&w=majority
-      - JWT_SECRET=addinest_super_secret_jwt_key_12345
-      - SENDGRID_API_KEY=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
+      - MONGO_URI=mongodb
+      - JWT_SECRET=JWT_SECRET=your_jwt_secret_here
+      - SENDGRID_API_KEY=NoneM
       - EMAIL_FROM=contact@addisnest.com
       - VITE_API_BASE_URL=http://3.132.32.40:3000/api
-      - FRONTEND_URL=http://3.144.240.220/
+      - FRONTEND_URL=http://3.132.32.40/
     restart: unless-stopped
