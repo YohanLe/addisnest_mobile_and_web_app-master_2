@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Error Test Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            margin-top: 0;
+            margin-bottom: 24px;
+            color: #333;
+            text-align: center;
+            font-size: 24px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #444;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #a4ff2a;
+            color: #333;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #98f01c;
+        }
+        .error-message {
+            padding: 12px;
+            background-color: #ffebee;
+            border: 1px solid #ffcdd2;
+            border-radius: 4px;
+            color: #d32f2f;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+        .error-icon {
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .divider {
+            text-align: center;
+            position: relative;
+            margin: 25px 0;
+            height: 1px;
+            background: #eee;
+        }
+        .divider span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 0 15px;
+            color: #888;
+        }
+        .test-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .test-button {
+            text-align: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Login Error Test</h1>
+        
+        <div id="errorMessage" class="error-message">
+            <svg class="error-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+            </svg>
+            <span id="errorText">Error message will appear here</span>
+        </div>
+        
+        <div class="input-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Enter your email">
+        </div>
+        
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password">
+        </div>
+        
+        <button id="loginButton">Log In</button>
+        
+        <div class="divider">
+            <span>TEST SCENARIOS</span>
+        </div>
+        
+        <div class="test-buttons">
+            <div class="test-button" id="testWrongPassword">
+                Test: Wrong Password Error
+            </div>
+            <div class="test-button" id="testUnregisteredEmail">
+                Test: Unregistered Email Error
+            </div>
+            <div class="test-button" id="testServerError">
+                Test: Server Error
+            </div>
+            <div class="test-button" id="testNetworkError">
+                Test: Network Error
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            
+            // Set default values
+            email.value = 'test@example.com';
+            password.value = 'password123';
+            
+            // Test buttons
+            document.getElementById('testWrongPassword').addEventListener('click', function() {
+                showError('The password you entered is incorrect. Please try again.');
+            });
+            
+            document.getElementById('testUnregisteredEmail').addEventListener('click', function() {
+                showError('This email is not registered. Please check your email or sign up.');
+            });
+            
+            document.getElementById('testServerError').addEventListener('click', function() {
+                showError('We\'re having a temporary issue with our system. Please try again in a moment or contact support if the problem persists.');
+            });
+            
+            document.getElementById('testNetworkError').addEventListener('click', function() {
+                showError('Network connection failed. Please check your internet connection.');
+            });
+            
+            // Login button click handler
+            document.getElementById('loginButton').addEventListener('click', function() {
+                // Reset error message
+                errorMessage.style.display = 'none';
+                
+                // Validate fields
+                if (!email.value) {
+                    showError('Please enter your email address.');
+                    return;
+                }
+                
+                if (!password.value) {
+                    showError('Please enter your password.');
+                    return;
+                }
+                
+                // In a real app, we'd make an API call here
+                // For this test page, we'll simulate a server error
+                showError('We\'re having a temporary issue with our system. Please try again in a moment or contact support if the problem persists.');
+            });
+            
+            // Helper function to show error messages
+            function showError(message) {
+                errorText.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

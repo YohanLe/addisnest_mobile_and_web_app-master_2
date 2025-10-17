@@ -1,0 +1,155 @@
+/* Mobile Messages Styles */
+
+@media (max-width: 767px) {
+  .chat-container {
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .chat-panel {
+    border-radius: 0;
+    box-shadow: none;
+  }
+  
+  .conversations-panel {
+    width: 100%;
+  }
+  
+  .conversations-panel.hidden {
+    display: none;
+  }
+  
+  .chat-view {
+    display: none;
+    width: 100%;
+  }
+  
+  .chat-view.active {
+    display: flex;
+  }
+  
+  .message-history {
+    padding: 10px;
+  }
+  
+  .message-bubble {
+    max-width: 85%;
+    padding: 10px 12px;
+  }
+  
+  .message-input-container {
+    padding: 10px;
+  }
+  
+  .message-input-wrapper {
+    padding: 0 10px;
+  }
+  
+  .message-input {
+    padding: 10px 0;
+    font-size: 14px;
+  }
+  
+  .send-btn {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .conversation-item {
+    padding: 12px;
+  }
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .conversation-name {
+    font-size: 14px;
+  }
+  
+  .conversation-time {
+    font-size: 11px;
+  }
+  
+  .conversation-message {
+    font-size: 13px;
+  }
+  
+  .unread-count {
+    min-width: 18px;
+    height: 18px;
+    font-size: 11px;
+  }
+  
+  .role-badge {
+    font-size: 10px;
+    padding: 1px 6px;
+  }
+  
+  .conversations-header h3 {
+    font-size: 16px;
+  }
+  
+  .conversation-count {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+  
+  .search-input {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  .no-conversations-icon, .no-messages-icon {
+    font-size: 40px;
+  }
+  
+  .no-conversations p:first-child, .no-messages h4 {
+    font-size: 16px;
+  }
+  
+  .no-conversations p, .no-messages p {
+    font-size: 13px;
+  }
+  
+  .loading-spinner {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .loading-container p, .loading-messages p {
+    font-size: 13px;
+  }
+  
+  .error-message {
+    font-size: 14px;
+  }
+  
+  .error-help-text {
+    font-size: 13px;
+  }
+  
+  .retry-button, .login-button, .clear-search-button {
+    padding: 6px 16px;
+    font-size: 13px;
+  }
+  
+  .date-divider span {
+    font-size: 12px;
+  }
+  
+  .message-meta {
+    font-size: 11px;
+  }
+  
+  .user-info h3 {
+    font-size: 15px;
+  }
+  
+  .user-status {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Frontend API</title>
+</head>
+<body>
+    <h1>Test Frontend API Communication</h1>
+    <button onclick="testAPI()">Test Message Sending API</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const testData = {
+                    agentId: '507f1f77bcf86cd799439011',
+                    agentEmail: 'jonegrow143@gmail.com',
+                    agentName: 'Test Agent',
+                    senderName: 'test123',
+                    senderEmail: 'jonegrow143@gmail.com',
+                    message: 'I\'m interested in this property and would like to know more about...',
+                    subject: 'New inquiry from test123'
+                };
+
+                console.log('Sending test data:', testData);
+
+                // Test direct API call to backend
+                const response = await fetch('http://localhost:7002/api/messages/send-to-agent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+
+                console.log('Response status:', response.status);
+                const responseData = await response.json();
+                console.log('Response data:', responseData);
+
+                if (responseData.success) {
+                    resultDiv.innerHTML = `
+                        <h3 style="color: green;">✅ SUCCESS</h3>
+                        <p>Message: ${responseData.message}</p>
+                        <pre>${JSON.stringify(responseData, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <h3 style="color: red;">❌ FAILED</h3>
+                        <p>Error: ${responseData.error || 'Unknown error'}</p>
+                        <pre>${JSON.stringify(responseData, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = `
+                    <h3 style="color: red;">❌ ERROR</h3>
+                    <p>Error: ${error.message}</p>
+                    <p>Check console for details</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

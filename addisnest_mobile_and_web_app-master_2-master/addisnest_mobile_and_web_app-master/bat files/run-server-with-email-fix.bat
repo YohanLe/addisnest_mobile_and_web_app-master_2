@@ -1,0 +1,3 @@
+@echo off
+echo Starting server with email configuration fix...
+node restart-server-with-email-fix.js

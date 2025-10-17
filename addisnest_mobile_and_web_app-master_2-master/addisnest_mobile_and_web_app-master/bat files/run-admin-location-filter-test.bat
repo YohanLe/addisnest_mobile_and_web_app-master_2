@@ -1,0 +1,13 @@
+@echo off
+echo Starting Admin Location Filter Test...
+
+echo Starting the application...
+start cmd /k "npm run dev"
+
+echo Waiting for the application to start...
+timeout /t 10 /nobreak
+
+echo Running the test script...
+node test-admin-location-filter.js
+
+echo Test completed.

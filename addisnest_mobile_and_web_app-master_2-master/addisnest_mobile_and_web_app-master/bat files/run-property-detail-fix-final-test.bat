@@ -1,0 +1,3 @@
+@echo off
+echo Starting property detail fix final test...
+node test-property-detail-fix-final.js

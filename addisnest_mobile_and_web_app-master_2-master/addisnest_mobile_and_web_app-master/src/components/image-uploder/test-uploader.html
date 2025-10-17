@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Uploader Component Test</title>
+  <style>
+    /* Basic reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f5f5f5;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+      text-align: center;
+    }
+    
+    .test-description {
+      margin-bottom: 30px;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-left: 4px solid #4CAF50;
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .test-section {
+      margin-bottom: 40px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    
+    .test-section h2 {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .code-block {
+      margin: 20px 0;
+      padding: 15px;
+      background-color: #f5f5f5;
+      border-radius: 5px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+    
+    .info-note {
+      margin-top: 20px;
+      padding: 10px 15px;
+      background-color: #e7f3fe;
+      border-left: 4px solid #2196F3;
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .next-steps {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+    }
+    
+    .next-steps h3 {
+      margin-bottom: 10px;
+    }
+    
+    .next-steps ul {
+      margin-left: 20px;
+    }
+    
+    .next-steps li {
+      margin-bottom: 8px;
+    }
+
+    .test-link {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .test-link:hover {
+      background-color: #3e8e41;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Image Uploader Component Test</h1>
+    
+    <div class="test-description">
+      <p>This page provides instructions for testing the newly created image uploader component. The component has been integrated into the main application and can be accessed via the demo route.</p>
+    </div>
+    
+    <div class="test-section">
+      <h2>Component Features</h2>
+      <ul>
+        <li>Support for both image files (PNG, JPEG, JPG) and PDF documents</li>
+        <li>Drag and drop functionality for easy file uploading</li>
+        <li>File validation (type, size, maximum count)</li>
+        <li>Visual previews for uploaded files</li>
+        <li>Error handling with visual feedback</li>
+        <li>Responsive design that works on all screen sizes</li>
+        <li>Accessibility features</li>
+      </ul>
+    </div>
+    
+    <div class="test-section">
+      <h2>How to Test</h2>
+      <p>The image uploader component demo can be accessed through the following route:</p>
+      <div class="code-block">/image-uploader-demo</div>
+      
+      <p>You can test the component functionality with the following steps:</p>
+      <ol>
+        <li>Navigate to the demo page</li>
+        <li>Try uploading image files by clicking on the uploader area</li>
+        <li>Try dragging and dropping files onto the uploader area</li>
+        <li>Test file validation by attempting to upload very large files or unsupported file types</li>
+        <li>Switch between image and PDF tabs to test different file type handling</li>
+        <li>Review how file previews are displayed</li>
+        <li>Test the remove functionality by clicking the remove button on uploaded files</li>
+      </ol>
+      
+      <a href="/image-uploader-demo" class="test-link">Go to Demo Page</a>
+      
+      <div class="info-note">
+        <p>Note: The demo page shows both the image uploader and PDF uploader variants, allowing you to test both functionalities.</p>
+      </div>
+    </div>
+    
+    <div class="test-section">
+      <h2>Implementation Example</h2>
+      <p>Here's a basic example of how to use the component in your own code:</p>
+      <div class="code-block">import React, { useState } from "react";
+import { ImageUploaderCodemeg } from "./components/image-uploder";
+
+function MyComponent() {
+  const [images, setImages] = useState([]);
+  
+  return (
+    <div>
+      <h3>Upload Your Images</h3>
+      <ImageUploaderCodemeg
+        type_for="IMG"
+        files={images}
+        setFiles={setImages}
+        maxFiles={5}
+        maxFileSize={2}
+        recommendedSize="800x600px"
+      />
+    </div>
+  );
+}</div>
+    </div>
+    
+    <div class="next-steps">
+      <h3>Next Steps</h3>
+      <ul>
+        <li>Review the component's README.md file for detailed documentation</li>
+        <li>Integrate the component into your desired application views</li>
+        <li>Customize the styling if needed by modifying the CSS files</li>
+        <li>Add additional validations or features as your project requires</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

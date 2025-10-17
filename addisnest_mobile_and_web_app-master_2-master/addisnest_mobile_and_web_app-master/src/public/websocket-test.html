@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #messages {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .received {
+            color: #2c6e49;
+        }
+        .sent {
+            color: #4d4ae8;
+        }
+        .error {
+            color: #d62828;
+        }
+        .info {
+            color: #457b9d;
+            font-style: italic;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4d4ae8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #3730a3;
+        }
+        input {
+            padding: 8px;
+            width: 300px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Addisnest WebSocket Test</h1>
+    
+    <div id="connection-status">Status: Disconnected</div>
+    
+    <div>
+        <button id="connect-btn">Connect</button>
+        <button id="disconnect-btn" disabled>Disconnect</button>
+    </div>
+    
+    <h2>Messages</h2>
+    <div id="messages"></div>
+    
+    <div>
+        <input type="text" id="message-input" placeholder="Type a message..." disabled>
+        <button id="send-btn" disabled>Send</button>
+    </div>
+    
+    <div>
+        <button id="ping-btn" disabled>Send Ping</button>
+    </div>
+
+    <script>
+        // DOM Elements
+        const connectBtn = document.getElementById('connect-btn');
+        const disconnectBtn = document.getElementById('disconnect-btn');
+        const messagesDiv = document.getElementById('messages');
+        const statusDiv = document.getElementById('connection-status');
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const pingBtn = document.getElementById('ping-btn');
+        
+        // WebSocket instance
+        let socket = null;
+        
+        // Log a message to the messages div
+        function logMessage(message, type) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', type);
+            messageElement.textContent = message;
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        // Connect to the WebSocket server
+        function connect() {
+            logMessage('Attempting to connect...', 'info');
+            
+            // Create WebSocket connection
+            socket = new WebSocket('ws://localhost:5177');
+            
+            // Connection opened
+            socket.addEventListener('open', (event) => {
+                logMessage('Connected to WebSocket server', 'info');
+                statusDiv.textContent = 'Status: Connected';
+                
+                // Enable/disable appropriate buttons
+                connectBtn.disabled = true;
+                disconnectBtn.disabled = false;
+                messageInput.disabled = false;
+                sendBtn.disabled = false;
+                pingBtn.disabled = false;
+            });
+            
+            // Listen for messages
+            socket.addEventListener('message', (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    logMessage(`Received: ${JSON.stringify(data, null, 2)}`, 'received');
+                } catch (e) {
+                    logMessage(`Received: ${event.data}`, 'received');
+                }
+            });
+            
+            // Connection closed
+            socket.addEventListener('close', (event) => {
+                logMessage(`Connection closed. Code: ${event.code}, Reason: ${event.reason}`, 'info');
+                statusDiv.textContent = 'Status: Disconnected';
+                
+                // Reset button states
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+                messageInput.disabled = true;
+                sendBtn.disabled = true;
+                pingBtn.disabled = true;
+                
+                // Clear the socket reference
+                socket = null;
+            });
+            
+            // Connection error
+            socket.addEventListener('error', (event) => {
+                logMessage('WebSocket error', 'error');
+                console.error('WebSocket error:', event);
+            });
+        }
+        
+        // Disconnect from the WebSocket server
+        function disconnect() {
+            if (socket) {
+                socket.close(1000, 'User initiated disconnect');
+            }
+        }
+        
+        // Send a message to the server
+        function sendMessage() {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                const message = messageInput.value.trim();
+                if (message) {
+                    try {
+                        // Try to parse as JSON first
+                        let jsonMessage = JSON.parse(message);
+                        socket.send(message);
+                        logMessage(`Sent: ${JSON.stringify(jsonMessage, null, 2)}`, 'sent');
+                    } catch (e) {
+                        // If not valid JSON, send as plain text
+                        socket.send(message);
+                        logMessage(`Sent: ${message}`, 'sent');
+                    }
+                    messageInput.value = '';
+                }
+            }
+        }
+        
+        // Send a ping message
+        function sendPing() {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                const pingMessage = JSON.stringify({ type: 'ping', timestamp: Date.now() });
+                socket.send(pingMessage);
+                logMessage(`Sent ping: ${pingMessage}`, 'sent');
+            }
+        }
+        
+        // Event listeners
+        connectBtn.addEventListener('click', connect);
+        disconnectBtn.addEventListener('click', disconnect);
+        sendBtn.addEventListener('click', sendMessage);
+        pingBtn.addEventListener('click', sendPing);
+        
+        // Allow sending message with Enter key
+        messageInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
