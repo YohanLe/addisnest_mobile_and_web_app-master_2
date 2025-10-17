@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./uploads:/usr/src/app/uploads
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      # Add your production environment variables here
+      - MONGO_URI=mongodb
+      - JWT_SECRET=JWT_SECRET=your_jwt_secret_here
+      - SENDGRID_API_KEY=NoneM
+      - EMAIL_FROM=contact@addisnest.com
+      - VITE_API_BASE_URL=http://3.132.32.40:3000/api
+      - FRONTEND_URL=http://3.132.32.40/
+    restart: unless-stopped

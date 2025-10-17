@@ -1,0 +1,8 @@
+# Redirect all API requests to their respective functions
+/api/* /.netlify/functions/api/:splat 200
+/properties/* /.netlify/functions/properties/:splat 200
+/properties /.netlify/functions/properties 200
+/getListings /.netlify/functions/getListings 200
+
+# Fallback for all other routes to the frontend app
+/* /index.html 200

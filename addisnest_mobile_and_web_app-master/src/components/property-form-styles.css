@@ -1,0 +1,109 @@
+/* Property Form Responsive Grid Layout Styles */
+
+/* Common form grid styles */
+.form-row,
+.form-row-3-cols,
+.form-row-4-cols {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10px 15px;
+}
+
+/* Standard full-width column */
+.form-col-100 {
+  flex: 0 0 100%;
+  max-width: 100%;
+  padding: 0 10px;
+}
+
+/* 3-column layout (33% each) */
+.form-col-33 {
+  flex: 0 0 33.333333%;
+  max-width: 33.333333%;
+  padding: 0 10px;
+}
+
+/* 4-column layout (25% each) - used for address fields */
+.form-col-25 {
+  flex: 0 0 25%;
+  max-width: 25%;
+  padding: 0 10px;
+}
+
+/* Form group styling */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Error handling */
+.form-group.has-error input,
+.form-group.has-error select,
+.form-group.has-error textarea {
+  border-color: #d32f2f;
+  background-color: #fff8f8;
+}
+
+.form-group .error-msg {
+  color: #d32f2f;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Responsive styles for different screen sizes */
+@media (max-width: 992px) {
+  /* On medium screens, 4-column becomes 2-column */
+  .form-col-25 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  
+  /* On medium screens, 3-column becomes 2-column */
+  .form-col-33 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+@media (max-width: 576px) {
+  /* On small screens, all columns become full width */
+  .form-col-25,
+  .form-col-33 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  
+  /* Adjust spacing for better mobile experience */
+  .form-row,
+  .form-row-3-cols,
+  .form-row-4-cols {
+    margin: 0 -5px 10px;
+  }
+  
+  .form-col-25,
+  .form-col-33,
+  .form-col-100 {
+    padding: 0 5px;
+  }
+}

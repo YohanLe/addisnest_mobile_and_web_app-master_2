@@ -1,0 +1,198 @@
+/* Mobile property list styles */
+@media screen and (max-width: 767px) {
+  /* Ensure property cards span full width */
+  .property-card {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+  
+  /* Ensure property images span full viewport width - edge to edge */
+  .property-card .property-image {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    position: relative !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+  
+  /* Make images fully responsive - edge to edge */
+  .property-card .property-image img {
+    width: 100vw !important;
+    height: 100% !important;
+    display: block !important;
+    object-fit: cover !important;
+    border-radius: 0 !important; /* Remove any border radius to ensure edge-to-edge */
+    margin: 0 auto !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+  
+  /* Reduce font size for "Properties for Sale" heading */
+  .page-header h1 {
+    font-size: 1.5rem !important;
+    margin-top: 0 !important;
+  }
+  
+  .page-header p {
+    font-size: 0.9rem;
+    margin-bottom: 10px !important;
+  }
+  
+  /* Reduce space between banner and property section */
+  .home-page .property-section {
+    margin-top: 0 !important;
+  }
+  
+  /* Reduce page header margin */
+  .page-header.mb-4 {
+    margin-bottom: 5px !important;
+  }
+  
+  /* Reduce space between property count and property cards */
+  .results-header.mb-4 {
+    margin-bottom: 5px !important;
+  }
+  
+  /* Remove space between property count and property cards */
+  .property-list-page .row {
+    margin-top: 0 !important;
+  }
+  
+  /* Make property cards display horizontally in a scrollable container */
+  .property-list-page .row {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 12px !important;
+    padding-bottom: 15px;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Ensure all container widths are 100% viewport width */
+  .property-list-page .container,
+  .property-list-page .container-fluid,
+  .home-page .container,
+  .home-page .container-fluid {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    position: relative !important;
+  }
+  
+  /* Ensure the property section is full viewport width */
+  .property-section {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* Hide scrollbar for cleaner look */
+  .property-list-page .row::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .property-list-page .row::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+  
+  /* Adjust property card size for horizontal scrolling */
+  .property-list-page .col-lg-4.col-md-6 {
+    flex: 0 0 auto !important;
+    width: 100vw !important;
+    margin-bottom: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  /* Card Container Styling */
+  .property-card {
+    margin-bottom: 10px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    width: 100vw !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+    background-color: #000 !important;
+  }
+  
+  /* Property Image Section */
+  .property-card .property-image {
+    height: 180px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100vw !important;
+    overflow: hidden !important;
+  }
+  
+  .property-card .property-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    border-top-left-radius: 12px !important;
+    border-top-right-radius: 12px !important;
+  }
+  
+  .property-card h3 {
+    font-size: 1.2rem !important;
+    color: #fff !important;
+  }
+  
+  /* Adjust property details text size */
+  .property-card div {
+    font-size: 0.8rem !important;
+    color: #e0e0e0 !important;
+  }
+  
+  .property-card p {
+    font-size: 0.8rem !important;
+    margin-bottom: 3px !important;
+    color: #e0e0e0 !important;
+  }
+  
+  /* Ensure property details have good contrast */
+  .property-card div span {
+    color: #e0e0e0 !important;
+  }
+  
+  /* Adjust "For Sale" tag for better contrast on black */
+  .property-card .property-tag {
+    background: #a4ff2a !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+  }
+  
+  /* Ensure property card content has proper padding */
+  .property-card > div:not(.property-image) {
+    padding: 15px !important;
+  }
+}

@@ -1,0 +1,519 @@
+/* Base Styles */
+:root {
+  --primary-color: #b9f73e;
+  --secondary-color: #34a853;
+  --accent-color: #b9f73e;
+  --dark-color: #2e3d40;
+  --light-color: #f8f9fa;
+  --gray-color: #6c757d;
+  --border-color: #e9ecef;
+  --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+/* Reset some browser defaults */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  line-height: 1.5;
+  color: var(--dark-color);
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Common Spacing */
+.py-5 {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.py-4 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.mb-5 {
+  margin-bottom: 3rem;
+}
+
+.mb-4 {
+  margin-bottom: 2.5rem;
+}
+
+.mb-3 {
+  margin-bottom: 1.5rem;
+}
+
+.mt-5 {
+  margin-top: 3rem;
+}
+
+.mt-4 {
+  margin-top: 2.5rem;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  font-weight: 700;
+  color: var(--dark-color);
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--gray-color);
+}
+
+/* Common Section Styles */
+.common-section {
+  padding: 5rem 0;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--dark-color);
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: var(--gray-color);
+  max-width: 800px;
+  margin: 0 auto 2rem;
+}
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid transparent;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 0.375rem;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #b51515;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Header Styles */
+.header {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header .logo {
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 24px;
+  text-decoration: none;
+}
+
+.nav-link {
+  color: var(--dark-color);
+  text-decoration: none;
+  padding: 8px 16px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.nav-link:hover {
+  color: var(--primary-color);
+}
+
+.nav-link.active {
+  color: var(--primary-color);
+}
+
+.login-btn {
+  background-color: var(--dark-color);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.login-btn:hover {
+  background-color: #1a1a1a;
+}
+
+/* Hero Section Styles */
+.hero-section {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  color: white;
+}
+
+.hero-section::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* Ensure the banner section doesn't have an overlay */
+.banner-section::before,
+.banner-section::after {
+  content: none !important;
+  display: none !important;
+}
+
+.hero-section .container {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-content {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-content h1,
+.hero-content h2 {
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hero-content h1 {
+  font-size: 3.5rem;
+}
+
+.hero-content h2 {
+  font-size: 2.5rem;
+}
+
+.search-container {
+  margin-top: 2rem;
+}
+
+.search-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.search-tab-btn {
+  padding: 10px 20px;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-transform: capitalize;
+}
+
+.search-tab-btn.active {
+  background-color: var(--primary-color);
+}
+
+.search-tab-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.search-tab-btn.active:hover {
+  background-color: #b51515;
+}
+
+/* Property Cards */
+.property-card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  height: 100%;
+}
+
+/* Remove dark overlay from property cards */
+.property-card .property-image::before,
+.property-card .property-image::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+}
+
+.property-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-5px);
+}
+
+.property-image {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.property-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.property-image:hover img {
+  transform: scale(1.05);
+}
+
+.property-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--primary-color);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.featured-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ff6b6b;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.property-price {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.property-content {
+  padding: 20px;
+}
+
+.property-title {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.property-location {
+  display: flex;
+  align-items: center;
+  color: var(--gray-color);
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+}
+
+.property-features {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.view-property-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.view-property-btn:hover {
+  background-color: #b51515;
+}
+
+.view-all-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  background: transparent;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  border-radius: 4px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.view-all-btn:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+/* Testimonial Styles */
+.testimonial-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2.5rem;
+  box-shadow: var(--shadow-md);
+  height: 100%;
+}
+
+/* Statistics Bar Styles */
+.statistics-bar {
+  padding: 0;
+  background-color: #f0f5f9;
+  margin-top: -3px; /* Fix gap between hero and statistics */
+}
+
+.statistics-wrapper {
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  padding: 30px 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.stat-item {
+  padding: 15px 10px;
+  text-align: center;
+  transition: var(--transition);
+  border-radius: 8px;
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+  background-color: #f9f9f9;
+}
+
+.stat-icon {
+  margin-bottom: 12px;
+  color: var(--primary-color);
+  font-size: 32px;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--dark-color);
+  margin-bottom: 5px;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--gray-color);
+  margin-bottom: 0;
+}
+
+/* Make statistics responsive */
+@media (max-width: 991px) {
+  .statistics-wrapper {
+    padding: 20px 15px;
+  }
+  
+  .stat-value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .stat-item {
+    margin-bottom: 15px;
+  }
+}
+
+/* Responsive fixes */
+@media (max-width: 767px) {
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .hero-section h1 {
+    font-size: 2.5rem !important;
+  }
+  
+  .property-image {
+    height: 180px;
+  }
+}
+
+@media (max-width: 576px) {
+  .section-title {
+    font-size: 1.75rem;
+  }
+  
+  .hero-section h1 {
+    font-size: 2rem !important;
+  }
+  
+  .py-5 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+/* Attempt to hide any sidebar overlay if active */
+body.open-sidebar header .overlay {
+  background: transparent !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  display: none !important;
+}

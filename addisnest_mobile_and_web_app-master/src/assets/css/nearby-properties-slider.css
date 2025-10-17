@@ -1,0 +1,222 @@
+/* Nearby Properties Slider Styles */
+.property-slider {
+    width: 100%;
+    position: relative;
+}
+
+.property-slider-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.property-slider-header h4 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.property-slider-header p {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+}
+
+.all-view a {
+    color: #4a6cf7;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.all-view a:hover {
+    text-decoration: underline;
+}
+
+.property-list {
+    position: relative;
+}
+
+.property-slider-aroow {
+    display: flex;
+    gap: 10px;
+    position: absolute;
+    top: -40px;
+    right: 0;
+}
+
+.property-slider-aroow span {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.property-slider-aroow span:hover {
+    background-color: #4a6cf7;
+    color: white;
+}
+
+.property-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.property-card .card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.property-card .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.property-img {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    border-radius: 8px 8px 0 0;
+}
+
+.property-img span {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(76, 175, 80, 0.9);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.property-img p {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.property-img p em {
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.property-detail {
+    padding: 15px;
+}
+
+.property-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.property-title h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.property-share-icon {
+    display: flex;
+    gap: 8px;
+}
+
+.property-share-icon span {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.property-share-icon span:hover {
+    background-color: #f5f5f5;
+}
+
+.property-area {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.property-area span {
+    display: flex;
+    align-items: center;
+}
+
+.property-area span em {
+    width: 4px;
+    height: 4px;
+    background-color: #999;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.property-location {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.property-location svg {
+    margin-right: 5px;
+    color: #4a6cf7;
+}
+
+.no-properties-message {
+    grid-column: 1 / -1;
+    padding: 30px;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.view-all-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.view-all-link:hover {
+    background-color: #43A047;
+}

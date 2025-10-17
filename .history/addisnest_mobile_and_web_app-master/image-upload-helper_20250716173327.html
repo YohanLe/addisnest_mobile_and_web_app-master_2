@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Image Upload Helper - AddisNest</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .property-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .property-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .current-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .image-slot {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #fafafa;
+        }
+        .image-slot.has-image {
+            border-color: #4CAF50;
+            background-color: #f0f8f0;
+        }
+        .image-slot.missing {
+            border-color: #ff6b6b;
+            background-color: #fff0f0;
+        }
+        .upload-area {
+            border: 2px dashed #4CAF50;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin: 15px 0;
+            background-color: #f9fff9;
+        }
+        .upload-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .upload-btn:hover {
+            background-color: #45a049;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .filename {
+            font-family: monospace;
+            font-size: 12px;
+            color: #666;
+            word-break: break-all;
+        }
+        .instructions {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .missing-count {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏠 AddisNest Property Image Upload Helper</h1>
+        <p>Upload real property images to replace missing placeholders</p>
+    </div>
+
+    <div class="instructions">
+        <h3>📋 Instructions:</h3>
+        <ol>
+            <li><strong>Select a property</strong> from the list below</li>
+            <li><strong>Choose image files</strong> to upload (JPG, PNG, WebP supported)</li>
+            <li><strong>Click "Upload Images"</strong> to replace the missing placeholders</li>
+            <li><strong>Refresh the main app</strong> to see the new images</li>
+        </ol>
+        <p><strong>Note:</strong> Images will be automatically resized and optimized for web display.</p>
+    </div>
+
+    <div class="missing-count" id="missingCount">
+        Loading property information...
+    </div>
+
+    <div id="propertiesContainer">
+        <!-- Properties will be loaded here -->
+    </div>
+
+    <script>
+        let properties = [];
+        let missingImages = [];
+
+        // Missing image filenames that need to be replaced
+        const missingImageFiles = [
+            '1752115688074-665335086-413776592_0.jpg',
+            '1752115704935-776105244-413776592_24_0.jpg',
+            '1752115709068-219961550-genMid.413776592_5_0.jpg',
+            '1752115712984-816162130-genMid.413776592_9_0.jpg',
+            '1752115720287-393654054-genMid.413776592_15_0.jpg',
+            '1752115727438-358867995-genMid.413776592_19_0.jpg',
+            '1752121488187-9179501-9.webp',
+            '1752121496777-316481652-413776592_24_0.jpg',
+            '1752121503951-905557120-genMid.413776592_9_0.jpg',
+            '1752121508368-620593804-genMid.413776592_23_0.jpg',
+            '1752118223916-563825331-.webp',
+            '1752118229992-685182976-2.webp',
+            '1752118235303-911822418-7.webp',
+            '1752118273747-832668969-9.webp',
+            'test-property-image-1749260861596-438465535.jpg',
+            '1749428928268-710498473-genMid.731631728_27_0.jpg'
+        ];
+
+        // Load properties from API
+        async function loadProperties() {
+            try {
+                const response = await fetch('http://localhost:7001/api/properties');
+                const data = await response.json();
+                properties = data.properties || data;
+                displayProperties();
+                updateMissingCount();
+            } catch (error) {
+                console.error('Error loading properties:', error);
+                document.getElementById('missingCount').innerHTML = 
+                    '<span style="color: red;">❌ Error loading properties. Make sure the server is running on port 7001.</span>';
+            }
+        }
+
+        function displayProperties() {
+            const container = document.getElementById('propertiesContainer');
+            container.innerHTML = '';
+
+            properties.forEach((property, index) => {
+                const propertyDiv = document.createElement('div');
+                propertyDiv.className = 'property-card';
+                
+                const images = property.images || [];
+                const missingImagesForProperty = images.filter(img => 
+                    missingImageFiles.some(missing => img.url.includes(missing))
+                );
+
+                propertyDiv.innerHTML = `
+                    <div class="property-title">
+                        🏠 ${property.title} 
+                        <span style="color: #666; font-size: 14px; font-weight: normal;">
+                            (${property.offeringType} - ${property.address?.regionalState || 'Unknown Location'})
+                        </span>
+                    </div>
+                    
+                    <div style="margin: 10px 0;">
+                        <strong>Current Images:</strong> ${images.length} total, 
+                        <span style="color: red;">${missingImagesForProperty.length} missing real images</span>
+                    </div>
+
+                    <div class="current-images">
+                        ${images.map((img, imgIndex) => {
+                            const filename = img.url.split('/').pop();
+                            const isMissing = missingImageFiles.includes(filename);
+                            return `
+                                <div class="image-slot ${isMissing ? 'missing' : 'has-image'}">
+                                    <div style="font-size: 12px; margin-bottom: 5px;">
+                                        ${isMissing ? '❌ Missing' : '✅ Real Image'}
+                                    </div>
+                                    <div class="filename">${filename}</div>
+                                    ${!isMissing ? `<img src="${img.url}" style="max-width: 100px; max-height: 60px; margin-top: 5px;" onerror="this.style.display='none'">` : ''}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    ${missingImagesForProperty.length > 0 ? `
+                        <div class="upload-area">
+                            <h4>📤 Upload New Images for This Property</h4>
+                            <input type="file" id="fileInput${index}" multiple accept="image/*" style="margin: 10px 0;">
+                            <br>
+                            <button class="upload-btn" onclick="uploadImages(${index})">
+                                Upload ${missingImagesForProperty.length} Missing Images
+                            </button>
+                            <div id="status${index}"></div>
+                        </div>
+                    ` : `
+                        <div style="color: green; text-align: center; padding: 15px;">
+                            ✅ All images are real - no uploads needed for this property
+                        </div>
+                    `}
+                `;
+
+                container.appendChild(propertyDiv);
+            });
+        }
+
+        function updateMissingCount() {
+            let totalMissing = 0;
+            properties.forEach(property => {
+                const images = property.images || [];
+                const missing = images.filter(img => 
+                    missingImageFiles.some(missingFile => img.url.includes(missingFile))
+                );
+                totalMissing += missing.length;
+            });
+
+            document.getElementById('missingCount').innerHTML = 
+                `📊 Total Missing Images: <strong>${totalMissing}</strong> out of ${missingImageFiles.length} placeholder files need real images`;
+        }
+
+        async function uploadImages(propertyIndex) {
+            const fileInput = document.getElementById(`fileInput${propertyIndex}`);
+            const statusDiv = document.getElementById(`status${propertyIndex}`);
+            const files = fileInput.files;
+
+            if (files.length === 0) {
+                statusDiv.innerHTML = '<div class="status error">Please select at least one image file.</div>';
+                return;
+            }
+
+            statusDiv.innerHTML = '<div class="status">📤 Uploading images...</div>';
+
+            try {
+                const formData = new FormData();
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('images', files[i]);
+                }
+
+                const response = await fetch('http://localhost:7001/api/media/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    statusDiv.innerHTML = `
+                        <div class="status success">
+                            ✅ Successfully uploaded ${files.length} images!<br>
+                            <small>Refresh the main app to see the new images.</small>
+                        </div>
+                    `;
+                    
+                    // Reload properties to show updated status
+                    setTimeout(() => {
+                        loadProperties();
+                    }, 2000);
+                } else {
+                    statusDiv.innerHTML = `<div class="status error">❌ Upload failed: ${result.message || 'Unknown error'}</div>`;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="status error">❌ Upload error: ${error.message}</div>`;
+            }
+        }
+
+        // Load properties when page loads
+        window.addEventListener('load', loadProperties);
+    </script>
+</body>
+</html>

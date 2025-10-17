@@ -1,0 +1,1027 @@
+/* Property List Form Styles */
+
+/* Main Layout */
+.property-form-section {
+  padding: 40px 0;
+  background: linear-gradient(to bottom, #f0f4ff, #f8f9fa);
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.property-heading-form {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.property-heading-form h3 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 10px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.property-heading-form h3:after {
+  content: '';
+  position: absolute;
+  width: 120px;
+  height: 3px;
+  background: linear-gradient(to right, #4a6cf7, #67b8ff);
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 10px;
+}
+
+.property-form-main {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid rgba(74, 108, 247, 0.1);
+}
+
+/* Form Steps */
+.form-step-section {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.form-step-section:nth-child(odd) {
+  background-color: rgba(240, 244, 255, 0.3);
+}
+
+.form-step-section:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.form-step-section:last-child {
+  border-bottom: none;
+}
+
+.form-step-section.has-error {
+  background-color: rgba(231, 76, 60, 0.05);
+  border-left: 3px solid #e74c3c;
+}
+
+.form-step-section:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to bottom, #4a6cf7, #67b8ff);
+  opacity: 0.6;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.step-indicator {
+  margin-right: 15px;
+}
+
+.step-number {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  color: white;
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Different colors for each step number */
+.form-step-section:nth-child(1) .step-number {
+  background: linear-gradient(135deg, #4a6cf7, #67b8ff);
+}
+
+.form-step-section:nth-child(2) .step-number {
+  background: linear-gradient(135deg, #3498db, #79b9ff);
+}
+
+.form-step-section:nth-child(3) .step-number {
+  background: linear-gradient(135deg, #2ecc71, #69e89f);
+}
+
+.form-step-section:nth-child(4) .step-number {
+  background: linear-gradient(135deg, #9b59b6, #c49bdb);
+}
+
+.form-step-section:nth-child(5) .step-number {
+  background: linear-gradient(135deg, #f39c12, #ffbe65);
+}
+
+.form-step-section:nth-child(6) .step-number {
+  background: linear-gradient(135deg, #e74c3c, #ff8a80);
+}
+
+.step-header h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  position: relative;
+  padding-bottom: 3px;
+}
+
+/* Different colors for each step header */
+.form-step-section:nth-child(1) .step-header h4 {
+  color: #4a6cf7;
+}
+
+.form-step-section:nth-child(2) .step-header h4 {
+  color: #3498db;
+}
+
+.form-step-section:nth-child(3) .step-header h4 {
+  color: #2ecc71;
+}
+
+.form-step-section:nth-child(4) .step-header h4 {
+  color: #9b59b6;
+}
+
+.form-step-section:nth-child(5) .step-header h4 {
+  color: #f39c12;
+}
+
+.form-step-section:nth-child(6) .step-header h4 {
+  color: #e74c3c;
+}
+
+.step-description {
+  margin-top: 5px;
+  color: #666;
+  font-size: 14px;
+}
+
+.step-content {
+  padding-left: 35px;
+}
+
+/* Collapsible Sections */
+.collapsible-header {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content {
+  flex-grow: 1;
+}
+
+.collapse-toggle .toggle-icon {
+  font-size: 18px;
+  transition: transform 0.2s ease;
+  color: #4a6cf7;
+}
+
+.collapse-toggle .toggle-icon.collapsed {
+  transform: rotate(0deg);
+}
+
+.collapse-toggle .toggle-icon.expanded {
+  transform: rotate(180deg);
+}
+
+.step-content.collapsed {
+  display: none;
+}
+
+/* Offering Options */
+.offering-options {
+  display: flex;
+  gap: 10px; /* Reduced from 20px */
+  margin-top: 15px; /* Reduced from 20px */
+  margin-bottom: 10px;
+  max-width: 500px; /* Added to limit overall width */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.offering-card {
+  flex: 1;
+  padding: 5px 10px; /* Reduced vertical padding */
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+  min-height: 33px; /* Reduced by 40% from 55px */
+  display: flex;
+  flex-direction: row; /* Changed to row layout for better space usage */
+  justify-content: center;
+  align-items: center; /* Center items horizontally */
+  overflow: visible; /* Prevent content from being cut off */
+}
+
+.offering-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.offering-card.selected {
+  border-color: #4a6cf7;
+  background: linear-gradient(to bottom, #f0f4ff, #e8f0fe);
+  box-shadow: 0 5px 15px rgba(74, 108, 247, 0.15);
+  transform: translateY(-3px);
+}
+
+/* Different colors for "For Sale" and "For Rent" when selected */
+.offering-options div:nth-child(1).offering-card.selected {
+  border-color: #27ae60;
+  background: linear-gradient(to bottom, rgba(39, 174, 96, 0.15), rgba(46, 204, 113, 0.25));
+  box-shadow: 0 5px 15px rgba(39, 174, 96, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.offering-options div:nth-child(2).offering-card.selected {
+  border-color: #4a6cf7;
+  background: linear-gradient(to bottom, rgba(74, 108, 247, 0.15), rgba(103, 184, 255, 0.25));
+  box-shadow: 0 5px 15px rgba(74, 108, 247, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Add decorative corner ribbons */
+.offering-options div:nth-child(1).offering-card.selected::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 25px 25px 0; /* Reduced from 40px */
+  border-color: transparent #27ae60 transparent transparent;
+  box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.1); /* Reduced shadow */
+}
+
+.offering-options div:nth-child(2).offering-card.selected::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 25px 25px 0; /* Reduced from 40px */
+  border-color: transparent #4a6cf7 transparent transparent;
+  box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.1); /* Reduced shadow */
+}
+
+.offering-options div:nth-child(1).offering-card.selected h5 {
+  color: #27ae60;
+  font-weight: 700;
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+.offering-options div:nth-child(2).offering-card.selected h5 {
+  color: #4a6cf7;
+  font-weight: 700;
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+.offering-options div:nth-child(1).offering-card.selected p {
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.offering-options div:nth-child(2).offering-card.selected p {
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.offering-options div:nth-child(1).offering-card.selected .icon-circle.green {
+  transform: scale(1.1);
+  box-shadow: 0 5px 15px rgba(39, 174, 96, 0.25);
+  transition: all 0.3s ease;
+}
+
+.offering-options div:nth-child(2).offering-card.selected .icon-circle.blue {
+  transform: scale(1.1);
+  box-shadow: 0 5px 15px rgba(74, 108, 247, 0.25);
+  transition: all 0.3s ease;
+}
+
+.card-icon {
+  margin-bottom: 0; /* Removed bottom margin for row layout */
+  margin-right: 3px; /* Added right margin instead */
+  display: inline-flex; /* Make it inline with text */
+}
+
+.icon-circle {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 22px; /* Further reduced size */
+  height: 22px; /* Further reduced size */
+  border-radius: 50%;
+  font-size: 12px; /* Smaller font size for icon */
+  margin: 0 5px 0 0; /* Added right margin, removed bottom margin */
+  vertical-align: middle; /* Align with text */
+}
+
+.icon-circle.green {
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.1), rgba(46, 204, 113, 0.2));
+  color: #27ae60;
+  box-shadow: 0 3px 10px rgba(39, 174, 96, 0.15);
+}
+
+.icon-circle.blue {
+  background: linear-gradient(135deg, rgba(74, 108, 247, 0.1), rgba(103, 184, 255, 0.2));
+  color: #4a6cf7;
+  box-shadow: 0 3px 10px rgba(74, 108, 247, 0.15);
+}
+
+.offering-card h5 {
+  font-size: 12px; /* Further reduced */
+  font-weight: 600;
+  margin: 0; /* Removed vertical margins */
+  color: #2c3e50;
+  display: inline; /* Display inline with icon */
+}
+
+.offering-card p {
+  display: none; /* Hide descriptive text to save space */
+}
+
+/* Form Inputs */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-bottom: 20px;
+}
+
+.form-row-3-cols {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-bottom: 20px;
+}
+
+.form-col-33 {
+  flex: 0 0 33.333333%;
+  max-width: 33.333333%;
+  padding: 0 10px;
+}
+
+.form-col-50 {
+  flex: 0 0 50%;
+  max-width: 50%;
+  padding: 0 10px;
+}
+
+.form-col-100 {
+  flex: 0 0 100%;
+  max-width: 100%;
+  padding: 0 10px;
+}
+
+.form-group {
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.form-group.required label:after {
+  content: '*';
+  color: #e74c3c;
+  margin-left: 2px;
+}
+
+.form-group.has-error input,
+.form-group.has-error textarea,
+.form-group.has-error .select-wrapper .react-select__control {
+  border-color: #e74c3c !important;
+  background-color: rgba(231, 76, 60, 0.05);
+}
+
+.error-msg {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  background-color: #f9fafc;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #4a6cf7;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+  background-color: #fff;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.price-input {
+  position: relative;
+}
+
+.price-input::before {
+  content: 'ETB';
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.price-input input {
+  padding-left: 50px;
+}
+
+/* React Select Styling */
+.react-select .react-select__control {
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  box-shadow: none;
+  min-height: 44px;
+  background-color: #f9fafc;
+}
+
+.react-select .react-select__control:hover {
+  border-color: #bbb;
+}
+
+.react-select .react-select__control--is-focused {
+  border-color: #4a6cf7;
+  box-shadow: 0 0 0 1px #4a6cf7;
+  background-color: #fff;
+}
+
+.react-select .react-select__placeholder {
+  color: #aaa;
+}
+
+.react-select .react-select__indicator-separator {
+  background-color: #ddd;
+}
+
+.react-select .react-select__menu {
+  border-radius: 6px;
+  margin-top: 3px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.react-select .react-select__option {
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.react-select .react-select__option--is-selected {
+  background-color: #4a6cf7;
+}
+
+.react-select .react-select__option--is-focused:not(.react-select__option--is-selected) {
+  background-color: rgba(74, 108, 247, 0.1);
+  color: #333;
+}
+
+/* Image Upload */
+.image-upload-section {
+  background: linear-gradient(to bottom, #f0f4ff, #f8fbff);
+}
+
+.image-upload-grid-horizontal {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.image-upload-slot {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px dashed #ddd;
+  height: 140px;
+  background-color: #fff;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.image-upload-slot:hover {
+  border-color: #9b59b6;
+  box-shadow: 0 5px 15px rgba(155, 89, 182, 0.2);
+  transform: translateY(-5px);
+}
+
+.main-photo-slot {
+  grid-column: span 2;
+  grid-row: span 2;
+  height: auto;
+  min-height: 300px;
+  border: 3px dashed #9b59b6;
+  background-color: rgba(155, 89, 182, 0.05);
+}
+
+.upload-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.upload-drop-zone {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  cursor: pointer;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.upload-drop-zone:hover {
+  background-color: rgba(155, 89, 182, 0.05);
+}
+
+.upload-icon {
+  font-size: 20px; /* Reduced from 24px */
+  margin-bottom: 5px; /* Reduced from 10px */
+  color: #9b59b6;
+}
+
+.upload-drop-zone p {
+  margin: 2px 0; /* Reduced from 5px */
+  font-weight: 500;
+  color: #2c3e50;
+  font-size: 12px; /* Added smaller size */
+}
+
+.upload-drop-zone span {
+  font-size: 10px; /* Reduced from 12px */
+  color: #666;
+}
+
+.upload-drop-zone small {
+  margin-top: 2px; /* Reduced from 5px */
+  font-size: 9px; /* Reduced from 11px */
+  color: #9b59b6;
+  font-style: italic;
+}
+
+.image-preview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.main-photo-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: linear-gradient(135deg, rgba(155, 89, 182, 0.9), rgba(142, 68, 173, 0.9));
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 2;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.upload-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.upload-spinner {
+  font-size: 24px;
+  margin-bottom: 10px;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.image-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 5px;
+  z-index: 2;
+}
+
+.image-actions button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.remove-btn {
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.8), rgba(192, 57, 43, 0.8));
+  color: white;
+  box-shadow: 0 2px 5px rgba(231, 76, 60, 0.3);
+}
+
+.remove-btn:hover {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.replace-btn {
+  background: linear-gradient(135deg, rgba(155, 89, 182, 0.8), rgba(142, 68, 173, 0.8));
+  color: white;
+  box-shadow: 0 2px 5px rgba(155, 89, 182, 0.3);
+}
+
+.replace-btn:hover {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+}
+
+.add-more-section {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.add-more-btn {
+  background-color: transparent;
+  border: 2px dashed #9b59b6;
+  color: #9b59b6;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-more-btn:hover {
+  background-color: rgba(155, 89, 182, 0.05);
+  box-shadow: 0 3px 10px rgba(155, 89, 182, 0.1);
+}
+
+.add-more-section p {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #666;
+}
+
+/* Amenities */
+.amenities-container {
+  margin-top: 10px;
+}
+
+.amenities-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10px;
+}
+
+.amenities-column {
+  flex: 1;
+  min-width: 250px;
+  padding: 0 10px;
+  margin-bottom: 20px;
+}
+
+.amenities-category-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Different colors for each amenity category */
+.amenities-column:nth-child(1) .amenities-category-title {
+  color: #27ae60;
+  border-bottom-color: rgba(39, 174, 96, 0.2);
+}
+
+.amenities-column:nth-child(2) .amenities-category-title {
+  color: #3498db;
+  border-bottom-color: rgba(52, 152, 219, 0.2);
+}
+
+.amenities-column:nth-child(3) .amenities-category-title {
+  color: #f39c12;
+  border-bottom-color: rgba(243, 156, 18, 0.2);
+}
+
+.amenities-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.amenity-card {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-radius: 6px;
+  border: 1px solid #eee;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #fff;
+}
+
+/* Different hover colors for each amenity column */
+.amenities-column:nth-child(1) .amenity-card:hover {
+  border-color: #27ae60;
+  background-color: rgba(39, 174, 96, 0.05);
+}
+
+.amenities-column:nth-child(2) .amenity-card:hover {
+  border-color: #3498db;
+  background-color: rgba(52, 152, 219, 0.05);
+}
+
+.amenities-column:nth-child(3) .amenity-card:hover {
+  border-color: #f39c12;
+  background-color: rgba(243, 156, 18, 0.05);
+}
+
+/* Different selected colors for each amenity column */
+.amenities-column:nth-child(1) .amenity-card.selected {
+  border-color: #27ae60;
+  background-color: rgba(39, 174, 96, 0.1);
+}
+
+.amenities-column:nth-child(2) .amenity-card.selected {
+  border-color: #3498db;
+  background-color: rgba(52, 152, 219, 0.1);
+}
+
+.amenities-column:nth-child(3) .amenity-card.selected {
+  border-color: #f39c12;
+  background-color: rgba(243, 156, 18, 0.1);
+}
+
+.amenity-checkbox {
+  margin-right: 10px;
+}
+
+.amenity-label {
+  font-size: 14px;
+  color: #2c3e50;
+}
+
+/* Form Submit Section */
+.form-submit-section {
+  background: linear-gradient(to bottom, #f8fbff, #f0f4ff);
+  padding: 25px 30px;
+  border-top: 1px solid #eee;
+}
+
+.submit-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.back-btn {
+  padding: 12px 25px;
+  border-radius: 6px;
+  background-color: #f0f0f0;
+  color: #333;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 1px solid #ddd;
+}
+
+.back-btn:hover {
+  background-color: #e0e0e0;
+  color: #2c3e50;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+.form-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.form-action-btn:hover {
+  background: linear-gradient(135deg, #c0392b, #e74c3c);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.form-action-btn:disabled {
+  background: linear-gradient(135deg, #b3b3b3, #cccccc);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.form-progress {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Responsive Design */
+/* Added new media query for medium-sized screens */
+@media (max-width: 992px) {
+  .form-col-33 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  
+  .image-upload-slot {
+    flex: 0 0 calc(50% - 10px);
+  }
+  
+  /* Added styles for offering cards at this breakpoint */
+  .offering-options {
+    gap: 5px; /* Reduced gap between cards */
+  }
+  
+  .offering-card {
+    padding: 8px; /* Slightly reduced padding */
+  }
+  
+  .icon-circle {
+    width: 36px; /* Slightly smaller icon circle */
+    height: 36px;
+    font-size: 18px;
+  }
+  
+  .offering-card h5 {
+    font-size: 14px; /* Slightly smaller font */
+    margin: 2px 0;
+  }
+  
+  .offering-card p {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 768px) {
+  .offering-options {
+    flex-direction: column;
+    gap: 15px; /* Increased gap for better separation in column layout */
+    max-width: 350px; /* Reduced max-width since cards are stacked */
+  }
+  
+  .offering-card {
+    min-height: 95px; /* Slightly reduced height on mobile */
+    padding: 12px; /* Increased padding for better touch targets */
+  }
+  
+  .icon-circle {
+    width: 38px;
+    height: 38px;
+    margin-bottom: 6px; /* Better spacing between icon and text */
+  }
+  
+  .offering-card h5 {
+    font-size: 16px; /* Slightly larger font for better readability */
+    margin: 4px 0;
+  }
+  
+  .offering-card p {
+    font-size: 13px; /* Increased from 12px for better readability */
+  }
+  
+  .form-step-section {
+    padding: 20px;
+  }
+  
+  .step-content {
+    padding-left: 20px;
+  }
+  
+  .form-col-33, .form-col-50 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  
+  .amenities-row {
+    flex-direction: column;
+  }
+  
+  .image-upload-slot {
+    flex: 0 0 100%;
+  }
+  
+  .main-photo-slot {
+    flex: 0 0 100%;
+  }
+  
+  .submit-actions {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .back-btn, .form-action-btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .property-heading-form h3 {
+    font-size: 22px;
+  }
+  
+  .offering-options {
+    max-width: 280px; /* Further reduced max-width for extra small screens */
+  }
+  
+  .offering-card {
+    min-height: 105px; /* Slightly taller for better content spacing */
+    padding: 15px 10px; /* More vertical padding, slightly less horizontal */
+  }
+  
+  .icon-circle {
+    width: 40px; /* Slightly larger icons for better visibility on small screens */
+    height: 40px;
+    font-size: 20px;
+    margin-bottom: 8px; /* More space below icon */
+  }
+  
+  .offering-card h5 {
+    font-size: 16px; /* Maintain good readability */
+    margin: 5px 0;
+  }
+}
