@@ -1,3 +1,0 @@
-@echo off
-echo Starting AddisnEst Frontend with local API configuration...
-node start-local-frontend.js

@@ -1,3 +1,0 @@
-@echo off
-echo Running authenticated property submission test...
-node test-auth-and-property-submission.js
