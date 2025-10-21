@@ -1,3 +1,0 @@
-@echo off
-echo Starting AddisnEst Frontend with fixed API configuration...
-node start-frontend-fixed.js
