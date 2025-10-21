@@ -109,7 +109,7 @@ class ScheduleController extends BaseController {
             });
 
             // Create email content
-            const emailSubject = `New Property Tour Request - ${property.title}`;
+            const emailSubject = `Addisnest New Property Tour Request - ${property.title}`;
             const emailHtml = `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <h2 style="color: #2c5530;">New Property Tour Request</h2>
