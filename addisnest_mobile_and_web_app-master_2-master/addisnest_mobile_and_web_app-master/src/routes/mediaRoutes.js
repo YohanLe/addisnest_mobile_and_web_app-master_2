@@ -43,4 +43,11 @@ router.use('/upload', (err, req, res, next) => {
  */
 router.post('/upload', mediaController.uploadMedia);
 
+/**
+ * @route   POST /api/media/public
+ * @desc    Upload media files (public endpoint for profile pictures)
+ * @access  Public (with token validation in controller if available)
+ */
+router.post('/public', mediaController.uploadMedia);
+
 module.exports = router;

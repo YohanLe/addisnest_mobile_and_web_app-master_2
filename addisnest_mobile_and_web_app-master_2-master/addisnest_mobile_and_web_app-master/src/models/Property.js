@@ -44,7 +44,7 @@ const PropertySchema = new mongoose.Schema({
   status: {
     type: String,
     required: [true, 'Please specify property status'],
-    enum: ['For Sale', 'For Rent', 'Sold', 'Rented', 'Pending', 'pending_payment', 'active', 'pending']
+    enum: ['For Sale', 'For Rent', 'Sold', 'Rented', 'Pending', 'pending_payment', 'active', 'pending', 'rejected', 'sold', 'rented']
   },
   furnishingStatus: {
     type: String,

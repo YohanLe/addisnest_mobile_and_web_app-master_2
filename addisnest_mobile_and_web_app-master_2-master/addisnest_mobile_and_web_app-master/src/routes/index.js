@@ -13,6 +13,7 @@ const mediaRoutes = require('./mediaRoutes');
 const agentRoutes = require('./agentRoutes');
 const partnershipRequestRoutes = require('./partnershipRequestRoutes');
 const scheduleRoutes = require('./scheduleRoutes');
+const contactRoutes = require('./contactRoutes');
 
 module.exports = {
   agentRoutes,
@@ -28,5 +29,6 @@ module.exports = {
   connectionTestRoutes,
   mediaRoutes,
   partnershipRequestRoutes,
-  scheduleRoutes
+  scheduleRoutes,
+  contactRoutes
 };

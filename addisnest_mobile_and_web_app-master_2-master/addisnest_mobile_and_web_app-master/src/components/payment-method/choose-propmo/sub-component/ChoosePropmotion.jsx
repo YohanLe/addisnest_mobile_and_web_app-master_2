@@ -164,7 +164,11 @@ const ChoosePromotion = () => {
    */
   const savePropertyToDatabase = async (data, plan) => {
     try {
-      // Debug logs removed for security
+      // CRITICAL VALIDATION: Ensure regionalState exists before proceeding
+      const regionalState = data.address?.regionalState || data.regional_state;
+      if (!regionalState) {
+        throw new Error('Missing required field: Regional State. Please ensure the property location is properly selected.');
+      }
       
       // Process features/amenities
       const features = {};
@@ -192,9 +196,10 @@ const ChoosePromotion = () => {
           "gym-fitness-center": true
         },
         // CRITICAL FIX: Add the proper nested address structure required by mongoose
+        // Ensure regionalState is always present (required field in Property model)
         address: {
-          subCity: data.address?.subCity || data.subCity,
-          regionalState: data.address?.regionalState || data.regional_state,
+          subCity: data.address?.subCity || data.subCity || '',
+          regionalState: regionalState, // Already validated above
           country: data.address?.country || data.country || "Ethiopia"
         },
         images: (() => {
@@ -262,7 +267,20 @@ const ChoosePromotion = () => {
       } catch (apiError) {
         console.error('Error during Api.postWithtoken call:', apiError);
         console.error('API error details:', apiError.response?.data);
-        throw new Error(`API call failed: ${apiError.message || 'Unknown API error'}`);
+        
+        // Enhanced error handling to provide specific feedback
+        let errorMessage = 'Failed to save property. ';
+        if (apiError.response?.data?.message) {
+          errorMessage += apiError.response.data.message;
+        } else if (apiError.response?.data?.error) {
+          errorMessage += apiError.response.data.error;
+        } else if (apiError.message) {
+          errorMessage += apiError.message;
+        } else {
+          errorMessage += 'Please check your internet connection and try again.';
+        }
+        
+        throw new Error(errorMessage);
       }
       
       // Accept any response with an _id or id as success
@@ -275,7 +293,21 @@ const ChoosePromotion = () => {
       }
     } catch (error) {
       // Log the detailed error from the try block or the re-thrown error from API call catch
-      console.error('Detailed error in savePropertyToDatabase:', error); 
+      console.error('Detailed error in savePropertyToDatabase:', error);
+      
+      // Provide user-friendly error messages
+      if (error.message.includes('Regional State')) {
+        toast.error(error.message, {
+          position: "top-center",
+          autoClose: 5000
+        });
+      } else if (error.message.includes('ValidationError') || error.message.includes('required')) {
+        toast.error('Please ensure all required fields are filled correctly.', {
+          position: "top-center",
+          autoClose: 5000
+        });
+      }
+      
       throw error; // Re-throw to be caught by handleContinue
     }
   };
@@ -334,13 +366,15 @@ const ChoosePromotion = () => {
     console.log("Ensuring all required address fields are present to prevent API validation errors");
     
     // Extract location fields with proper scoping
-    const subCity = propertyData?.address?.subCity;
+    // Note: subCity is now optional, only regionalState is required
+    const subCity = propertyData?.address?.subCity || '';
     const regionalState = propertyData?.address?.regionalState || propertyData?.regional_state;
     const country = propertyData?.address?.country || propertyData?.country || 'Ethiopia';
 
-    if (!subCity || !regionalState) {
-      console.error('Missing location fields:', { subCity, regionalState });
-      toast.error('Missing required location information. Please ensure all address fields are filled.');
+    // Only regionalState is required now (subCity is optional)
+    if (!regionalState) {
+      console.error('Missing required location field - regionalState:', { regionalState });
+      toast.error('Missing required location information. Please ensure Regional State is selected.');
       return;
     }
     

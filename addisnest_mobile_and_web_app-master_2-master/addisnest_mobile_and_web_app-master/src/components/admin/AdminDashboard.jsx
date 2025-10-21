@@ -15,6 +15,45 @@ const AdminDashboard = () => {
   const [recentListings, setRecentListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('date-desc');
+
+  const handleStatusChange = async (listingId, newStatus) => {
+    try {
+      console.log(`Attempting to update status for ${listingId} to ${newStatus}`);
+      
+      // Admin can directly update any status using the regular PUT endpoint
+      // The backend now allows admins to bypass all status validation
+      const response = await Api.putWithtoken(`properties/${listingId}`, { 
+        status: newStatus,
+        reason: `Status changed to ${newStatus} by admin from dashboard`
+      });
+      
+      console.log('Update response:', response);
+      
+      // Update the listing in the state
+      setRecentListings(prevListings => 
+        prevListings.map(listing => 
+          listing._id === listingId ? { ...listing, status: newStatus } : listing
+        )
+      );
+      
+      console.log(`✅ Status updated to ${newStatus} for listing ${listingId}`);
+      
+      // Show success message
+      alert(`Property status successfully updated to ${newStatus}`);
+    } catch (error) {
+      console.error('Error updating listing status:', error);
+      console.error('Error details:', {
+        response: error.response?.data,
+        status: error.response?.status,
+        message: error.message
+      });
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to update listing status';
+      alert(`Error: ${errorMessage}. Please try again.`);
+    }
+  };
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -40,8 +79,8 @@ const AdminDashboard = () => {
         
         // Fetch property stats - using getWithtoken for authenticated access
         try {
-          // Set a large limit to fetch all properties
-          const propertiesResponse = await Api.getWithtoken('properties?limit=1000');
+          // Set a large limit to fetch all properties with admin=true to see ALL statuses
+          const propertiesResponse = await Api.getWithtoken('properties?limit=1000&admin=true');
           console.log('Properties API Response:', propertiesResponse);
           
           // Handle MongoDB response format
@@ -68,10 +107,14 @@ const AdminDashboard = () => {
           const listingsChange = Math.floor(Math.random() * 15) + 1;
           const activeListingsChange = Math.floor(Math.random() * 15) + 1;
           
-          // Get the 5 most recent listings
+          // Get all listings sorted by most recent
           const recentListings = [...properties]
-            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-            .slice(0, 5);
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          
+          console.log('📋 Recent listings with statuses:');
+          recentListings.forEach((prop, idx) => {
+            console.log(`${idx + 1}. ${prop.title} - Status: "${prop.status}" (type: ${typeof prop.status})`);
+          });
           
           setStats(prevStats => ({
             ...prevStats,
@@ -147,6 +190,58 @@ const AdminDashboard = () => {
     }).format(price);
   };
 
+  // Filter and sort listings
+  const filteredListings = recentListings
+    .filter(listing => {
+      // Search filter
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase();
+        const title = listing.title?.toLowerCase() || '';
+        const location = [
+          listing.address?.subCity,
+          listing.address?.city,
+          listing.address?.regionalState
+        ].filter(Boolean).join(', ').toLowerCase();
+        const price = listing.price?.toString() || '';
+        
+        const matchesSearch = (
+          title.includes(searchLower) ||
+          location.includes(searchLower) ||
+          price.includes(searchLower)
+        );
+        
+        if (!matchesSearch) return false;
+      }
+      
+      // Status filter
+      if (statusFilter !== 'all') {
+        if (listing.status?.toLowerCase() !== statusFilter.toLowerCase()) {
+          return false;
+        }
+      }
+      
+      return true;
+    })
+    .sort((a, b) => {
+      // Sorting
+      switch (sortBy) {
+        case 'date-desc':
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        case 'date-asc':
+          return new Date(a.createdAt) - new Date(b.createdAt);
+        case 'price-desc':
+          return (b.price || 0) - (a.price || 0);
+        case 'price-asc':
+          return (a.price || 0) - (b.price || 0);
+        case 'title-asc':
+          return (a.title || '').localeCompare(b.title || '');
+        case 'title-desc':
+          return (b.title || '').localeCompare(a.title || '');
+        default:
+          return 0;
+      }
+    });
+
   if (loading) {
     return (
       <div className="admin-loading">
@@ -200,11 +295,116 @@ const AdminDashboard = () => {
       
       <div className="admin-dashboard-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px', marginBottom: '20px' }}>
         <div className="admin-card">
-          <div className="admin-card-header">
-            <h2>Recent Listings</h2>
-            <button className="admin-btn admin-btn-primary" onClick={() => window.location.href = '/admin/listings'}>
-              View All
-            </button>
+          <div className="admin-card-header" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '15px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+              <h2>All Listings ({filteredListings.length} of {recentListings.length})</h2>
+              <button className="admin-btn admin-btn-primary" onClick={() => window.location.href = '/admin/listings'}>
+                Manage All
+              </button>
+            </div>
+            
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap', width: '100%' }}>
+              {/* Search Input */}
+              <div style={{ position: 'relative', flex: '1 1 300px', minWidth: '200px' }}>
+                <i className="fa-solid fa-search" style={{
+                  position: 'absolute',
+                  left: '12px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: '#888',
+                  fontSize: '14px'
+                }}></i>
+                <input
+                  type="text"
+                  placeholder="Search by title, location, or price..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{
+                    padding: '10px 12px 10px 36px',
+                    border: '1px solid #ddd',
+                    borderRadius: '6px',
+                    width: '100%',
+                    fontSize: '14px',
+                    outline: 'none',
+                    transition: 'border-color 0.2s'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#4CAF50'}
+                  onBlur={(e) => e.target.style.borderColor = '#ddd'}
+                />
+              </div>
+              
+              {/* Status Filter */}
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                style={{
+                  padding: '10px 12px',
+                  border: '1px solid #ddd',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  outline: 'none',
+                  backgroundColor: 'white',
+                  minWidth: '140px'
+                }}
+              >
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="active">Active</option>
+                <option value="sold">Sold</option>
+                <option value="rented">Rented</option>
+                <option value="rejected">Rejected</option>
+              </select>
+              
+              {/* Sort Options */}
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                style={{
+                  padding: '10px 12px',
+                  border: '1px solid #ddd',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  outline: 'none',
+                  backgroundColor: 'white',
+                  minWidth: '160px'
+                }}
+              >
+                <option value="date-desc">Newest First</option>
+                <option value="date-asc">Oldest First</option>
+                <option value="price-desc">Highest Price</option>
+                <option value="price-asc">Lowest Price</option>
+                <option value="title-asc">Title (A-Z)</option>
+                <option value="title-desc">Title (Z-A)</option>
+              </select>
+              
+              {/* Clear Filters Button */}
+              {(searchTerm || statusFilter !== 'all' || sortBy !== 'date-desc') && (
+                <button 
+                  onClick={() => {
+                    setSearchTerm('');
+                    setStatusFilter('all');
+                    setSortBy('date-desc');
+                  }}
+                  style={{
+                    padding: '10px 16px',
+                    background: '#f44336',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    transition: 'background 0.2s'
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = '#d32f2f'}
+                  onMouseLeave={(e) => e.target.style.background = '#f44336'}
+                >
+                  <i className="fa-solid fa-times"></i> Clear Filters
+                </button>
+              )}
+            </div>
           </div>
           
           <table className="admin-table">
@@ -218,23 +418,51 @@ const AdminDashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {recentListings.length > 0 ? (
-                recentListings.map(listing => (
+              {filteredListings.length > 0 ? (
+                filteredListings.map(listing => (
                   <tr key={listing._id}>
                     <td>{listing.title}</td>
-                    <td>{listing.address?.city}, {listing.address?.state}</td>
+                    <td>
+                      {[
+                        listing.address?.subCity,
+                        listing.address?.city,
+                        listing.address?.regionalState
+                      ].filter(Boolean).join(', ') || 'Location not specified'}
+                    </td>
                     <td>{formatPrice(listing.price)}</td>
                     <td>
-                      <span className={`status ${listing.status === 'active' ? 'published' : 'pending'}`}>
-                        {listing.status === 'active' ? 'Published' : 'Pending'}
-                      </span>
+                      <select 
+                        className={`status-select ${
+                          listing.status === 'active' ? 'published' : 
+                          listing.status === 'sold' ? 'sold' : 
+                          listing.status === 'rented' ? 'rented' : 
+                          listing.status === 'rejected' ? 'rejected' : 
+                          'pending'
+                        }`}
+                        value={listing.status || 'pending'}
+                        onChange={(e) => handleStatusChange(listing._id, e.target.value)}
+                        style={{
+                          padding: '6px 12px',
+                          borderRadius: '4px',
+                          border: '1px solid #ddd',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="active">Active</option>
+                        <option value="sold">Sold</option>
+                        <option value="rented">Rented</option>
+                        <option value="rejected">Rejected</option>
+                      </select>
                     </td>
                     <td>{formatDate(listing.createdAt)}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" style={{ textAlign: 'center' }}>No listings found</td>
+                  <td colSpan="5" style={{ textAlign: 'center' }}>
+                    {searchTerm ? `No listings found matching "${searchTerm}"` : 'No listings found'}
+                  </td>
                 </tr>
               )}
             </tbody>

@@ -848,50 +848,138 @@
 
 .back-btn {
   padding: 12px 25px;
-  border-radius: 6px;
+  border-radius: 8px;
   background-color: #f0f0f0;
   color: #333;
   font-weight: 500;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   border: 1px solid #ddd;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .back-btn:hover {
   background-color: #e0e0e0;
   color: #2c3e50;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  transform: translateX(-2px);
 }
 
+/* Continue to Promotion Button - Enhanced Styling */
+.submit-actions button[type="button"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+}
+
+.submit-actions button[type="button"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.submit-actions button[type="button"]:hover::before {
+  left: 100%;
+}
+
+.submit-actions button[type="button"]:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.submit-actions button[type="button"]:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 5px 16px rgba(102, 126, 234, 0.4);
+}
+
+.submit-actions button[type="button"]:disabled {
+  background: linear-gradient(135deg, #b3b3b3, #cccccc);
+  cursor: not-allowed;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: none;
+}
+
+.submit-actions button[type="button"]:disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.submit-actions button[type="button"].uploads-in-progress {
+  background: linear-gradient(135deg, #ffc107, #ff9800);
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+}
+
+.submit-actions button[type="button"] svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.submit-actions button[type="button"]:hover svg {
+  transform: translateX(4px);
+}
+
+.loading-spinner {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Legacy form-action-btn class for compatibility */
 .form-action-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 12px 24px;
+  padding: 14px 32px;
   border: none;
-  border-radius: 30px;
+  border-radius: 50px;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+  letter-spacing: 0.5px;
 }
 
 .form-action-btn:hover {
-  background: linear-gradient(135deg, #c0392b, #e74c3c);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5);
+  transform: translateY(-3px) scale(1.02);
 }
 
 .form-action-btn:disabled {
   background: linear-gradient(135deg, #b3b3b3, #cccccc);
   cursor: not-allowed;
-  box-shadow: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: none;
 }
 

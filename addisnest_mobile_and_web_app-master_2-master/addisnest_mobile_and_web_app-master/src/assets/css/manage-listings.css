@@ -135,17 +135,118 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Table Styles */
-.listings-table {
+/* Table Container */
+.listings-table-container {
   width: 100%;
-  max-width: 100%;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
   overflow-x: auto;
   margin-bottom: 20px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Table Styles */
+.property-table {
+  width: 100%;
+  border-collapse: collapse;
   background: white;
 }
+
+.property-table thead {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.property-table th {
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+  text-transform: none;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.property-table tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+}
+
+.property-table tbody tr:hover {
+  background-color: #f8f9ff;
+}
+
+.property-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.property-table td {
+  padding: 12px 15px;
+  font-size: 14px;
+  color: #333;
+  vertical-align: middle;
+}
+
+.property-table td.price-cell {
+  color: #4a6cf7;
+  font-weight: 600;
+}
+
+.property-table td.status-cell {
+  min-width: 120px;
+}
+
+.property-table td.action-cell {
+  text-align: center;
+  padding: 8px;
+}
+
+.property-table td.empty-row {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+/* Table Action Links and Buttons */
+.table-action-link,
+.table-action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 4px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.table-action-link.edit-link {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.table-action-link.edit-link:hover {
+  background-color: #bbdefb;
+  transform: translateY(-1px);
+}
+
+.table-action-button.delete-button {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.table-action-button.delete-button:hover {
+  background-color: #ffcdd2;
+  transform: translateY(-1px);
+}
+
+.table-action-link i,
+.table-action-button i {
+  font-size: 12px;
+}
+
 
 .table-header {
   display: flex;
@@ -219,7 +320,10 @@
 
 .actions {
   flex: 0 0 180px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
 .table-row {
@@ -325,12 +429,13 @@
   width: 36px;
   height: 36px;
   border-radius: 8px;
-  margin: 0 3px;
+  border: none;
   cursor: pointer;
   color: white;
   text-decoration: none;
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 }
 
 .action-icon:hover {
@@ -342,16 +447,32 @@
   background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
 }
 
+.action-icon.edit:hover {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+}
+
 .action-icon.approve {
   background-color: #4caf50;
+}
+
+.action-icon.approve:hover {
+  background-color: #45a049;
 }
 
 .action-icon.pause {
   background-color: #ff9800;
 }
 
+.action-icon.pause:hover {
+  background-color: #fb8c00;
+}
+
 .action-icon.delete {
-  background-color: #f44336;
+  background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
+}
+
+.action-icon.delete:hover {
+  background: linear-gradient(135deg, #e53935 0%, #d32f2f 100%);
 }
 
 .action-icon.sold {
@@ -541,13 +662,21 @@
     flex: 1;
   }
   
-  .listings-table {
-    display: none;
+  .listings-table-container.desktop-view {
+    display: none !important;
+  }
+  
+  .mobile-listings-view {
+    display: block !important;
   }
 }
 
 @media (min-width: 993px) {
   .mobile-listings-view {
-    display: none;
+    display: none !important;
+  }
+  
+  .listings-table-container.desktop-view {
+    display: block !important;
   }
 }

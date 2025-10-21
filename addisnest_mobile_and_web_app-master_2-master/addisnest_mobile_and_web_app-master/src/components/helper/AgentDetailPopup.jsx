@@ -1,39 +1,27 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { FaPhone, FaEnvelope, FaComments, FaTimes, FaCheck, FaStar, FaCalendarAlt } from 'react-icons/fa';
+import './AgentDetailPopup.css';
 
 const AgentDetailPopup = ({ onClose }) => {
-  // In a real application, we would fetch this from Redux
-  // For now, we'll just use a placeholder
-  const agent = useSelector(state => state.Agents?.selectedAgent) || {
-    id: 1,
-    name: 'Samuel Tesfaye',
-    profilePicture: '',
-    region: 'Addis Ababa',
-    rating: 4.8,
-    experience: 5,
-    phone: '+251 91 234 5678',
-    specialties: ['Buying', 'Selling', 'Luxury'],
-    languages: ['Amharic', 'English'],
-    bio: 'Experienced real estate agent specialized in luxury properties in Addis Ababa. Dedicated to helping clients find their dream homes.',
-    email: 'samuel.tesfaye@example.com',
-    isVerified: true,
-    licenseNumber: 'ET-RE-12345',
-    currentListings: 12,
-    transactionsClosed: 45,
-    reviews: [
-      {
-        id: 1,
-        rating: 5,
-        text: 'Samuel helped us find our dream home in a very competitive market. His knowledge of Addis Ababa neighborhoods was invaluable.'
-      },
-      {
-        id: 2,
-        rating: 4,
-        text: 'Great communication throughout the buying process. Would recommend for anyone looking for properties in the city center.'
-      }
-    ]
-  };
+  const agent = useSelector(state => state.Agents?.selectedAgent);
+
+  if (!agent) {
+    return null;
+  }
+
+  // Format agent data for display
+  const agentName = `${agent.firstName || ''} ${agent.lastName || ''}`.trim() || 'N/A';
+  const agentEmail = agent.email || 'Not provided';
+  const agentPhone = (agent.phone && agent.phone !== 'None' && agent.phone !== '') ? agent.phone : 'Not provided';
+  const agentRegion = agent.region || agent.address?.state || 'Not specified';
+  const agentExperience = agent.experience || 0;
+  const agentLicense = (agent.licenseNumber && agent.licenseNumber !== 'None' && agent.licenseNumber !== '') ? agent.licenseNumber : 'Not provided';
+  const agentAgency = (agent.agency && agent.agency !== 'None' && agent.agency !== '') ? agent.agency : 'Not provided';
+  const agentBio = (agent.about && agent.about !== 'None' && agent.about !== '') ? agent.about : 'No bio available';
+  const agentProfilePic = (agent.profilePicture && agent.profilePicture !== 'None') ? agent.profilePicture : (agent.profile_img && agent.profile_img !== 'None') ? agent.profile_img : '';
+  const agentRating = agent.rating || agent.averageRating || 0;
+  const isVerified = agent.isVerified || agent.licenseVerified || false;
 
   // Render stars for ratings
   const renderStars = (rating) => {
@@ -54,24 +42,6 @@ const AgentDetailPopup = ({ onClose }) => {
     return stars;
   };
 
-  const handleCall = () => {
-    window.location.href = `tel:${agent.phone}`;
-  };
-
-  const handleEmail = () => {
-    window.location.href = `mailto:${agent.email}`;
-  };
-
-  const handleChat = () => {
-    // In a real app, this would open a chat interface or redirect to one
-    alert('Chat functionality would be implemented here');
-  };
-
-  const handleSchedule = () => {
-    // In a real app, this would open a scheduling interface
-    alert('Scheduling functionality would be implemented here');
-  };
-
   return (
     <div className="agent-detail-popup-main">
       <div className="agent-detail-backdrop" onClick={onClose}></div>
@@ -84,8 +54,8 @@ const AgentDetailPopup = ({ onClose }) => {
           {/* Agent Profile Top Section */}
           <div className="agent-details-top">
             <div className="agent-profile-img">
-              <span style={{backgroundImage: agent.profilePicture ? `url(${agent.profilePicture})` : 'none'}}></span>
-              {agent.isVerified && (
+              <span style={{backgroundImage: agentProfilePic ? `url(${agentProfilePic})` : 'none'}}></span>
+              {isVerified && (
                 <div className="verified-badge-profile" title="Verified Agent">
                   <FaCheck />
                 </div>
@@ -93,18 +63,20 @@ const AgentDetailPopup = ({ onClose }) => {
             </div>
 
             <div className="agent-profile-info">
-              <h3>{agent.name}</h3>
-              <div className="agent-region">{agent.region}</div>
+              <h3>{agentName}</h3>
+              <div className="agent-region">{agentRegion}</div>
               <p>
-                <FaPhone /> {agent.phone}
+                <FaPhone /> {agentPhone}
               </p>
               <p>
-                <FaEnvelope /> {agent.email}
+                <FaEnvelope /> {agentEmail}
               </p>
-              <div className="agent-rating">
-                {renderStars(agent.rating)}
-                <span>({agent.rating})</span>
-              </div>
+              {agentRating > 0 && (
+                <div className="agent-rating">
+                  {renderStars(agentRating)}
+                  <span>({agentRating})</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -113,54 +85,64 @@ const AgentDetailPopup = ({ onClose }) => {
             <div className="agent-info-row">
               <div className="agent-info-item">
                 <h5>Experience</h5>
-                <p>{agent.experience} years</p>
+                <p>{agentExperience} years</p>
               </div>
-              <div className="agent-info-item">
-                <h5>Current Listings</h5>
-                <p>{agent.currentListings}</p>
-              </div>
-              <div className="agent-info-item">
-                <h5>Transactions Closed</h5>
-                <p>{agent.transactionsClosed}</p>
-              </div>
+              {agentAgency !== 'Not provided' && (
+                <div className="agent-info-item">
+                  <h5>Agency</h5>
+                  <p>{agentAgency}</p>
+                </div>
+              )}
+              {agentLicense !== 'Not provided' && (
+                <div className="agent-info-item">
+                  <h5>License</h5>
+                  <p>{agentLicense}</p>
+                </div>
+              )}
             </div>
 
             {/* Verification Info */}
-            {agent.isVerified && (
+            {isVerified && agentLicense !== 'Not provided' && (
               <div className="agent-verification-info">
                 <div className="verification-badge">
                   <FaCheck />
                   <span>Verified Agent</span>
                 </div>
-                <p className="license-number">License No: {agent.licenseNumber}</p>
+                <p className="license-number">License No: {agentLicense}</p>
               </div>
             )}
 
             {/* Agent Bio */}
-            <div className="agent-bio-section">
-              <h4>About {agent.name}</h4>
-              <p>{agent.bio}</p>
-            </div>
+            {agentBio !== 'No bio available' && (
+              <div className="agent-bio-section">
+                <h4>About {agentName}</h4>
+                <p>{agentBio}</p>
+              </div>
+            )}
 
             {/* Agent Specializations */}
-            <div className="agent-specializations">
-              <h4>Specialties</h4>
-              <div className="specialization-tags">
-                {agent.specialties.map((specialty, index) => (
-                  <span key={index} className="specialization-tag">{specialty}</span>
-                ))}
+            {agent.specialties && agent.specialties.length > 0 && (
+              <div className="agent-specializations">
+                <h4>Specialties</h4>
+                <div className="specialization-tags">
+                  {agent.specialties.map((specialty, index) => (
+                    <span key={index} className="specialization-tag">{specialty}</span>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Languages */}
-            <div className="agent-specializations">
-              <h4>Languages</h4>
-              <div className="specialization-tags">
-                {agent.languages.map((language, index) => (
-                  <span key={index} className="specialization-tag">{language}</span>
-                ))}
+            {agent.languages && agent.languages.length > 0 && (
+              <div className="agent-specializations">
+                <h4>Languages</h4>
+                <div className="specialization-tags">
+                  {agent.languages.map((language, index) => (
+                    <span key={index} className="specialization-tag">{language}</span>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Reviews */}
             {agent.reviews && agent.reviews.length > 0 && (
@@ -178,34 +160,6 @@ const AgentDetailPopup = ({ onClose }) => {
                 </div>
               </div>
             )}
-
-            {/* Contact Actions */}
-            <div className="agent-contact-actions">
-              <button 
-                onClick={handleCall}
-                style={{ backgroundColor: '#4a6cf7', color: 'white' }}
-              >
-                <FaPhone /> Call
-              </button>
-              <button 
-                onClick={handleEmail}
-                style={{ backgroundColor: '#28a745', color: 'white' }}
-              >
-                <FaEnvelope /> Email
-              </button>
-              <button 
-                onClick={handleChat}
-                style={{ backgroundColor: '#fd7e14', color: 'white' }}
-              >
-                <FaComments /> Chat
-              </button>
-              <button 
-                onClick={handleSchedule}
-                style={{ backgroundColor: '#17a2b8', color: 'white' }}
-              >
-                <FaCalendarAlt /> Schedule Meeting
-              </button>
-            </div>
           </div>
         </div>
       </div>

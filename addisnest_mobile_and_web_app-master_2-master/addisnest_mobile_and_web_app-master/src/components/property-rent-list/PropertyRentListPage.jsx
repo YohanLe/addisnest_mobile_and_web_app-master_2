@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { GetAllPropertyListings } from '../../Redux-store/Slices/HomeSlice';
 import { Property1, Property2, Property3 } from '../../assets/images';
+import { getSafeMongoId } from '../../utils/mongoIdHelper';
 
 const PropertyRentListPage = () => {
   const dispatch = useDispatch();
@@ -623,7 +624,7 @@ const PropertyRentListPage = () => {
                       </div>
                     </div>
                     <Link 
-                      to={`/property/${property._id}`} 
+                      to={`/property/${getSafeMongoId(property._id)}`} 
                       style={{
                         position: 'absolute',
                         top: 0,

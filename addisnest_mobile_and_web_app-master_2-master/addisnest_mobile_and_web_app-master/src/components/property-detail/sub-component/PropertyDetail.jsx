@@ -8,6 +8,26 @@ import PaymentModal from "../PaymentModal";
 import "../../../assets/css/property-detail-enhanced.css";
 import "../../../assets/css/about-place.css";
 import "../../../assets/css/nearby-properties-slider.css";
+
+// Get API base URL for owner profile images
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7002';
+
+// Helper function to get full owner profile image URL
+const getOwnerImageUrl = (imagePath) => {
+  if (!imagePath || imagePath === 'None' || imagePath === '') {
+    return null;
+  }
+  // If it's already a full URL, return as is
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath;
+  }
+  // If it's a relative path starting with /uploads, prepend the API base URL
+  if (imagePath.startsWith('/uploads/')) {
+    return `${API_BASE_URL}${imagePath}`;
+  }
+  // If it's just a filename, prepend the full uploads path
+  return `${API_BASE_URL}/uploads/${imagePath}`;
+};
 import AboutThisHome from "./AboutThisHome";
 import SafetyTipsSection from "./SafetyTipsSection";
 import MortgageCalculatorModern from "../../mortgage-calculator/MortgageCalculatorModern";
@@ -440,38 +460,43 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                     alignItems: 'center',
                                     margin: '0 0 10px 0'
                                 }}>
-                                    {/* Circular profile picture */}
+                                    {/* Circular profile picture or initials avatar */}
+                                    {getOwnerImageUrl(PropertyDetails?.owner?.profileImage) || getOwnerImageUrl(PropertyDetails?.owner?.profile_img) ? (
+                                      <img 
+                                        src={getOwnerImageUrl(PropertyDetails?.owner?.profileImage) || getOwnerImageUrl(PropertyDetails?.owner?.profile_img)}
+                                        alt="Owner"
+                                        onError={(e) => {
+                                          // Hide image and show initials instead
+                                          e.target.style.display = 'none';
+                                          const initialsDiv = e.target.nextElementSibling;
+                                          if (initialsDiv) initialsDiv.style.display = 'flex';
+                                        }}
+                                        style={{
+                                          width: '36px',
+                                          height: '36px',
+                                          borderRadius: '50%',
+                                          objectFit: 'cover',
+                                          border: '1px solid #ddd',
+                                          marginRight: '10px'
+                                        }}
+                                      />
+                                    ) : null}
                                     <div style={{
+                                        display: getOwnerImageUrl(PropertyDetails?.owner?.profileImage) || getOwnerImageUrl(PropertyDetails?.owner?.profile_img) ? 'none' : 'flex',
                                         width: '36px',
                                         height: '36px',
                                         borderRadius: '50%',
-                                        backgroundColor: '#e0e0e0',
-                                        marginRight: '10px',
-                                        overflow: 'hidden',
-                                        display: 'flex',
+                                        backgroundColor: '#4a5568',
+                                        color: '#fff',
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                        border: '1px solid #ddd'
+                                        border: '1px solid #ddd',
+                                        marginRight: '10px',
+                                        fontSize: '14px',
+                                        fontWeight: '600',
+                                        textTransform: 'uppercase'
                                     }}>
-                                        {PropertyDetails?.owner?.profilePicture || PropertyDetails?.ownerProfilePic ? (
-                                            <img 
-                                                src={PropertyDetails?.owner?.profilePicture || PropertyDetails?.ownerProfilePic} 
-                                                alt="Owner" 
-                                                style={{
-                                                    width: '100%',
-                                                    height: '100%',
-                                                    objectFit: 'cover'
-                                                }}
-                                            />
-                                        ) : (
-                                            <span style={{ 
-                                                fontSize: '18px',
-                                                color: '#555'
-                                            }}>
-                                                {(PropertyDetails?.ownerName?.charAt(0) || 
-                                                  (PropertyDetails?.owner?.firstName?.charAt(0)) || 'P').toUpperCase()}
-                                            </span>
-                                        )}
+                                        {PropertyDetails?.owner?.firstName?.[0] || PropertyDetails?.ownerName?.[0] || 'P'}{PropertyDetails?.owner?.lastName?.[0] || PropertyDetails?.ownerName?.[1] || ''}
                                     </div>
                                     
                                     {/* Owner name */}
@@ -788,38 +813,43 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                             borderRadius: '8px',
                             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
                         }}>
-                            {/* Circular profile picture */}
+                            {/* Circular profile picture or initials avatar */}
+                            {getOwnerImageUrl(PropertyDetails?.owner?.profileImage) || getOwnerImageUrl(PropertyDetails?.owner?.profile_img) ? (
+                              <img 
+                                src={getOwnerImageUrl(PropertyDetails?.owner?.profileImage) || getOwnerImageUrl(PropertyDetails?.owner?.profile_img)}
+                                alt="Owner"
+                                onError={(e) => {
+                                  // Hide image and show initials instead
+                                  e.target.style.display = 'none';
+                                  const initialsDiv = e.target.nextElementSibling;
+                                  if (initialsDiv) initialsDiv.style.display = 'flex';
+                                }}
+                                style={{
+                                  width: '40px',
+                                  height: '40px',
+                                  borderRadius: '50%',
+                                  objectFit: 'cover',
+                                  border: '1px solid #ddd',
+                                  marginRight: '12px'
+                                }}
+                              />
+                            ) : null}
                             <div style={{
+                                display: getOwnerImageUrl(PropertyDetails?.owner?.profileImage) || getOwnerImageUrl(PropertyDetails?.owner?.profile_img) ? 'none' : 'flex',
                                 width: '40px',
                                 height: '40px',
                                 borderRadius: '50%',
-                                backgroundColor: '#e0e0e0',
-                                marginRight: '12px',
-                                overflow: 'hidden',
-                                display: 'flex',
+                                backgroundColor: '#4a5568',
+                                color: '#fff',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                border: '1px solid #ddd'
+                                border: '1px solid #ddd',
+                                marginRight: '12px',
+                                fontSize: '16px',
+                                fontWeight: '600',
+                                textTransform: 'uppercase'
                             }}>
-                                {PropertyDetails?.owner?.profilePicture || PropertyDetails?.ownerProfilePic ? (
-                                    <img 
-                                        src={PropertyDetails?.owner?.profilePicture || PropertyDetails?.ownerProfilePic} 
-                                        alt="Owner" 
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            objectFit: 'cover'
-                                        }}
-                                    />
-                                ) : (
-                                    <span style={{ 
-                                        fontSize: '20px',
-                                        color: '#555'
-                                    }}>
-                                        {(PropertyDetails?.ownerName?.charAt(0) || 
-                                          (PropertyDetails?.owner?.firstName?.charAt(0)) || 'P').toUpperCase()}
-                                    </span>
-                                )}
+                                {PropertyDetails?.owner?.firstName?.[0] || PropertyDetails?.ownerName?.[0] || 'P'}{PropertyDetails?.owner?.lastName?.[0] || PropertyDetails?.ownerName?.[1] || ''}
                             </div>
                             
                             {/* Owner name */}
@@ -1504,16 +1534,8 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                         } catch (error) {
                                             console.error('Error sending tour request:', error);
                                             
-                                            let errorMessage = 'Failed to send tour request. Please try again later.';
-                                            
-                                            // Handle specific error cases
-                                            if (error.message && error.message.includes('email')) {
-                                                errorMessage = 'Failed to send email. Please check the email address and try again.';
-                                            } else if (error.message && error.message.includes('owner')) {
-                                                errorMessage = 'Property owner contact information not available.';
-                                            } else if (error.message) {
-                                                errorMessage = error.message;
-                                            }
+                                            // Use user-friendly message from API interceptor if available
+                                            let errorMessage = error.userMessage || 'Unable to send your tour request. Please try again later.';
                                             
                                             // Show error message
                                             scheduleStatusElement.style.backgroundColor = '#f8d7da';

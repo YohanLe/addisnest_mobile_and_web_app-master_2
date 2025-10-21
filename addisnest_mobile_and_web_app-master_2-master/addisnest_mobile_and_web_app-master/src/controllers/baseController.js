@@ -1,13 +1,6 @@
 // Base controller with common utilities and error handlers
 const asyncHandler = require('express-async-handler');
-
-// Custom error class
-class ErrorResponse extends Error {
-  constructor(message, statusCode) {
-    super(message);
-    this.statusCode = statusCode;
-  }
-}
+const ErrorResponse = require('../utils/errorResponse');
 
 // Create a base controller class
 class BaseController {

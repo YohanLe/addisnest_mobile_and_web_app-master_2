@@ -56,36 +56,60 @@ api.interceptors.response.use(
     if (error.response) {
       // Server responded with an error status
       const status = error.response.status;
+      const url = error.config?.url || '';
       
       // Special handling for payment history endpoint - silently handle 401 errors
-      if (status === 401 && error.config && error.config.url && 
-         (error.config.url.includes('/payments/history') || error.config.url.includes('/api/payments'))) {
+      if (status === 401 && (url.includes('/payments/history') || url.includes('/api/payments'))) {
         // For payment-related endpoints, don't log 401 errors - handle silently
-        // This prevents console errors when users aren't logged in
         return Promise.reject(error);
       }
       
+      // Create user-friendly error messages
+      let userFriendlyMessage = '';
+      
       if (status === 401) {
-        // Handle unauthorized access
-        console.log('Unauthorized access - redirecting to login');
-        // You could dispatch a logout action here
+        userFriendlyMessage = 'Please log in to continue. Your session may have expired.';
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Unauthorized access (401)');
+        }
       } else if (status === 403) {
-        // Handle forbidden access
-        console.log('Forbidden access');
+        userFriendlyMessage = 'You don\'t have permission to perform this action.';
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Forbidden access (403)');
+        }
       } else if (status === 404) {
-        // Handle not found
-        console.log('Resource not found');
+        userFriendlyMessage = 'The requested resource was not found. Please try again.';
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Resource not found (404)');
+        }
       } else if (status === 500) {
-        // Handle server errors
-        console.log('Server error');
+        userFriendlyMessage = 'We\'re experiencing technical difficulties. Please try again in a few moments.';
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Server error (500)');
+        }
+      } else if (status === 400) {
+        userFriendlyMessage = error.response.data?.message || error.response.data?.error || 'Invalid request. Please check your information and try again.';
+      } else {
+        userFriendlyMessage = error.response.data?.message || error.response.data?.error || 'An unexpected error occurred. Please try again.';
       }
+      
+      // Attach user-friendly message to error
+      error.userMessage = userFriendlyMessage;
+      
     } else if (error.request) {
       // Request was made but no response received
-      console.log('No response received from server');
+      error.userMessage = 'Unable to connect to the server. Please check your internet connection and try again.';
+      if (process.env.NODE_ENV === 'development') {
+        console.log('No response received from server');
+      }
     } else {
       // Error in setting up the request
-      console.log('Error setting up request:', error.message);
+      error.userMessage = 'An error occurred while preparing your request. Please try again.';
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Error setting up request:', error.message);
+      }
     }
+    
     return Promise.reject(error);
   }
 );
@@ -126,7 +150,7 @@ api.post = async (endpoint, data) => {
 };
 
 // Add convenience method for authenticated GET requests
-api.getWithtoken = async (endpoint) => {
+api.getWithtoken = async (endpoint, options = {}) => {
   try {
     const token = getToken();
     
@@ -139,7 +163,11 @@ api.getWithtoken = async (endpoint) => {
     
     return response.data;
   } catch (error) {
-    console.error(`Error in getWithtoken for ${endpoint}:`, error);
+    // Only log errors if not a 404 or if silentOn404 is not set
+    // This prevents console clutter when trying multiple endpoints
+    if (error.response?.status !== 404 || !options.silentOn404) {
+      console.error(`Error in getWithtoken for ${endpoint}:`, error);
+    }
     throw error;
   }
 };

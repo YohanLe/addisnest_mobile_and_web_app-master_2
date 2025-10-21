@@ -60,6 +60,27 @@ import '../../assets/css/mobile-property-list.css';
 import api from '../../Apis/Api';
 import Select from 'react-select';
 import { removeDuplicateProperties, logPropertyStats } from '../../utils/propertyDeduplication';
+import { getSafeMongoId } from '../../utils/mongoIdHelper';
+
+// Get API base URL for owner profile images
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7002';
+
+// Helper function to get full owner profile image URL
+const getOwnerImageUrl = (imagePath) => {
+  if (!imagePath || imagePath === 'None' || imagePath === '') {
+    return null;
+  }
+  // If it's already a full URL, return as is
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath;
+  }
+  // If it's a relative path starting with /uploads, prepend the API base URL
+  if (imagePath.startsWith('/uploads/')) {
+    return `${API_BASE_URL}${imagePath}`;
+  }
+  // If it's just a filename, prepend the full uploads path
+  return `${API_BASE_URL}/uploads/${imagePath}`;
+};
 
 const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: homePagePropertyType }) => {
   const dispatch = useDispatch();
@@ -508,14 +529,78 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                       {getAddress(property)}
                     </p>
                     
-                    <p style={{ fontSize: '0.9rem', color: '#e0e0e0', marginBottom: '0' }}>
+                    <p style={{ fontSize: '0.9rem', color: '#e0e0e0', marginBottom: '10px' }}>
                       {property.title}
                     </p>
+
+                    {/* Owner Information */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      paddingTop: '10px',
+                      borderTop: '1px solid #333'
+                    }}>
+                      {getOwnerImageUrl(property.owner?.profileImage) || getOwnerImageUrl(property.owner?.profile_img) ? (
+                        <img 
+                          src={getOwnerImageUrl(property.owner?.profileImage) || getOwnerImageUrl(property.owner?.profile_img)}
+                          alt={property.owner?.firstName || property.ownerName || 'Owner'}
+                          onError={(e) => {
+                            // Hide the image and show initials avatar instead
+                            e.target.style.display = 'none';
+                            const initialsDiv = e.target.nextElementSibling;
+                            if (initialsDiv) initialsDiv.style.display = 'flex';
+                          }}
+                          style={{
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                            objectFit: 'cover',
+                            border: '2px solid #444'
+                          }}
+                        />
+                      ) : null}
+                      <div style={{
+                        display: getOwnerImageUrl(property.owner?.profileImage) || getOwnerImageUrl(property.owner?.profile_img) ? 'none' : 'flex',
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '50%',
+                        backgroundColor: '#4a5568',
+                        color: '#fff',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        border: '2px solid #444',
+                        textTransform: 'uppercase'
+                      }}>
+                        {property.owner?.firstName?.[0] || property.ownerName?.[0] || 'U'}{property.owner?.lastName?.[0] || property.ownerName?.[1] || ''}
+                      </div>
+                      <div>
+                        <p style={{
+                          fontSize: '0.85rem',
+                          color: '#999',
+                          marginBottom: '2px'
+                        }}>
+                          Listed by
+                        </p>
+                        <p style={{
+                          fontSize: '0.9rem',
+                          color: '#fff',
+                          fontWeight: '600',
+                          marginBottom: '0'
+                        }}>
+                          {property.owner?.firstName && property.owner?.lastName 
+                            ? `${property.owner.firstName} ${property.owner.lastName}`
+                            : property.ownerName || 'Property Owner'}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                     
-                    <Link 
-                      to={`/property/${property._id || '648a97f4d254d67c1e5f461b'}`} 
-                      style={{
+                  <Link 
+                    to={`/property/${getSafeMongoId(property._id)}`} 
+                    style={{
                         position: 'absolute',
                         top: 0,
                         left: 0,
@@ -996,13 +1081,77 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                       {getAddress(property)}
                     </p>
                     
-                    <p style={{ fontSize: '0.9rem', color: '#e0e0e0', marginBottom: '0' }}>
+                    <p style={{ fontSize: '0.9rem', color: '#e0e0e0', marginBottom: '10px' }}>
                       {property.title}
                     </p>
+
+                    {/* Owner Information */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      paddingTop: '10px',
+                      borderTop: '1px solid #333'
+                    }}>
+                      {getOwnerImageUrl(property.owner?.profileImage) || getOwnerImageUrl(property.owner?.profile_img) ? (
+                        <img 
+                          src={getOwnerImageUrl(property.owner?.profileImage) || getOwnerImageUrl(property.owner?.profile_img)}
+                          alt={property.owner?.firstName || property.ownerName || 'Owner'}
+                          onError={(e) => {
+                            // Hide the image and show initials avatar instead
+                            e.target.style.display = 'none';
+                            const initialsDiv = e.target.nextElementSibling;
+                            if (initialsDiv) initialsDiv.style.display = 'flex';
+                          }}
+                          style={{
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                            objectFit: 'cover',
+                            border: '2px solid #444'
+                          }}
+                        />
+                      ) : null}
+                      <div style={{
+                        display: getOwnerImageUrl(property.owner?.profileImage) || getOwnerImageUrl(property.owner?.profile_img) ? 'none' : 'flex',
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '50%',
+                        backgroundColor: '#4a5568',
+                        color: '#fff',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        border: '2px solid #444',
+                        textTransform: 'uppercase'
+                      }}>
+                        {property.owner?.firstName?.[0] || property.ownerName?.[0] || 'U'}{property.owner?.lastName?.[0] || property.ownerName?.[1] || ''}
+                      </div>
+                      <div>
+                        <p style={{
+                          fontSize: '0.85rem',
+                          color: '#999',
+                          marginBottom: '2px'
+                        }}>
+                          Listed by
+                        </p>
+                        <p style={{
+                          fontSize: '0.9rem',
+                          color: '#fff',
+                          fontWeight: '600',
+                          marginBottom: '0'
+                        }}>
+                          {property.owner?.firstName && property.owner?.lastName 
+                            ? `${property.owner.firstName} ${property.owner.lastName}`
+                            : property.ownerName || 'Property Owner'}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                   
                   <Link 
-                    to={`/property/${property._id || '648a97f4d254d67c1e5f461b'}`} 
+                    to={`/property/${getSafeMongoId(property._id)}`}
                     style={{
                       position: 'absolute',
                       top: 0,

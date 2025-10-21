@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const ContactusPage = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +10,8 @@ const ContactusPage = () => {
     subject: '',
     message: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' or 'error'
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -18,18 +21,42 @@ const ContactusPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In a real application, you would send this data to a server
-    console.log('Form submitted:', formData);
-    alert('Thank you for your message! We will get back to you soon.');
-    setFormData({
-      fullName: '',
-      email: '',
-      phone: '',
-      subject: '',
-      message: ''
-    });
+    setLoading(true);
+    setSubmitStatus(null);
+    
+    try {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7002';
+      
+      const response = await axios.post(`${API_BASE_URL}/api/contact/send`, formData);
+      
+      if (response.data.success) {
+        setSubmitStatus('success');
+        setFormData({
+          fullName: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: ''
+        });
+        
+        // Show success message for 5 seconds
+        setTimeout(() => {
+          setSubmitStatus(null);
+        }, 5000);
+      }
+    } catch (error) {
+      console.error('Error sending contact form:', error);
+      setSubmitStatus('error');
+      
+      // Hide error message after 5 seconds
+      setTimeout(() => {
+        setSubmitStatus(null);
+      }, 5000);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -234,22 +261,49 @@ const ContactusPage = () => {
               ></textarea>
             </div>
             
+            {submitStatus === 'success' && (
+              <div style={{
+                backgroundColor: '#d4edda',
+                color: '#155724',
+                padding: '12px',
+                borderRadius: '6px',
+                marginBottom: '15px',
+                border: '1px solid #c3e6cb'
+              }}>
+                ✓ Thank you for your message! We will get back to you soon.
+              </div>
+            )}
+            
+            {submitStatus === 'error' && (
+              <div style={{
+                backgroundColor: '#f8d7da',
+                color: '#721c24',
+                padding: '12px',
+                borderRadius: '6px',
+                marginBottom: '15px',
+                border: '1px solid #f5c6cb'
+              }}>
+                ✗ Failed to send message. Please try again or email us directly at contact@addisnest.com
+              </div>
+            )}
+            
             <button 
               type="submit" 
+              disabled={loading}
               style={{
-                backgroundColor: '#4a6cf7',
+                backgroundColor: loading ? '#ccc' : '#4a6cf7',
                 color: 'white',
                 border: 'none',
                 borderRadius: '6px',
                 padding: '14px 25px',
                 fontSize: '16px',
                 fontWeight: '500',
-                cursor: 'pointer',
+                cursor: loading ? 'not-allowed' : 'pointer',
                 transition: 'background-color 0.3s',
                 width: '100%'
               }}
             >
-              Send Message
+              {loading ? 'Sending...' : 'Send Message'}
             </button>
           </form>
         </div>
@@ -310,39 +364,7 @@ const ContactusPage = () => {
                 fontSize: '15px',
                 lineHeight: '1.5',
                 color: '#666'
-              }}>Oregon, USA</p>
-            </div>
-          </div>
-          
-          <div style={{
-            marginBottom: '25px',
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '15px'
-          }}>
-            <div style={{
-              backgroundColor: '#f0f4ff',
-              color: '#4a6cf7',
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '18px'
-            }}>📱</div>
-            <div>
-              <h3 style={{
-                fontSize: '18px',
-                fontWeight: '600',
-                color: '#2e3d40',
-                marginBottom: '5px'
-              }}>Phone</h3>
-              <p style={{
-                fontSize: '15px',
-                lineHeight: '1.5',
-                color: '#666'
-              }}>+251 123 456 789</p>
+              }}>Seattle, USA</p>
             </div>
           </div>
           
@@ -374,7 +396,7 @@ const ContactusPage = () => {
                 fontSize: '15px',
                 lineHeight: '1.5',
                 color: '#666'
-              }}>contactus@addisnest.com</p>
+              }}>contact@addisnest.com</p>
             </div>
           </div>
           

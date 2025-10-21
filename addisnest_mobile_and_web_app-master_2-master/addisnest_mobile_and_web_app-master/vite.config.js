@@ -2,7 +2,18 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      babel: {
+        plugins: [
+          ['transform-remove-console', { exclude: ['error'] }]
+        ]
+      }
+    })
+  ],
+  esbuild: {
+    drop: ['console', 'debugger'],
+  },
   server: {
     host: '0.0.0.0', // Bind to all interfaces
     port: 5174,

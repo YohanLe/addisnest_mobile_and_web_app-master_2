@@ -91,7 +91,22 @@ const OTPPage = () => {
                 toast.success(message || "OTP verified successfully");
             } catch (error) {
                 setLoading(false);
-                const errorMsg = error.response?.data?.message || "Failed to verify OTP. Please try again.";
+                // Check if it's an OTP verification error (usually 400 or 401 status)
+                const status = error.response?.status;
+                let errorMsg;
+                
+                if (status === 400 || status === 401 || status === 500) {
+                    // For these status codes, assume it's an incorrect OTP
+                    errorMsg = "The verification code you entered is incorrect. Please check and try again.";
+                } else if (error.response?.data?.message) {
+                    errorMsg = error.response.data.message;
+                } else if (error.userMessage) {
+                    // Use the user-friendly message from API interceptor if available
+                    errorMsg = error.userMessage;
+                } else {
+                    errorMsg = "Failed to verify code. Please try again.";
+                }
+                
                 toast.error(errorMsg);
             }
         }

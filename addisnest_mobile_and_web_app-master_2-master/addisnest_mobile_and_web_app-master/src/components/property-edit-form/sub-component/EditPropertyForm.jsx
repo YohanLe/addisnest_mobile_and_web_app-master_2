@@ -155,6 +155,7 @@ const EditPropertyForm = () => {
         recreationLocation: true,
         amenitiesSection: true
     });
+    const [originalPropertyStatus, setOriginalPropertyStatus] = useState('pending'); // Track original status
 
     const [inps, setInps] = useState({
         regional_state: '',
@@ -170,24 +171,11 @@ const EditPropertyForm = () => {
 
     // Fetch property data when component mounts
     useEffect(() => {
-        // Enhanced debug logging for property ID and localStorage data
-        console.log('Property ID from params:', params?.id);
-        console.log('Property ID from search params:', searchParams.get('id'));
+        // Only log in development mode to avoid exposing sensitive information
+        const isDev = process.env.NODE_ENV === 'development';
         
-        // Debug: Check localStorage data directly
-        const editData = localStorage.getItem('property_edit_data');
-        const specificEditData = localStorage.getItem(`property_edit_data_${propertyId}`);
-        
-        console.log('DEBUG: property_edit_data in localStorage:', editData ? 'FOUND' : 'NOT FOUND');
-        console.log('DEBUG: property_edit_data_' + propertyId + ' in localStorage:', specificEditData ? 'FOUND' : 'NOT FOUND');
-        
-        if (editData) {
-            try {
-                const parsedData = JSON.parse(editData);
-                console.log('DEBUG: Parsed property_edit_data:', parsedData);
-            } catch (e) {
-                console.error('DEBUG: Error parsing property_edit_data:', e);
-            }
+        if (isDev) {
+            console.log('Loading property for edit:', propertyId);
         }
         
         if (propertyId) {
@@ -217,69 +205,34 @@ const EditPropertyForm = () => {
         return '';
     };
     
-    // Special debug function to log field retrieval attempts
-    const logFieldRetrievalAttempts = (propertyData, fieldNames, label) => {
-        console.log(`🔍 DEBUG - Retrieving ${label}:`);
-        for (const fieldName of fieldNames) {
-            console.log(`  - Field "${fieldName}": ${propertyData[fieldName] !== undefined ? 
-                JSON.stringify(propertyData[fieldName]) : 'undefined'}`);
-        }
-    };
-    
-    // Debug function to log the entire property object
-    const logFullPropertyData = (propertyData, source) => {
-        console.log(`🧐 FULL PROPERTY DATA FROM ${source}:`);
-        
-        // First log the high-level structure
-        console.log('📊 Data Structure Overview:');
-        const keysAndTypes = {};
-        Object.keys(propertyData).forEach(key => {
-            const value = propertyData[key];
-            const type = Array.isArray(value) ? 'array' : typeof value;
-            const preview = type === 'object' && value !== null ? 
-                Object.keys(value).length + ' keys' : 
-                (type === 'array' ? value.length + ' items' : 
-                (type === 'string' ? (value.length > 30 ? value.substring(0, 30) + '...' : value) : value));
-            keysAndTypes[key] = `${type}: ${preview}`;
-        });
-        console.table(keysAndTypes);
-        
-        // Then log the full data
-        try {
-            console.log('📋 Full Data:');
-            console.log(JSON.stringify(propertyData, null, 2));
-        } catch (e) {
-            console.warn('⚠️ Could not stringify full property data:', e);
-            console.log('📋 Raw Property Data:', propertyData);
-        }
-    };
+    // Remove verbose logging functions to protect sensitive data
+    // Only log in development mode with minimal information
+    const isDev = process.env.NODE_ENV === 'development';
 
     const populateFormData = (propertyData) => {
-        console.log('📋 POPULATING FORM WITH PROPERTY DATA:');
-        console.log('📋 Raw property data:', JSON.stringify(propertyData, null, 2));
+        // Only log in development mode to avoid exposing sensitive data
+        const isDev = process.env.NODE_ENV === 'development';
         
-        // Log the full response for debugging
-        console.log('API Response:', propertyData);
+        if (isDev) {
+            console.log('Populating form with property data');
+        }
         
-        // Add extra logging for grid-related fields
-        console.log('🔍 PROPERTY LISTING GRID FIELDS:');
-        console.log('Type:', propertyData.type || propertyData.property_type);
-        console.log('Address:', propertyData.address || propertyData.property_address);
-        console.log('Offering:', propertyData.offering || propertyData.property_for);
-        console.log('Price:', propertyData.price || propertyData.total_price);
+        // Capture the original property status
+        const currentStatus = propertyData.status || 'pending';
+        setOriginalPropertyStatus(currentStatus.toLowerCase());
         
         // Normalize the data structure - handle different property naming conventions
         const normalizedData = {
             id: propertyData.id || propertyData.propertyId || propertyId,
-            property_type: propertyData.property_type || propertyData.type,
-            property_for: propertyData.property_for || propertyData.listingType,
+            property_type: propertyData.property_type || propertyData.propertyType || propertyData.type,
+            property_for: propertyData.property_for || propertyData.offeringType || propertyData.listingType,
             total_price: propertyData.total_price || propertyData.price,
-            property_address: propertyData.property_address || propertyData.address,
+            property_address: propertyData.property_address || (typeof propertyData.address === 'string' ? propertyData.address : propertyData.address?.street),
             number_of_bedrooms: propertyData.number_of_bedrooms || propertyData.bedrooms,
             number_of_bathrooms: propertyData.number_of_bathrooms || propertyData.bathrooms,
-            property_size: propertyData.property_size || propertyData.size,
-            regional_state: propertyData.regional_state || propertyData.region,
-            city: propertyData.city,
+            property_size: propertyData.property_size || propertyData.area || propertyData.size,
+            regional_state: propertyData.regional_state || propertyData.address?.regionalState || propertyData.region,
+            city: propertyData.city || propertyData.subCity || propertyData.address?.subCity,
             description: propertyData.description,
             country: propertyData.country || 'Ethiopia',
             media: propertyData.media || propertyData.images || [],
@@ -295,10 +248,17 @@ const EditPropertyForm = () => {
                 'city', 'cityName', 'city_name', 'location_city'
             ]),
             country: getFieldValue(normalizedData, ['country', 'countryName']) || 'Ethiopia',
-            // Prioritize the address shown in the grid
-            property_address: getFieldValue(normalizedData, [
-                'address', 'property_address', 'property_location', 'location', 'displayAddress'
-            ]),
+            // Prioritize the address shown in the grid - handle nested address object
+            // For existing properties, construct address if needed
+            property_address: normalizedData.property_address || 
+                propertyData.property_address || 
+                (typeof propertyData.address === 'string' ? propertyData.address : '') ||
+                propertyData.address?.street ||
+                propertyData.street ||
+                // If all else fails, create a basic address from available location data
+                (normalizedData.city && normalizedData.regional_state ? 
+                    `${normalizedData.city}, ${normalizedData.regional_state}` : 
+                    'Property location to be specified'),
             // Prioritize the price shown in the grid
             total_price: String(getFieldValue(normalizedData, [
                 'price', 'total_price', 'cost', 'amount', 'displayPrice'
@@ -317,15 +277,6 @@ const EditPropertyForm = () => {
             ]) || ''),
         };
 
-        // Debug logging for bedrooms and bathrooms
-        logFieldRetrievalAttempts(propertyData, [
-            'number_of_bedrooms', 'bedrooms', 'bedroom_count', 'numBedrooms', 'bed_rooms', 'num_bedrooms'
-        ], 'bedroom count');
-        
-        logFieldRetrievalAttempts(propertyData, [
-            'number_of_bathrooms', 'bathrooms', 'bathroom_count', 'numBathrooms', 'bath_rooms', 'num_bathrooms'
-        ], 'bathroom count');
-        
         // Enhanced handling for bedrooms/bathrooms - check all possible property names
         const bedroomFields = ['number_of_bedrooms', 'bedrooms', 'bedroom_count', 'numBedrooms', 'bed_rooms', 'num_bedrooms'];
         const bathroomFields = ['number_of_bathrooms', 'bathrooms', 'bathroom_count', 'numBathrooms', 'bath_rooms', 'num_bathrooms'];
@@ -774,52 +725,47 @@ const EditPropertyForm = () => {
         let databaseDataFetched = false;
         
         try {
-        // Try multiple API endpoints to find the property data
-        // Import endpoints from helper module to handle both regular and MongoDB IDs
-        const { getPropertyEndpoints } = await import('./mongodb-id-fix.js');
-        const endpoints = getPropertyEndpoints(propertyId);
+            // Try the working MongoDB ID endpoint first
+            const workingEndpoint = `properties/mongo-id/${propertyId}`;
             
-            let propertyData = null;
-            
-            for (const endpoint of endpoints) {
-                try {
-                    console.log(`🔄 Trying API endpoint: ${endpoint}`);
-                    const response = await Api.getWithtoken(endpoint);
+            try {
+                const response = await Api.getWithtoken(workingEndpoint, { silentOn404: true });
+                
+                let propertyData = null;
                     
-                    // Handle different response structures
-                    if (response?.data?.data) {
-                        propertyData = Array.isArray(response.data.data) ? 
-                            response.data.data.find(p => String(p.id) === String(propertyId)) :
-                            response.data.data;
-                    } else if (response?.data) {
-                        propertyData = Array.isArray(response.data) ? 
-                            response.data.find(p => String(p.id) === String(propertyId)) :
-                            response.data;
-                    }
-                    
-                    if (propertyData && (propertyData.id || propertyData._id)) {
-                        console.log('✅ Successfully fetched property data from database via:', endpoint);
-                        
-                        // Ensure we have an ID property
-                        if (!propertyData.id && propertyData._id) {
-                            propertyData.id = propertyData._id;
-                        }
-                        
-                        // Populate the form with the database data
-                        populateFormData(propertyData);
-                        
-                        // Save to localStorage for offline editing
-                        saveToLocalStorage(propertyData);
-                        
-                        databaseDataFetched = true;
-                        setFetchingData(false);
-                        toast.success('Property data loaded from database');
-                        return;
-                    }
-                } catch (error) {
-                    console.warn(`❌ API endpoint ${endpoint} failed:`, error?.message);
-                    // Continue to the next endpoint
+                // Handle different response structures
+                if (response?.data?.data) {
+                    propertyData = Array.isArray(response.data.data) ? 
+                        response.data.data.find(p => String(p.id) === String(propertyId)) :
+                        response.data.data;
+                } else if (response?.data) {
+                    propertyData = Array.isArray(response.data) ? 
+                        response.data.find(p => String(p.id) === String(propertyId)) :
+                        response.data;
                 }
+                
+                if (propertyData && (propertyData.id || propertyData._id)) {
+                    console.log('✅ Successfully fetched property data from database via:', workingEndpoint);
+                    
+                    // Ensure we have an ID property
+                    if (!propertyData.id && propertyData._id) {
+                        propertyData.id = propertyData._id;
+                    }
+                    
+                    // Populate the form with the database data
+                    populateFormData(propertyData);
+                    
+                    // Save to localStorage for offline editing
+                    saveToLocalStorage(propertyData);
+                    
+                    databaseDataFetched = true;
+                    setFetchingData(false);
+                    toast.success('Property data loaded from database');
+                    return;
+                }
+            } catch (error) {
+                console.warn(`❌ MongoDB ID endpoint failed:`, error?.message);
+                // Continue to fallback sources
             }
         } catch (apiError) {
             console.error('❌ Error fetching from database:', apiError);
@@ -975,16 +921,12 @@ const EditPropertyForm = () => {
             
             for (const endpoint of endpointsToTry) {
               try {
-                console.log(`🔄 Trying API endpoint: ${endpoint}`);
-                
                 // First try with token - works if user is authenticated
                 let response = null;
                 try {
-                    console.log(`📤 Making authenticated request to: ${endpoint}`);
-                    response = await Api.getWithtoken(endpoint);
-                    console.log(`📥 Response received from ${endpoint}:`, response);
+                    response = await Api.getWithtoken(endpoint, { silentOn404: true });
                 } catch (authError) {
-                    console.warn(`❌ Authenticated request failed for ${endpoint}:`, authError);
+                    // Silently continue to next endpoint on error
                 }
                 
                 // If that fails, try without token (some endpoints may be public)
@@ -1026,9 +968,6 @@ const EditPropertyForm = () => {
                 
                 if (propertyData && (propertyData.id || propertyData.propertyId)) {
                   console.log('✅ Successfully fetched from API:', endpoint);
-                  
-                  // Log the full response for debugging
-                  logFullPropertyData(propertyData, `API_${endpoint}`);
                   
                   // Check if the data is substantive and not just empty fields with an ID
                   const hasSubstantiveData = 
@@ -1074,7 +1013,6 @@ const EditPropertyForm = () => {
             const editClickData = checkForEditClickData();
             if (editClickData) {
                 console.log('🔄 Using data from edit click...');
-                logFullPropertyData(editClickData, 'EDIT_CLICK_DATA');
                 
                 // Use this data as fallback source
                 populateFormData(editClickData);
@@ -1126,8 +1064,7 @@ const EditPropertyForm = () => {
                 if (newPropertyData) {
                     try {
                         const parsedData = JSON.parse(newPropertyData);
-                        console.log('✅ Found newly created property data in sessionStorage:');
-                        logFullPropertyData(parsedData, 'SESSION_STORAGE');
+                        console.log('✅ Found newly created property data in sessionStorage');
                         populateFormData(parsedData);
                         
                         // Move from sessionStorage to localStorage for persistence
@@ -1149,8 +1086,7 @@ const EditPropertyForm = () => {
             // Step 1: Try to get data from Redux store first
             const existingProperty = findPropertyInReduxStore();
             if (existingProperty) {
-                console.log('✅ Found property in Redux store:');
-                logFullPropertyData(existingProperty, 'REDUX_STORE');
+                console.log('✅ Found property in Redux store');
                 populateFormData(existingProperty);
                 
                 // Save to localStorage for future editing
@@ -1168,8 +1104,7 @@ const EditPropertyForm = () => {
                 // Check Redux store again after fresh data load
                 const freshProperty = findPropertyInReduxStore();
                 if (freshProperty) {
-                    console.log('✅ Found property in refreshed Redux store:');
-                    logFullPropertyData(freshProperty, 'REFRESHED_REDUX_STORE');
+                    console.log('✅ Found property in refreshed Redux store');
                     populateFormData(freshProperty);
                     
                     // Save to localStorage for future editing
@@ -1208,7 +1143,6 @@ const EditPropertyForm = () => {
                             try {
                                 foundData = JSON.parse(rawData);
                                 console.log(`✅ Found property data with key ${key}`);
-                                logFullPropertyData(foundData, `ALTERNATIVE_STORAGE_${key}`);
                                 break;
                             } catch (e) {
                                 console.warn(`⚠️ Error parsing data from ${key}:`, e);
@@ -1253,7 +1187,6 @@ const EditPropertyForm = () => {
                         try {
                             const editData = JSON.parse(localStorage.getItem(editKey));
                             console.log(`✅ Found property data in ${editKey}`);
-                            logFullPropertyData(editData, 'LAST_RESORT_EDIT');
                             populateFormData(editData);
                             saveToLocalStorage(editData);
                             setFetchingData(false);
@@ -1270,7 +1203,6 @@ const EditPropertyForm = () => {
                             const data = JSON.parse(localStorage.getItem(key));
                             if (data && typeof data === 'object') {
                                 console.log(`✅ Found usable data in ${key}`);
-                                logFullPropertyData(data, `LAST_RESORT_${key}`);
                                 populateFormData(data);
                                 saveToLocalStorage(data);
                                 setFetchingData(false);
@@ -1294,7 +1226,6 @@ const EditPropertyForm = () => {
                 
                 if (directResponse?.data) {
                     console.log('✅ Direct database query successful!');
-                    logFullPropertyData(directResponse.data, 'DIRECT_DATABASE_QUERY');
                     populateFormData(directResponse.data);
                     saveToLocalStorage(directResponse.data);
                     setFetchingData(false);
@@ -1530,22 +1461,39 @@ const EditPropertyForm = () => {
         
         try {
             console.log('🔄 Starting property update process...');
+            console.log('📋 Current form data:', inps);
+            console.log('📋 Property Type:', PropertyType);
+            console.log('📋 Active Tab:', activeTab);
             
             const validation = ValidatePropertyForm(inps);
+            console.log('📋 Validation result:', validation);
+            
             if (!validation.isValid) {
+                console.error('❌ Validation failed:', validation.errors);
                 setError(validation);
                 toast.error('Please fix the validation errors');
                 setLoading(false);
                 return;
             }
+            
+            console.log('✅ Validation passed, preparing update data...');
 
             // Prepare update data in the format expected by the backend
+            // BUSINESS RULE: ALL property edits require admin re-approval
+            // Any property being edited (regardless of status) goes back to pending
+            const statusToSet = 'pending';
+            
+            console.log('📋 Property update status logic:');
+            console.log('  - Original status:', originalPropertyStatus);
+            console.log('  - Status after edit:', statusToSet);
+            console.log('  - Reason: All property edits require admin re-approval');
+            
             let updateData = {
                 // Map frontend fields to backend expected fields
                 propertyType: PropertyType?.value || PropertyType,
                 offeringType: activeTab,
                 price: parseFloat(inps?.total_price) || 0,
-                size: parseFloat(inps?.property_size) || 0,
+                area: parseFloat(inps?.property_size) || 0,  // Backend expects 'area' not 'size'
                 bedrooms: parseInt(inps.number_of_bedrooms) || 0,
                 bathrooms: parseInt(inps.number_of_bathrooms) || 0,
                 description: inps?.description || '',
@@ -1553,20 +1501,24 @@ const EditPropertyForm = () => {
                 
                 // Address structure (nested format expected by backend)
                 address: {
-                    street: inps?.property_address || '',
+                    street: typeof inps?.property_address === 'string' ? inps.property_address : '',
                     subCity: inps?.city || '',
                     regionalState: inps?.regional_state || '',
                     country: inps?.country || 'Ethiopia'
                 },
                 
                 // Media and amenities
-                images: MediaPaths.map(path => ({ url: path, caption: '' })),
+                images: MediaPaths.length > 0 ? MediaPaths.map(path => ({ 
+                    url: typeof path === 'string' ? path : path.url || '', 
+                    caption: '' 
+                })) : [],
                 media_paths: MediaPaths,
                 amenities: getSelectedAmenitiesArray(),
                 
                 // Additional fields that might be expected
                 title: inps?.description ? inps.description.substring(0, 100) : 'Property Listing',
-                status: 'active',
+                // Business Rule: ALL edited properties go to pending status
+                status: statusToSet,
                 
                 // Metadata
                 updatedAt: new Date().toISOString()
@@ -1581,10 +1533,19 @@ const EditPropertyForm = () => {
             try {
                 console.log(`🔄 Attempting to update property via: ${endpoint}`);
                 
-                const response = await Api.putWithtoken(endpoint, updateData);
+                // Add timeout to prevent hanging
+                const timeout = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Request timeout after 30 seconds')), 30000)
+                );
+                
+                const apiCall = Api.putWithtoken(endpoint, updateData);
+                
+                const response = await Promise.race([apiCall, timeout]);
                 
                 console.log('✅ Property update successful:', response);
-                toast.success('Property updated successfully!');
+                
+                // Show success message - all edits require admin approval
+                toast.success('Property updated successfully! Redirecting...', { autoClose: 2000 });
                 
                 // Save the updated data to localStorage for offline access
                 const updatedPropertyData = {
@@ -1594,25 +1555,42 @@ const EditPropertyForm = () => {
                 };
                 saveToLocalStorage(updatedPropertyData);
                 
-                // Refresh property list to show updated data
+                // Refresh property list to show updated data (with timeout)
                 try {
                     console.log('🔄 Refreshing property list...');
-                    await dispatch(GetPropertyList()).unwrap();
+                    const refreshTimeout = new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error('Refresh timeout')), 5000)
+                    );
+                    await Promise.race([
+                        dispatch(GetPropertyList()).unwrap(),
+                        refreshTimeout
+                    ]);
                     console.log('✅ Property list refreshed successfully');
                 } catch (refreshError) {
                     console.warn('⚠️ Failed to refresh property list:', refreshError);
                     // Don't fail the entire operation if refresh fails
                 }
                 
-                // Navigate back to listed properties immediately after success
+                // Navigate back to account management page immediately after success
                 console.log('🔄 Navigating to account management page...');
-                navigate('/account-management');
+                
+                // Use a small delay to ensure toast is visible
+                setTimeout(() => {
+                    navigate('/account-management');
+                }, 500);
                 
                 // Exit the function successfully - don't continue to error handling
                 return;
                 
             } catch (apiError) {
                 console.error('❌ API update failed:', apiError);
+                console.error('❌ Error response:', apiError?.response);
+                console.error('❌ Error data:', apiError?.response?.data);
+                console.error('❌ Error message:', apiError?.response?.data?.message);
+                console.error('❌ Error details:', apiError?.response?.data?.error);
+                
+                // Log the data that was sent
+                console.error('❌ Data that was sent:', updateData);
                 
                 // Handle specific error cases
                 if (apiError?.response?.status === 401) {
@@ -1935,6 +1913,31 @@ const EditPropertyForm = () => {
                         </div>
                         
                         <div className="step-content">
+                            {/* Property Address Field */}
+                            <div className="form-row">
+                                <div className="form-group" style={{ width: '100%' }}>
+                                    <label>Street Address / Property Location *</label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g., Near Bole Medhanialem, CMC Road"
+                                        name="property_address"
+                                        value={inps.property_address}
+                                        onChange={onInpChanged}
+                                        style={{
+                                            width: '100%',
+                                            padding: '10px',
+                                            borderRadius: '6px'
+                                        }}
+                                    />
+                                    {error?.errors?.property_address && (
+                                        <span className="error-message">{error.errors.property_address}</span>
+                                    )}
+                                    <small style={{ color: '#666', fontSize: '12px', marginTop: '5px', display: 'block' }}>
+                                        Enter the street name, landmarks, or area details
+                                    </small>
+                                </div>
+                            </div>
+
                             <div className="form-row-3-cols">
                                 <div className="form-col-33">
                                     <div className="form-group">
@@ -2216,11 +2219,11 @@ const EditPropertyForm = () => {
                             onClick={handleSubmit}
                             disabled={Loading}
                         >
-                            {Loading ? "Updating..." : "Update Property"}
-                        </button>
-                        <Link to="/my-property-listings" className="btn btn-secondary">
-                            Cancel
-                        </Link>
+                    {Loading ? "Updating..." : "Update Property"}
+                </button>
+                <Link to="/account-management" className="btn btn-secondary">
+                    Cancel
+                </Link>
                     </div>
                 </div>
             </div>

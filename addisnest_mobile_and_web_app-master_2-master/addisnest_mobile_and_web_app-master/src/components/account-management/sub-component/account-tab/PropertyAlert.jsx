@@ -196,17 +196,14 @@ const PropertyAlert = () => {
       
       // Check if user is authenticated
       if (!isAuthenticated()) {
-        console.log('PropertyAlert - User not authenticated');
         setLoading(false);
         setListings([]);
         return;
       }
 
       const tokenData = getTokenData();
-      console.log('PropertyAlert - Token data:', tokenData);
       
       if (!tokenData || (!tokenData.id && !tokenData._id)) {
-        console.log('PropertyAlert - No valid user ID found in token data');
         setLoading(false);
         setListings([]);
         return;
@@ -214,11 +211,9 @@ const PropertyAlert = () => {
 
       // Get user ID from various possible fields
       const userId = tokenData.id || tokenData._id || tokenData.userId;
-      console.log('PropertyAlert - Using user ID:', userId);
       
       // Fetch only the current user's properties using the new netlify handler
       const response = await getPropertiesByUser(userId);
-      console.log('PropertyAlert - User Properties API Response:', response);
       
       // Handle MongoDB response format
       let allProperties = [];
@@ -230,8 +225,6 @@ const PropertyAlert = () => {
       } else if (response && typeof response === 'object') {
         allProperties = [response];
       }
-      
-      console.log('User properties:', allProperties);
       
       // Extract unique locations from database and map properly
       const uniqueLocations = new Set();
@@ -488,8 +481,6 @@ const PropertyAlert = () => {
       currentStatus = 'pending'; // Default fallback
     }
     
-    console.log('Rendering status for', listing.title, ':', listing.status, 'normalized:', currentStatus);
-    
     // Simple dropdown style
     const dropdownStyle = {
       display: 'block',
@@ -643,58 +634,128 @@ const PropertyAlert = () => {
           </div>
         ) : (
           <>
-            <div className="listings-table">
-              <div className="table-header">
-                <div className="header-cell property">Property</div>
-                <div className="header-cell offering">Offering</div>
-                <div className="header-cell location">Location</div>
-                <div className="header-cell price">Price/ETB</div>
-                <div className="header-cell owner">Owner</div>
-                <div className="header-cell status">Status</div>
-                <div className="header-cell date">Date Added</div>
-                <div className="header-cell actions">Actions</div>
-              </div>
-              
-              <div className="table-body">
-                {listings.length > 0 ? (
-                  listings.map(listing => (
-                    <div className="table-row" key={listing._id}>
-                      <div className="cell property">{listing.title || "Property"}</div>
-                      <div className="cell offering">{listing.offeringType || "For Sale"}</div>
-                      <div className="cell location">{formatLocationDisplay(listing)}</div>
-                      <div className="cell price">{formatPrice(listing.price)}</div>
-                      <div className="cell owner">{listing.ownerName || `${listing.owner?.firstName || ''} ${listing.owner?.lastName || ''}`}</div>
-                      <div className="cell status">
+            {/* Desktop Table View */}
+            <div className="listings-table-container desktop-only">
+              <table className="property-table">
+                <thead>
+                  <tr>
+                    <th>Offering:</th>
+                    <th>Price:</th>
+                    <th>Location:</th>
+                    <th>Owner:</th>
+                    <th>Date Added:</th>
+                    <th>Status:</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {listings.length > 0 ? (
+                    listings.map(listing => (
+                      <tr key={listing._id}>
+                        <td>{listing.offeringType || "For Sale"}</td>
+                        <td className="price-cell">{formatPrice(listing.price)} ETB</td>
+                        <td>{formatLocationDisplay(listing)}</td>
+                        <td>{listing.ownerName || `${listing.owner?.firstName || ''} ${listing.owner?.lastName || ''}`}</td>
+                        <td>{formatDate(listing.createdAt)}</td>
+                        <td className="status-cell">
+                          {renderStatusCell(listing)}
+                        </td>
+                        <td className="action-cell">
+                          <Link 
+                            to={`/property-edit/${listing._id}`}
+                            className="table-action-link edit-link"
+                          >
+                            <i className="fa-solid fa-edit"></i> Edit
+                          </Link>
+                        </td>
+                        <td className="action-cell">
+                          <button 
+                            onClick={() => handleDelete(listing._id)}
+                            className="table-action-button delete-button"
+                          >
+                            <i className="fa-solid fa-trash"></i> Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="empty-row">
+                        <div className="empty-state">
+                          <p>No listings found</p>
+                          <Link to="/property-list-form" className="add-listing-link">
+                            + Add Listing
+                          </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="mobile-listings-container mobile-only">
+              {listings.length > 0 ? (
+                listings.map(listing => (
+                  <div key={listing._id} className="mobile-property-card">
+                    <div className="mobile-card-header">
+                      <span className="mobile-offering-badge">{listing.offeringType || "For Sale"}</span>
+                      <div className="mobile-status">
                         {renderStatusCell(listing)}
                       </div>
-                      <div className="cell date">{formatDate(listing.createdAt)}</div>
-                      <div className="cell actions">
-                        <Link 
-                          to={`/property-edit/${listing._id}`}
-                          className="action-icon edit"
-                          title="Edit"
-                        >
-                          <i className="fa-solid fa-edit"></i>
-                        </Link>
-                        <button 
-                          onClick={() => handleDelete(listing._id)}
-                          className="action-icon delete"
-                          title="Delete"
-                        >
-                          <i className="fa-solid fa-trash"></i>
-                        </button>
+                    </div>
+                    
+                    <div className="mobile-card-body">
+                      <div className="mobile-price">
+                        <span className="price-label">Price:</span>
+                        <span className="price-value">{formatPrice(listing.price)} ETB</span>
+                      </div>
+                      
+                      <div className="mobile-location">
+                        <i className="fa-solid fa-location-dot"></i>
+                        <span>{formatLocationDisplay(listing)}</span>
+                      </div>
+                      
+                      <div className="mobile-details">
+                        <div className="mobile-detail-item">
+                          <span className="detail-label">Owner:</span>
+                          <span className="detail-value">
+                            {listing.ownerName || `${listing.owner?.firstName || ''} ${listing.owner?.lastName || ''}`}
+                          </span>
+                        </div>
+                        <div className="mobile-detail-item">
+                          <span className="detail-label">Added:</span>
+                          <span className="detail-value">{formatDate(listing.createdAt)}</span>
+                        </div>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="empty-state">
-                    <p>No listings found</p>
-                    <Link to="/property-list-form" className="add-listing-link">
-                      + Add Listing
-                    </Link>
+                    
+                    <div className="mobile-card-actions">
+                      <Link 
+                        to={`/property-edit/${listing._id}`}
+                        className="mobile-action-btn edit-btn"
+                      >
+                        <i className="fa-solid fa-edit"></i> Edit
+                      </Link>
+                      <button 
+                        onClick={() => handleDelete(listing._id)}
+                        className="mobile-action-btn delete-btn"
+                      >
+                        <i className="fa-solid fa-trash"></i> Delete
+                      </button>
+                    </div>
                   </div>
-                )}
-              </div>
+                ))
+              ) : (
+                <div className="mobile-empty-state">
+                  <p>No listings found</p>
+                  <Link to="/property-list-form" className="add-listing-link">
+                    + Add Listing
+                  </Link>
+                </div>
+              )}
             </div>
             
             {totalPages > 1 && (

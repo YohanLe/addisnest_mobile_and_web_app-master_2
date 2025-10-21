@@ -56,7 +56,7 @@ app.use(fileUpload({
   abortOnLimit: false,
   responseOnLimit: "File size limit has been reached",
   useTempFiles: true,
-  tempFileDir: '/tmp/',
+  tempFileDir: path.join(__dirname, '../temp/'), // Use relative temp directory that works on all OS
   debug: false, // Disable debug to reduce noise
   parseNested: true,
   preserveExtension: true,
@@ -90,6 +90,7 @@ app.use('/api/payments', routes.paymentRoutes);
 app.use('/api/connectiontests', routes.connectionTestRoutes);
 app.use('/api/media', routes.mediaRoutes);
 app.use('/api/schedules', routes.scheduleRoutes);
+app.use('/api/contact', routes.contactRoutes);
 
 // Also mount without /api prefix for backward compatibility
 app.use('/agents', routes.agentRoutes);
@@ -105,6 +106,7 @@ app.use('/payments', routes.paymentRoutes);
 app.use('/connectiontests', routes.connectionTestRoutes);
 app.use('/media', routes.mediaRoutes);
 app.use('/schedules', routes.scheduleRoutes);
+app.use('/contact', routes.contactRoutes);
 
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
@@ -130,24 +132,8 @@ app.post('/api/messages/send-to-agent', async (req, res) => {
       subject 
     } = req.body;
 
-    console.log('Direct route - sendToAgent called with data:', {
-      agentId,
-      agentEmail,
-      agentName,
-      senderName,
-      senderEmail,
-      messageLength: message?.length,
-      subject
-    });
-
     // Validate required fields
     if (!agentEmail || !senderName || !senderEmail || !message) {
-      console.error('Missing required fields:', {
-        agentEmail: !!agentEmail,
-        senderName: !!senderName,
-        senderEmail: !!senderEmail,
-        message: !!message
-      });
       return res.status(400).json({
         success: false,
         error: 'Please provide all required fields: agentEmail, senderName, senderEmail, and message'
@@ -157,16 +143,11 @@ app.post('/api/messages/send-to-agent', async (req, res) => {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(senderEmail) || !emailRegex.test(agentEmail)) {
-      console.error('Invalid email format:', { senderEmail, agentEmail });
       return res.status(400).json({
         success: false,
         error: 'Please provide valid email addresses'
       });
     }
-
-    // Log the inquiry for tracking purposes
-    console.log(`Agent inquiry: ${senderName} (${senderEmail}) contacted ${agentName || 'Agent'} (${agentEmail})`);
-    console.log(`Message: ${message}`);
 
     // Always return success in development mode
     const response = {
@@ -182,15 +163,12 @@ app.post('/api/messages/send-to-agent', async (req, res) => {
       }
     };
 
-    console.log('Direct route - Sending response:', response);
     return res.status(200).json(response);
 
   } catch (error) {
-    console.error('Direct route - Error in sendToAgent:', error);
     return res.status(500).json({
       success: false,
-      error: 'Failed to send message to agent. Please try again later.',
-      details: error.message
+      error: 'Failed to send message to agent. Please try again later.'
     });
   }
 });
@@ -208,16 +186,6 @@ app.post('/messages/send-to-agent', async (req, res) => {
       subject 
     } = req.body;
 
-    console.log('Non-API route - sendToAgent called with data:', {
-      agentId,
-      agentEmail,
-      agentName,
-      senderName,
-      senderEmail,
-      messageLength: message?.length,
-      subject
-    });
-
     // Validate required fields
     if (!agentEmail || !senderName || !senderEmail || !message) {
       return res.status(400).json({
@@ -235,10 +203,6 @@ app.post('/messages/send-to-agent', async (req, res) => {
       });
     }
 
-    // Log the inquiry for tracking purposes
-    console.log(`Agent inquiry: ${senderName} (${senderEmail}) contacted ${agentName || 'Agent'} (${agentEmail})`);
-    console.log(`Message: ${message}`);
-
     // Always return success in development mode
     const response = {
       success: true,
@@ -253,36 +217,35 @@ app.post('/messages/send-to-agent', async (req, res) => {
       }
     };
 
-    console.log('Non-API route - Sending response:', response);
     return res.status(200).json(response);
 
   } catch (error) {
-    console.error('Non-API route - Error in sendToAgent:', error);
     return res.status(500).json({
       success: false,
-      error: 'Failed to send message to agent. Please try again later.',
-      details: error.message
+      error: 'Failed to send message to agent. Please try again later.'
     });
   }
 });
 
 // Error middleware
 app.use((err, req, res, next) => {
-  console.error('API Error:', err);
+  // Only log errors in development mode
+  if (process.env.NODE_ENV === 'development') {
+    console.error('API Error:', err.message);
+  }
+  
   if (err.name === 'ValidationError') {
     const messages = Object.values(err.errors).map(val => val.message);
     return res.status(400).json({
       success: false,
-      error: messages.join(', '),
-      details: err.errors
+      error: messages.join(', ')
     });
   }
   if (err.code === 11000) {
     const field = Object.keys(err.keyValue)[0];
     return res.status(400).json({
       success: false,
-      error: `Duplicate field value entered: ${field}`,
-      field
+      error: `Duplicate field value entered: ${field}`
     });
   }
   res.status(err.statusCode || 500).json({

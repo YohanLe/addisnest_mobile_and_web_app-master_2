@@ -27,10 +27,22 @@ const Header = () => {
   const tokenData = getTokenData();
   const effectiveUser = user || tokenData;
   
-  // Authentication status tracking (removed debug logging for security)
+  // Check if user is admin - add multiple fallback checks
+  const isOnAdminPage = location.pathname.startsWith('/admin');
+  const isAdmin = effectiveUser?.role === 'admin' || 
+                  effectiveUser?.role === 'ADMIN' ||
+                  effectiveUser?.isAdmin === true ||
+                  effectiveUser?.isAdmin === 'true' ||
+                  localStorage.getItem('userRole') === 'admin' ||
+                  isOnAdminPage; // If user is on admin page, they must be admin
+  
+  // Authentication status tracking
   useEffect(() => {
-    // Silent authentication status tracking
-  }, [user, tokenData, effectiveUser]);
+    // Store user role in localStorage for persistence across reloads
+    if (effectiveUser?.role) {
+      localStorage.setItem('userRole', effectiveUser.role);
+    }
+  }, [user, tokenData, effectiveUser, isAdmin]);
 
   // Set up message notification listener
   useEffect(() => {
@@ -41,17 +53,18 @@ const Header = () => {
     // Add listener for message count updates
     messageNotificationService.addListener(handleMessageCountUpdate);
 
-    // Initialize with current count
+    // Initialize with current count - fetch from backend if available
     if (isAuthenticated() && effectiveUser?._id) {
-      // For demo purposes, set initial count to 3
-      messageNotificationService.setUnreadCount(3);
+      // Start with 0, actual count will be fetched from the backend
+      messageNotificationService.setUnreadCount(0);
       
-      // Simulate receiving a new message after 10 seconds for demo
-      setTimeout(() => {
-        if (isAuthenticated()) {
-          messageNotificationService.simulateNewMessage("Property Agent", "Your property viewing has been confirmed for tomorrow at 2 PM.");
-        }
-      }, 10000);
+      // TODO: Fetch actual unread message count from the backend
+      // Example:
+      // Api.get(`/messages/unread-count?userId=${effectiveUser._id}`)
+      //   .then(response => {
+      //     messageNotificationService.setUnreadCount(response.data.count);
+      //   })
+      //   .catch(error => console.error('Error fetching unread count:', error));
     }
 
     // Cleanup listener on unmount
@@ -260,7 +273,21 @@ const Header = () => {
                         <p className="user-name">
                           {effectiveUser?.firstName} {effectiveUser?.lastName}
                         </p>
+                        {effectiveUser?.role && (
+                          <p className="user-role" style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                            {effectiveUser.role}
+                          </p>
+                        )}
                       </div>
+                      {isAdmin && (
+                        <Link
+                          to="/admin/dashboard"
+                          className="user-menu-link"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          Dashboard
+                        </Link>
+                      )}
                       <Link
                         to="/account-management"
                         className="user-menu-link"

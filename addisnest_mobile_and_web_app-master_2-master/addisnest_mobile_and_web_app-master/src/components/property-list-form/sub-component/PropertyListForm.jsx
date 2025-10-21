@@ -947,8 +947,8 @@ const PropertyListForm = () => {
                         <div className="step-content">
                             <div className="form-row-3-cols">
                                 <div className="form-col-33">
-                                    <div className="form-group">
-                                        <label>Regional State</label>
+                                    <div className={`form-group required ${validationErrors.regional_state ? 'has-error' : ''}`}>
+                                        <label>Regional State *</label>
                                         <div className="select-wrapper">
                                             <Select
                                                 options={RegionalStateList}

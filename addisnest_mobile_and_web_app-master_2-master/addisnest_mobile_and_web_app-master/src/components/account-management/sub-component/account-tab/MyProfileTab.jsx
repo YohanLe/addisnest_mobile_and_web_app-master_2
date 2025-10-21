@@ -26,6 +26,27 @@ import Api from "../../../../Apis/Api";
 import { ValidateUserCusProfileUpdate } from "../../../../utils/Validation";
 import { toast } from "react-toastify";
 import axios from "axios";
+
+// Get API base URL for image paths
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7002';
+
+// Helper function to get full image URL
+const getImageUrl = (imagePath) => {
+    if (!imagePath || imagePath === 'None' || imagePath === '') {
+        return DefaultProfileImg;
+    }
+    // If it's already a full URL, return as is
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        return imagePath;
+    }
+    // If it's a relative path starting with /uploads, prepend the API base URL
+    if (imagePath.startsWith('/uploads/')) {
+        return `${API_BASE_URL}${imagePath}`;
+    }
+    // If it's just a filename, prepend the full uploads path
+    return `${API_BASE_URL}/uploads/${imagePath}`;
+};
+
 const MyProfileTab = () => {
     const dispatch = useDispatch();
     const [profileImage, setProfileImage] = useState(DefaultProfileImg); // Default image
@@ -50,7 +71,7 @@ const MyProfileTab = () => {
     // Update image when profile data changes
     useEffect(() => {
         if (profiledata?.profile_img) {
-            setImage({ uri: profiledata.profile_img, file: '' });
+            setImage({ uri: getImageUrl(profiledata.profile_img), file: '' });
         }
     }, [profiledata]);
 
@@ -101,6 +122,7 @@ const MyProfileTab = () => {
     useEffect(() => {
         dispatch(AuthUserDetails());
         fetchUserProfile();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     
     // Fetch detailed user profile from API
@@ -175,16 +197,25 @@ const MyProfileTab = () => {
             
             console.log("Profile form data populated successfully");
             
-            // Set profile image if available
-            if (userData.profileImage || userData.profile_img) {
-                const profileImageUrl = userData.profileImage || userData.profile_img;
-                setImage({ uri: profileImageUrl, file: '' });
-                setMediaPaths(profileImageUrl);
-                console.log("Profile image set:", profileImageUrl);
+            // Set profile image if available - check both fields and handle 'None' string
+            const profileImageUrl = userData.profileImage || userData.profile_img;
+            if (profileImageUrl && profileImageUrl !== 'None' && profileImageUrl !== '') {
+                console.log("Setting profile image from database:", profileImageUrl);
+                const fullImageUrl = getImageUrl(profileImageUrl);
+                console.log("Full image URL:", fullImageUrl);
+                setImage({ uri: fullImageUrl, file: '' });
+                setMediaPaths(profileImageUrl); // Keep storing the relative path in MediaPaths
+            } else {
+                console.log("No profile image in database");
+                // Don't override if we already have an uploaded image in MediaPaths
+                // This prevents losing the uploaded image during refresh
             }
             
             setLoading(false);
-            toast.success("Profile data loaded successfully");
+            // Only show success message if this isn't the initial load
+            if (userData.email) {
+                console.log("Profile data loaded from database");
+            }
         } catch (error) {
             console.error("Error fetching user profile:", error);
             toast.error("Failed to load profile data from database. Using cached data instead.");
@@ -211,178 +242,201 @@ const MyProfileTab = () => {
             
             // If we have profile image in Redux data, use that
             if (profiledata?.profile_img) {
-                setImage({ uri: profiledata.profile_img, file: '' });
+                setImage({ uri: getImageUrl(profiledata.profile_img), file: '' });
                 setMediaPaths(profiledata.profile_img);
             }
         }
     };
 
     const handleFileChange = async (event) => {
+        console.log("File selection triggered");
         const file = event.target.files[0];
         if (file) {
+            console.log("File selected:", file.name, file.size, file.type);
+            
+            // Validate file size (3MB = 3 * 1024 * 1024 bytes)
+            if (file.size > 3 * 1024 * 1024) {
+                toast.error("File size must be less than 3MB");
+                return;
+            }
+            
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                toast.error("Please select an image file");
+                return;
+            }
+            
             const reader = new FileReader();
             reader.onloadend = () => {
+                console.log("File read completed, showing preview");
                 const data = { 
                     uri: reader.result,
                     file 
                 };
                 setImage(data);
-               
             };
             reader.readAsDataURL(file);
+            
+            // Upload the file
             await ImagesUpload(file);
+        } else {
+            console.log("No file selected");
         }
     };
 
     const ImagesUpload = async (file) => {
+        console.log("Starting image upload process...");
         try {
             setLoading(true);
+            toast.info("Uploading image...");
+            
             let formData = new FormData();
             formData.append("mediaFiles", file);
             
-            const response = await Api.postWithtoken("media/public", formData);
-            const { files, message } = response;
+            console.log("Calling upload API...");
+            // Use postFileWithtoken for file uploads (handles multipart/form-data correctly)
+            const response = await Api.postFileWithtoken("api/media/public", formData);
+            console.log("Upload API response:", response);
+            
             setLoading(false);
-    
-            if (files && typeof files === 'string') {
-                setMediaPaths(files);
-            } else if (files && Array.isArray(files) && files.length > 0) {
-                setMediaPaths(files[0]);
+            
+            // Handle different response formats
+            let imageUrl = '';
+            if (response && response.files) {
+                const { files } = response;
+                
+                // Files is an array of objects, each with url/path property
+                if (Array.isArray(files) && files.length > 0) {
+                    // Extract the URL from the first file object
+                    const fileObj = files[0];
+                    imageUrl = fileObj.url || fileObj.path || fileObj;
+                } else if (typeof files === 'string') {
+                    // Fallback if files is returned as a string
+                    imageUrl = files;
+                }
+                
+                if (imageUrl) {
+                    console.log("Image uploaded successfully:", imageUrl);
+                    setMediaPaths(imageUrl);
+                    toast.success("Image uploaded successfully!");
+                } else {
+                    throw new Error("No image URL returned from server");
+                }
+            } else if (response && response.data && response.data.files) {
+                // Handle nested response format
+                const files = response.data.files;
+                if (Array.isArray(files) && files.length > 0) {
+                    const fileObj = files[0];
+                    imageUrl = fileObj.url || fileObj.path || fileObj;
+                    console.log("Image uploaded successfully:", imageUrl);
+                    setMediaPaths(imageUrl);
+                    toast.success("Image uploaded successfully!");
+                } else {
+                    throw new Error("No image URL returned from server");
+                }
             } else {
-                throw new Error("Invalid response from server");
+                throw new Error("Invalid response format from server");
             }
-    
-            toast.success(message);
         } catch (error) {
             setLoading(false);
-            console.error("Upload Error:", error);
-            toast.error(error?.response?.data?.message || "Image upload failed!");
+            console.error("Upload Error Details:", error);
+            console.error("Error response:", error?.response);
+            console.error("Error message:", error?.message);
+            
+            const errorMessage = error?.response?.data?.message || 
+                                error?.response?.data?.error ||
+                                error?.message || 
+                                "Image upload failed! Please try again.";
+            
+            toast.error(errorMessage);
         }
     };
 
     const UpdateProfile = async () => {
+        console.log('==== UpdateProfile function called ====');
+        console.log('Current form data:', inps);
+        
         const errorMessage = ValidateUserCusProfileUpdate(inps);
-        if (errorMessage.isValid == false) {
+        console.log('Validation result:', errorMessage);
+        
+        if (!errorMessage.isValid) {
+            console.log('❌ Validation FAILED:', errorMessage.errors);
             setError(errorMessage);
             toast.error("Please fix the errors in the form");
-        } else {
-            try {
-                setLoading(true);
-                toast.info("Retrieving user information from database...");
-                
-                // Get the current user ID from localStorage or Redux state
-                const token = localStorage.getItem('addisnest_token');
-                if (!token) {
-                    toast.error("Authentication token not found. Please log in again.");
-                    setLoading(false);
-                    return;
-                }
-                
-                // First, get the latest user data from the database
-                try {
-                    const userResponse = await Api.getWithtoken("auth/profile");
-                    if (!userResponse || !userResponse.data) {
-                        toast.error("Could not retrieve user information from database");
-                        setLoading(false);
-                        return;
-                    }
-                    toast.info("User information retrieved successfully");
-                } catch (error) {
-                    console.error("Error retrieving user data:", error);
-                    toast.warning("Could not retrieve latest user data. Proceeding with update using current form data.");
-                }
-                
-                // Split name into firstName and lastName
-                const nameParts = inps.name.split(' ');
-                const firstName = nameParts[0] || '';
-                const lastName = nameParts.slice(1).join(' ') || '';
-                
-                // Extract experience, rating, languages, and specialties from about field if available
-                let experience = '';
-                let averageRating = '';
-                let languagesSpoken = [];
-                let specialties = [];
-                
-                // Try to parse the about text to extract structured data
-                const aboutText = inps.about || '';
-                if (aboutText.includes('Experience:')) {
-                    const expMatch = aboutText.match(/Experience: (\d+) years/);
-                    if (expMatch && expMatch[1]) {
-                        experience = expMatch[1];
-                    }
-                    
-                    const ratingMatch = aboutText.match(/Rating: ([\d.]+)/);
-                    if (ratingMatch && ratingMatch[1]) {
-                        averageRating = ratingMatch[1];
-                    }
-                    
-                    const langMatch = aboutText.match(/Languages: ([^\n]+)/);
-                    if (langMatch && langMatch[1]) {
-                        languagesSpoken = langMatch[1].split(', ').map(lang => lang.trim());
-                    }
-                    
-                    const specMatch = aboutText.match(/Specialties: ([^\n]+)/);
-                    if (specMatch && specMatch[1]) {
-                        specialties = specMatch[1].split(', ').map(spec => spec.trim());
-                    }
-                }
-                
-                // Prepare the body for the API request
-                let body = {
-                    email: inps.email,
-                    firstName: firstName,
-                    lastName: lastName,
-                    phone: inps.phone,
-                    address: {
-                        state: inps.state,
-                        city: inps.city
-                    },
-                    lat: '',
-                    lng: '',
-                    about: inps.about,
-                    profile_img: MediaPaths,
-                    profileImage: MediaPaths
-                };
-                
-                // Add agent-specific fields if user is an agent
-                if (inps.role === 'agent') {
-                    if (inps.experience) body.experience = parseInt(inps.experience) || 0;
-                    if (inps.licenseNumber) body.licenseNumber = inps.licenseNumber;
-                    if (inps.agency) body.agency = inps.agency;
-                }
-                
-                // Add additional fields if they were extracted from the about text
-                if (experience) body.experience = experience;
-                if (averageRating) body.averageRating = averageRating;
-                if (languagesSpoken.length > 0) body.languagesSpoken = languagesSpoken;
-                if (specialties.length > 0) body.specialties = specialties;
-                
-                // For backward compatibility, also include the name field
-                body.name = inps.name;
-                
-                // Send the update request
-                toast.info("Updating profile in database...");
-                const response = await Api.postWithtoken("auth/updateProfile", body);
-                const { data, message } = response;
-                
-                // Profile updated successfully
-                toast.success(message || "Profile updated successfully");
-                
-                // Refresh user data in Redux store
-                dispatch(AuthUserDetails());
-                
-                // Also refresh the detailed profile data from the database
-                setTimeout(() => {
-                    toast.info("Refreshing profile data from database...");
-                    fetchUserProfile();
-                }, 800); // Small delay to ensure backend has processed the update
-                
+            return;
+        }
+        
+        console.log('✅ Validation PASSED, starting update process...');
+        
+        try {
+            setLoading(true);
+            console.log('Loading set to true');
+            
+            // Get the current user ID from localStorage or Redux state
+            const token = localStorage.getItem('addisnest_token');
+            if (!token) {
+                toast.error("Authentication token not found. Please log in again.");
                 setLoading(false);
-            } catch (error) {
-                setLoading(false);
-                toast.error(error?.response?.data?.message || "Failed to update profile");
-                console.error("Update profile error:", error);
+                return;
             }
+            
+            // Split name into firstName and lastName
+            const nameParts = inps.name.trim().split(' ');
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
+            
+            // Prepare the body for the API request
+            let body = {
+                email: inps.email.trim(),
+                firstName: firstName,
+                lastName: lastName,
+                phone: inps.phone.trim(),
+                address: {
+                    state: inps.state,
+                    city: inps.city || ''
+                },
+                about: inps.about || '',
+                profile_img: MediaPaths || '',
+                profileImage: MediaPaths || ''
+            };
+            
+            console.log("Update Profile - MediaPaths value:", MediaPaths);
+            console.log("Update Profile - Request body:", body);
+            
+            // Add agent-specific fields if user is an agent
+            if (inps.role === 'agent') {
+                if (inps.experience) body.experience = parseInt(inps.experience) || 0;
+                if (inps.licenseNumber) body.licenseNumber = inps.licenseNumber.trim();
+                if (inps.agency) body.agency = inps.agency.trim();
+            }
+            
+            // For backward compatibility, also include the name field
+            body.name = inps.name;
+            
+            // Send the update request
+            toast.info("Updating profile...");
+            const response = await Api.postWithtoken("auth/updateProfile", body);
+            const { message } = response;
+            
+            setLoading(false);
+            
+            // Show success message
+            toast.success(message || "Profile updated successfully!");
+            
+            // Refresh Redux store with updated user data
+            await dispatch(AuthUserDetails());
+            
+            // Fetch fresh data from database to display updated values
+            setTimeout(async () => {
+                toast.info("Refreshing profile data...");
+                await fetchUserProfile();
+                toast.success("Profile data refreshed!");
+            }, 1000);
+            
+        } catch (error) {
+            setLoading(false);
+            toast.error(error?.response?.data?.message || "Failed to update profile");
+            console.error("Update profile error:", error);
         }
     };
     
@@ -497,8 +551,40 @@ const MyProfileTab = () => {
                             }}>Upload Profile Picture</h3>
                             <p style={{
                                 fontSize: "14px",
-                                color: "#888"
+                                color: "#888",
+                                marginBottom: "10px"
                             }}>Size: less than 3MB</p>
+                            {(MediaPaths && MediaPaths !== 'None' && MediaPaths !== DefaultProfileImg) && (
+                                <button
+                                    onClick={() => {
+                                        if (window.confirm("Are you sure you want to remove your profile picture?")) {
+                                            setImage({ uri: DefaultProfileImg, file: '' });
+                                            setMediaPaths('');
+                                            toast.success("Profile picture removed. Click 'Update Profile' to save changes.");
+                                        }
+                                    }}
+                                    style={{
+                                        padding: "8px 16px",
+                                        backgroundColor: "#ff4d4f",
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "6px",
+                                        fontSize: "14px",
+                                        fontWeight: "500",
+                                        cursor: "pointer",
+                                        transition: "all 0.3s ease",
+                                        marginTop: "5px"
+                                    }}
+                                    onMouseOver={(e) => {
+                                        e.currentTarget.style.backgroundColor = "#d9363e";
+                                    }}
+                                    onMouseOut={(e) => {
+                                        e.currentTarget.style.backgroundColor = "#ff4d4f";
+                                    }}
+                                >
+                                    Remove Picture
+                                </button>
+                            )}
                         </div>
                     </div>
                     <div className="form-flex" style={{
@@ -826,12 +912,9 @@ const MyProfileTab = () => {
                             Reset
                         </button>
                         <button 
-                            onClick={() => {
-                                if (window.confirm("Are you sure you want to update your profile?")) {
-                                    UpdateProfile();
-                                }
-                            }} 
+                            onClick={UpdateProfile} 
                             className="btn btn-primary"
+                            disabled={Loading}
                             style={{
                                 padding: "12px 24px",
                                 backgroundColor: "#4a6cf7",

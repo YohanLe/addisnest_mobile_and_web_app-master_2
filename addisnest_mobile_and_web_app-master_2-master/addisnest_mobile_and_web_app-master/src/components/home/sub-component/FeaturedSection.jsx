@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { GetHomeData } from '../../../Redux-store/Slices/HomeSlice';
 import { Property1, Property2, Property3 } from '../../../assets/images';
 import { SvgLocationIcon, SvgFavoriteOutlineIcon, SvgRightIcon } from '../../../assets/svg-files/SvgFiles';
+import { getSafeMongoId } from '../../../utils/mongoIdHelper';
 
 const FeaturedSection = () => {
   const dispatch = useDispatch();
@@ -114,7 +115,7 @@ const FeaturedSection = () => {
                       <span>{property.squareFeet} sqft</span>
                     </div>
                     <Link 
-                      to={`/property/${property._id}`} 
+                      to={`/property/${getSafeMongoId(property._id)}`} 
                       className="view-property-btn"
                     >
                       View Details

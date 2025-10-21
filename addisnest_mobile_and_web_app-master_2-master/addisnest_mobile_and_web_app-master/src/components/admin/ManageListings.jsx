@@ -234,23 +234,21 @@ const ManageListings = () => {
   };
 
   const handleReject = async (listingId) => {
-    const reason = prompt('Please provide a reason for rejection (optional):');
-    
-    try {
-      await api.putWithtoken(`properties/${listingId}/reject`, { reason });
-      
-      // Update the listing in the state
-      setListings(prevListings => 
-        prevListings.map(listing => 
-          listing._id === listingId ? { ...listing, status: 'rejected' } : listing
-        )
-      );
-      
-      alert('Property rejected successfully!');
-      
-    } catch (error) {
-      console.error('Error rejecting listing:', error);
-      alert('Failed to reject listing. Please try again.');
+    if (window.confirm('Are you sure you want to reject and delete this listing? This action cannot be undone.')) {
+      try {
+        await api.deleteWithtoken(`properties/${listingId}`);
+        
+        // Remove the listing from the state
+        setListings(prevListings => 
+          prevListings.filter(listing => listing._id !== listingId)
+        );
+        
+        alert('Property rejected and deleted successfully!');
+        
+      } catch (error) {
+        console.error('Error rejecting listing:', error);
+        alert('Failed to reject listing. Please try again.');
+      }
     }
   };
 
@@ -300,6 +298,8 @@ const ManageListings = () => {
       case 'rented':
       case 'Rented':
         return 'rented';
+      case 'rejected':
+        return 'rejected';
       default:
         return '';
     }
@@ -346,11 +346,11 @@ const ManageListings = () => {
         <div className="filter-selects">
           <select value={filter} onChange={handleFilterChange} className="filter-select">
             <option value="all">All Listings</option>
-            <option value="active">Published</option>
             <option value="pending">Pending</option>
+            <option value="active">Active</option>
             <option value="sold">Sold</option>
             <option value="rented">Rented</option>
-            <option value="pending_payment">Pending Payment</option>
+            <option value="rejected">Rejected</option>
           </select>
           
           <select value={locationFilter} onChange={handleLocationFilterChange} className="filter-select">

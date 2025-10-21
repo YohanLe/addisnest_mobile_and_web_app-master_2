@@ -37,12 +37,26 @@ const AccountMain = () => {
     const userDetails = useSelector((state) => state?.Authentication?.Details?.data || null);
     const tokenData = getTokenData();
     
-    // Combine data from Redux store and token data
-    const userData = userDetails || tokenData;
+    // Try to get user data from localStorage as well
+    const [localUserData, setLocalUserData] = useState(null);
+    
+    useEffect(() => {
+        try {
+            const storedUserData = localStorage.getItem('userData');
+            if (storedUserData) {
+                setLocalUserData(JSON.parse(storedUserData));
+            }
+        } catch (error) {
+            console.error('Error loading user data from localStorage:', error);
+        }
+    }, []);
+    
+    // Combine data from Redux store, localStorage, and token data
+    const userData = userDetails || localUserData || tokenData;
     const agentInfo = {
         name: userData?.firstName ? `${userData.firstName} ${userData.lastName || ''}`.trim() : 
-              (userData?.email ? userData.email.split('@')[0] : "Customer"),
-        email: userData?.email || "yohanb1212@gmail.com"
+              (userData?.email ? userData.email.split('@')[0] : ""),
+        email: userData?.email || ""
     };
     
     // Toggle sidebar for mobile
@@ -171,16 +185,6 @@ const AccountMain = () => {
                                 </div>
                             </li>
                         </ul>
-                    </div>
-                    {/* Agent info at bottom of sidebar */}
-                    <div className="sidebar-agent-info">
-                        <div className="agent-avatar">
-                            {agentInfo.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div className="agent-details">
-                            <p className="agent-name">{agentInfo.name}</p>
-                            <p className="agent-email">{agentInfo.email}</p>
-                        </div>
                     </div>
                 </div>
                 

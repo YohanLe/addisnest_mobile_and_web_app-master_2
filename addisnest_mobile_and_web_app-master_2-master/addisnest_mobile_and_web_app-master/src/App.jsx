@@ -20,8 +20,8 @@ import FindAgent from './components/find-agent';
 import HelpSupport from './components/Help-support';
 import PrivacyPolicy from './components/privacy-policy';
 import TermsOfService from './components/terms-of-service';
-import PartnerWithUs from './components/partner-with-us';
 import PropertyListForm from './components/property-list-form';
+import PropertyEditForm from './components/property-edit-form';
 import ChoosePromotion from './components/payment-method/choose-propmo';
 import { AuthUserDetails } from './Redux-store/Slices/AuthSlice';
 import { isAuthenticated } from './utils/tokenHandler';
@@ -59,8 +59,11 @@ const App = () => {
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/find-agent/*" element={<FindAgent />} />
           <Route path="/admin-login" element={<AdminLoginPage />} />
+          <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/manage-listings" element={<ManageListings />} />
+          <Route path="/admin/manage-listings" element={<ManageListings />} />
           <Route path="/partnership-requests" element={<PartnershipRequests />} />
           <Route path="/manage-users" element={<ManageUsers />} />
           <Route path="/chat" element={<Chat />} />
@@ -68,8 +71,8 @@ const App = () => {
           <Route path="/help-support" element={<HelpSupport />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
-          <Route path="/partner-with-us" element={<PartnerWithUs />} />
           <Route path="/property-list-form" element={<PropertyListForm />} />
+          <Route path="/property-edit/:id" element={<PropertyEditForm />} />
           <Route path="/payment-method/choose-promotion" element={<ChoosePromotion />} />
           <Route path="/for-sale" element={<PlaceholderPage title="For Sale" />} />
           <Route path="/for-rent" element={<PlaceholderPage title="For Rent" />} />

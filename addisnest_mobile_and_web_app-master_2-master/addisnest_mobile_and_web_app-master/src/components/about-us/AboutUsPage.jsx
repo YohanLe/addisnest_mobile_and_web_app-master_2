@@ -96,7 +96,7 @@ const AboutUsPage = () => {
             color: '#555',
             marginBottom: '15px'
           }}>
-            Founded in 2023, Addisnest emerged from a vision to address the challenges in Ethiopia's real estate market. 
+            Founded in 2025, Addisnest emerged from a vision to address the challenges in Ethiopia's real estate market. 
             Our founders recognized the need for a modern, digital platform that could bridge the gap between property 
             seekers and owners, making the process more efficient and transparent for everyone involved.
           </p>

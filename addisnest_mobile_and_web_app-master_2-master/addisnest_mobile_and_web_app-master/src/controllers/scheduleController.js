@@ -95,86 +95,89 @@ class ScheduleController extends BaseController {
         .populate('visitor', 'firstName lastName email phone')
         .populate('propertyOwner', 'firstName lastName email phone');
 
-      // Send email notification to property owner
-      try {
-        const propertyOwnerUser = await User.findById(propertyOwner);
-        if (propertyOwnerUser && propertyOwnerUser.email) {
-          // Format the scheduled date and time
-          const formattedDate = new Date(scheduledDate).toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          });
+      // Send email notification to property owner (non-blocking - email failure won't stop schedule creation)
+      setImmediate(async () => {
+        try {
+          const propertyOwnerUser = await User.findById(propertyOwner);
+          if (propertyOwnerUser && propertyOwnerUser.email) {
+            // Format the scheduled date and time
+            const formattedDate = new Date(scheduledDate).toLocaleDateString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            });
 
-          // Create email content
-          const emailSubject = `New Property Tour Request - ${property.title}`;
-          const emailHtml = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <h2 style="color: #2c5530;">New Property Tour Request</h2>
-              <p>Hello ${propertyOwnerUser.firstName} ${propertyOwnerUser.lastName},</p>
-              
-              <p>You have received a new tour request for your property:</p>
-              
-              <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <h3 style="color: #2c5530; margin-top: 0;">${property.title}</h3>
-                <p><strong>Tour Type:</strong> ${tourType === 'in-person' ? 'In-Person Tour' : 'Video Tour'}</p>
-                <p><strong>Requested Date:</strong> ${formattedDate}</p>
-                <p><strong>Requested Time:</strong> ${scheduledTime}</p>
-                <p><strong>Visitor:</strong> ${req.user.firstName} ${req.user.lastName}</p>
-                <p><strong>Visitor Email:</strong> ${visitorContact.email || req.user.email}</p>
-                <p><strong>Visitor Phone:</strong> ${visitorContact.phone || req.user.phone || 'Not provided'}</p>
-                ${visitorMessage ? `<p><strong>Message:</strong> ${visitorMessage}</p>` : ''}
+            // Create email content
+            const emailSubject = `New Property Tour Request - ${property.title}`;
+            const emailHtml = `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #2c5530;">New Property Tour Request</h2>
+                <p>Hello ${propertyOwnerUser.firstName} ${propertyOwnerUser.lastName},</p>
+                
+                <p>You have received a new tour request for your property:</p>
+                
+                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                  <h3 style="color: #2c5530; margin-top: 0;">${property.title}</h3>
+                  <p><strong>Tour Type:</strong> ${tourType === 'in-person' ? 'In-Person Tour' : 'Video Tour'}</p>
+                  <p><strong>Requested Date:</strong> ${formattedDate}</p>
+                  <p><strong>Requested Time:</strong> ${scheduledTime}</p>
+                  <p><strong>Visitor:</strong> ${req.user.firstName} ${req.user.lastName}</p>
+                  <p><strong>Visitor Email:</strong> ${visitorContact.email || req.user.email}</p>
+                  <p><strong>Visitor Phone:</strong> ${visitorContact.phone || req.user.phone || 'Not provided'}</p>
+                  ${visitorMessage ? `<p><strong>Message:</strong> ${visitorMessage}</p>` : ''}
+                </div>
+                
+                <p>Please log in to your Addisnest account to confirm or reschedule this tour request.</p>
+                
+                <div style="margin: 30px 0;">
+                  <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/account" 
+                     style="background-color: #28a745; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                    Manage Tour Requests
+                  </a>
+                </div>
+                
+                <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+                <p style="color: #666; font-size: 14px;">
+                  This is an automated message from Addisnest. Please do not reply to this email.
+                  <br>
+                  If you have any questions, please contact us at contact@addisnest.com
+                </p>
               </div>
-              
-              <p>Please log in to your Addisnest account to confirm or reschedule this tour request.</p>
-              
-              <div style="margin: 30px 0;">
-                <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/account" 
-                   style="background-color: #28a745; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
-                  Manage Tour Requests
-                </a>
-              </div>
-              
-              <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-              <p style="color: #666; font-size: 14px;">
-                This is an automated message from Addisnest. Please do not reply to this email.
-                <br>
-                If you have any questions, please contact us at contact@addisnest.com
-              </p>
-            </div>
-          `;
+            `;
 
-          // Send email using the notification controller's email service
-          const axios = require('axios');
-          const emailData = {
-            to: propertyOwnerUser.email,
-            subject: emailSubject,
-            html: emailHtml,
-            type: 'schedule_request',
-            propertyId: propertyId,
-            visitorEmail: visitorContact.email || req.user.email,
-            tourDetails: {
-              type: tourType,
-              date: scheduledDate,
-              time: scheduledTime
+            // Send email using the notification controller's email service
+            const axios = require('axios');
+            const emailData = {
+              to: propertyOwnerUser.email,
+              subject: emailSubject,
+              html: emailHtml,
+              type: 'schedule_request',
+              propertyId: propertyId,
+              visitorEmail: visitorContact.email || req.user.email,
+              tourDetails: {
+                type: tourType,
+                date: scheduledDate,
+                time: scheduledTime
+              }
+            };
+
+            // Make internal API call to send email
+            try {
+              await axios.post(`${process.env.API_BASE_URL || 'http://localhost:7002'}/api/notifications/send-email`, emailData);
+              console.log(`✅ Email notification sent successfully to: ${propertyOwnerUser.email}`);
+            } catch (emailError) {
+              console.error('⚠️  Failed to send email notification:', emailError.message);
+              console.error('   (Schedule was still created successfully - email will need to be sent manually)');
             }
-          };
-
-          // Make internal API call to send email
-          try {
-            await axios.post(`${process.env.API_BASE_URL || 'http://localhost:7002'}/api/notifications/send-email`, emailData);
-            console.log(`Email notification sent to property owner: ${propertyOwnerUser.email}`);
-          } catch (emailError) {
-            console.error('Failed to send email notification:', emailError.message);
-            // Don't fail the schedule creation if email fails
           }
+        } catch (emailError) {
+          console.error('⚠️  Error in email notification process:', emailError.message);
+          console.error('   (Schedule was still created successfully - email will need to be sent manually)');
         }
-      } catch (emailError) {
-        console.error('Error sending email notification to property owner:', emailError);
-        // Don't fail the schedule creation if email fails
-      }
+      });
 
+      // Return success immediately (don't wait for email)
       this.sendResponse(res, populatedSchedule, 201);
     } catch (err) {
       console.error('Create schedule error:', err);

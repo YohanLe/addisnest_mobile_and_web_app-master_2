@@ -139,9 +139,9 @@ export const ValidateChangePassword = (data) => {
 export const ValidateUserCusProfileUpdate = (data) => {
   const errors = {};
   
-  // Name validation
-  if (!data.fullName) {
-    errors.fullName = "Full name is required";
+  // Name validation - check both name and fullName fields
+  if (!data.name && !data.fullName) {
+    errors.name = "Full name is required";
   }
   
   // Email validation
@@ -151,10 +151,7 @@ export const ValidateUserCusProfileUpdate = (data) => {
     errors.email = "Email is invalid";
   }
   
-  // Phone validation
-  if (!data.phone) {
-    errors.phone = "Phone number is required";
-  }
+  // Phone validation is optional - remove requirement
   
   return {
     isValid: Object.keys(errors).length === 0,

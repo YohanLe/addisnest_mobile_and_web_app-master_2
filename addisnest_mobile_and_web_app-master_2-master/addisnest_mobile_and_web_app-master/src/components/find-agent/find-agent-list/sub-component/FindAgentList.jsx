@@ -6,6 +6,7 @@ import { GetAgentAll } from '../../../../Redux-store/Slices/AgentAllSlice';
 import { setAgentDetails } from '../../../../Redux-store/Slices/AgentSlice';
 import AgentDetailPopup from '../../../helper/AgentDetailPopup';
 import MessageAgentPopup from '../../../helper/MessageAgentPopup';
+import Api from '../../../../Apis/Api';
 import './FindAgentList.css';
 
 const RegionalStateList = [
@@ -195,6 +196,12 @@ const FindAgentList = () => {
                       <FaPhone /> {agent.phone || 'Phone not available'}
                     </div>
                     
+                    {agent.about && (
+                      <div className="agent-description">
+                        <p>{agent.about.length > 120 ? `${agent.about.substring(0, 120)}...` : agent.about}</p>
+                      </div>
+                    )}
+                    
                     {agent.specialties && agent.specialties.length > 0 && (
                       <div className="specialties">
                         <strong>Specialties:</strong>
@@ -209,7 +216,10 @@ const FindAgentList = () => {
                   </div>
 
                   <button 
-                    onClick={(e) => handleMessageAgent(agent, e)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleViewAgentDetails(agent);
+                    }}
                     className="contact-btn"
                   >
                     <FaEnvelope /> Contact Agent

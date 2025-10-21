@@ -19,6 +19,7 @@ class MediaController extends BaseController {
       console.log('Request method:', req.method);
       console.log('Request URL:', req.url);
       console.log('Available request properties:', Object.keys(req));
+      console.log('__dirname:', __dirname);
       console.log('=== END DEBUG ===');
 
       // Check if files exist in the request
