@@ -1046,7 +1046,7 @@ const PropertyListForm = () => {
                                     <span>💡</span> Upload Tips:
                                 </div>
                                 <p style={{ fontSize: '13px', margin: '0', color: '#333' }}>
-                                    Adding photos helps your property get more attention. For best results, upload clear photos showing key features of your property.
+                                    For best results, upload photos captured <strong>HORIZONTALLY</strong>.
                                 </p>
                             </div>
                             <div className="image-upload-grid-horizontal">
