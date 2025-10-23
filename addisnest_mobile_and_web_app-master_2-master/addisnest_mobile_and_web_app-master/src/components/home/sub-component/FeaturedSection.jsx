@@ -12,7 +12,7 @@ const FeaturedSection = () => {
   
   useEffect(() => {
     // Fetch featured properties (type 'buy' for example)
-    dispatch(GetHomeData({ type: 'buy', page: 1, limit: 6 }));
+    dispatch(GetHomeData({ type: 'buy', page: 1, limit: 50 }));
   }, [dispatch]);
 
   // Fallback properties if API fails or is pending
@@ -87,7 +87,7 @@ const FeaturedSection = () => {
               <p>Loading properties...</p>
             </div>
           ) : (
-            properties.slice(0, 3).map((property) => (
+            properties.slice(0, 50).map((property) => (
               <div key={property._id} className="col-md-4 mb-4">
                 <div className="property-card">
                   <div className="property-image">

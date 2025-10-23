@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { GetAllPropertyListings } from '../../Redux-store/Slices/HomeSlice';
 import { Property1, Property2, Property3 } from '../../assets/images';
 import { getSafeMongoId } from '../../utils/mongoIdHelper';
 
 const PropertyRentListPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { data, pending } = useSelector((state) => state.Home?.PropertyListings || { data: null, pending: false });
   const [searchQuery, setSearchQuery] = useState('');
   const [priceRange, setPriceRange] = useState('any');
@@ -14,6 +15,7 @@ const PropertyRentListPage = () => {
   const [bedrooms, setBedrooms] = useState('any');
   const [rentalTerm, setRentalTerm] = useState('any');
   const [sortBy, setSortBy] = useState('newest');
+  const [activeTab, setActiveTab] = useState('rent');
 
   useEffect(() => {
     // Fetch all property listings
@@ -232,13 +234,72 @@ const PropertyRentListPage = () => {
 
   return (
     <div className="property-rent-list-page py-5">
+      <style>
+        {`
+          @media (max-width: 767px) {
+            .buy-rent-toggle-mobile {
+              display: flex !important;
+            }
+          }
+        `}
+      </style>
       <div className="container">
+        {/* Buy/Rent Toggle - Mobile Only */}
+        <div className="buy-rent-toggle-mobile" style={{
+          display: 'none',
+          justifyContent: 'center',
+          marginBottom: '20px'
+        }}>
+          <div style={{
+            display: 'inline-flex',
+            backgroundColor: '#f0f0f0',
+            borderRadius: '25px',
+            padding: '4px',
+            gap: '4px'
+          }}>
+            <button
+              onClick={() => navigate('/property-sell-list')}
+              style={{
+                padding: '8px 20px',
+                border: 'none',
+                borderRadius: '20px',
+                backgroundColor: activeTab === 'buy' ? '#a4ff2a' : 'transparent',
+                color: activeTab === 'buy' ? '#222' : '#666',
+                fontWeight: '600',
+                fontSize: '14px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                minWidth: '80px'
+              }}
+            >
+              Buy
+            </button>
+            <button
+              onClick={() => navigate('/property-rent-list')}
+              style={{
+                padding: '8px 20px',
+                border: 'none',
+                borderRadius: '20px',
+                backgroundColor: activeTab === 'rent' ? '#00bcd4' : 'transparent',
+                color: activeTab === 'rent' ? '#fff' : '#666',
+                fontWeight: '600',
+                fontSize: '14px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                minWidth: '80px'
+              }}
+            >
+              Rent
+            </button>
+          </div>
+        </div>
+        
         <div className="page-header mb-4">
           <h1 className="mb-2" style={{ fontSize: '2.2rem', fontWeight: '700', color: '#333' }}>Properties for Rent</h1>
           <p className="text-muted">Find the perfect rental property in Ethiopia</p>
         </div>
         
-        <div className="filters-section mb-4" style={{ 
+        <div className="filters-section mb-4" style={{
           backgroundColor: 'white', 
           borderRadius: '16px', 
           boxShadow: '0 8px 20px rgba(0, 0, 0, 0.08)', 
@@ -452,7 +513,7 @@ const PropertyRentListPage = () => {
                       className="property-image"
                       style={{
                         position: 'relative',
-                        height: '160px',
+                        height: '200px',
                         overflow: 'hidden'
                       }}
                     >
@@ -472,6 +533,8 @@ const PropertyRentListPage = () => {
                           width: '100%',
                           height: '100%',
                           objectFit: 'cover',
+                          objectPosition: 'center',
+                          display: 'block',
                           transition: 'transform 0.5s ease',
                           transform: 'scale(1)'
                         }}
@@ -614,13 +677,56 @@ const PropertyRentListPage = () => {
                         {getAddress(property)}
                       </div>
                       
-                      {/* Listing agent/source */}
-                      <div style={{ 
-                        fontSize: '0.85rem',
-                        color: '#666',
+                      {/* Owner Information */}
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        paddingTop: '10px',
+                        borderTop: '1px solid #eee',
                         marginTop: '10px'
                       }}>
-                        {getListingAgent(property)}
+                        {property.owner?.profileImage ? (
+                          <img 
+                            src={property.owner.profileImage}
+                            alt={property.owner?.firstName || 'Owner'}
+                            style={{
+                              width: '40px',
+                              height: '40px',
+                              borderRadius: '50%',
+                              objectFit: 'cover'
+                            }}
+                          />
+                        ) : (
+                          <div style={{
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                            backgroundColor: '#4a5568',
+                            color: '#fff',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            textTransform: 'uppercase'
+                          }}>
+                            {property.owner?.firstName?.[0] || 'U'}{property.owner?.lastName?.[0] || ''}
+                          </div>
+                        )}
+                        <div>
+                          <p style={{
+                            fontSize: '0.9rem',
+                            color: '#333',
+                            fontWeight: '600',
+                            marginBottom: '0'
+                          }}>
+                            <span style={{ fontSize: '0.85rem', color: '#666', fontWeight: 'normal' }}>Listed by </span>
+                            {property.owner?.firstName && property.owner?.lastName 
+                              ? `${property.owner.firstName} ${property.owner.lastName}`
+                              : 'Property Owner'}
+                          </p>
+                        </div>
                       </div>
                     </div>
                     <Link 

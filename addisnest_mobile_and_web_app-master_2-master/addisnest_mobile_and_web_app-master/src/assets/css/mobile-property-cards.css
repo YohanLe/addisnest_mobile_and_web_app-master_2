@@ -77,12 +77,72 @@
   
   /* Thumbnail image */
   .thumbnail {
-    width: 100%;
-    height: auto;
+    width: 100% !important;
+    height: 200px !important;
     border-radius: 6px;
-    object-fit: cover;
-    max-height: 180px;
+    object-fit: cover !important;
+    object-position: center !important;
+    background-color: #f5f5f5;
+    display: block !important;
     margin-bottom: 0.5rem;
+    transform: scale(1.15) !important;
+  }
+  
+  /* Property card images - for inline styled components - ONLY for property images, NOT owner avatars */
+  .property-card .property-image img {
+    width: 100% !important;
+    height: 200px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block !important;
+    transform: scale(1.15) !important;
+  }
+  
+  .property-card .property-image {
+    height: 200px !important;
+    overflow: hidden !important;
+  }
+  
+  /* Fix owner avatar to stay small like desktop - target all possible avatar elements */
+  .property-card img[alt*="Owner"],
+  .property-card img[alt*="owner"],
+  .property-card img[alt*="Agent"],
+  .property-card img[alt*="agent"],
+  .property-card img[style*="borderRadius: '50%'"],
+  .property-card img[style*="borderRadius:'50%'"],
+  .property-card div[style*="borderRadius: '50%'"],
+  .property-card div[style*="borderRadius:'50%'"],
+  .property-card div[style*="width: '40px'"],
+  .property-card div[style*="width:'40px'"],
+  .property-card div[style*="backgroundColor: '#4a5568'"],
+  .property-card div[style*="backgroundColor:'#4a5568'"] {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+    transform: none !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* Specifically target owner information container */
+  .property-card > div > div:last-child > div,
+  .property-card [style*="paddingTop: '10px'"],
+  .property-card [style*="paddingTop:'10px'"] {
+    display: flex !important;
+    align-items: center !important;
+  }
+  
+  .property-card [style*="paddingTop: '10px'"] > div:first-child,
+  .property-card [style*="paddingTop:'10px'"] > div:first-child {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+    flex-shrink: 0 !important;
   }
   
   .property-thumbnail-placeholder {

@@ -13,7 +13,7 @@ const HomePage = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   
   // Determine property count based on screen width
-  const propertyCount = windowWidth <= 767 ? 5 : 12;
+  const propertyCount = 50;
 
   // Add event listener to track window resize
   useEffect(() => {

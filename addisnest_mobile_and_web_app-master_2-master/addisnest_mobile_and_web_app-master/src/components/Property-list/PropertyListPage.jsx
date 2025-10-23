@@ -476,8 +476,10 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                         width: '100%',
                         height: '100%',
                         objectFit: 'cover',
+                        objectPosition: 'center',
                         transition: 'transform 0.3s ease',
-                        display: 'block'
+                        display: 'block',
+                        transform: 'scale(1.15)'
                       }}
                     />
                       
@@ -578,18 +580,12 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                       </div>
                       <div>
                         <p style={{
-                          fontSize: '0.85rem',
-                          color: '#999',
-                          marginBottom: '2px'
-                        }}>
-                          Listed by
-                        </p>
-                        <p style={{
                           fontSize: '0.9rem',
                           color: '#fff',
                           fontWeight: '600',
                           marginBottom: '0'
                         }}>
+                          <span style={{ fontSize: '0.85rem', color: '#999', fontWeight: 'normal' }}>Listed by </span>
                           {property.owner?.firstName && property.owner?.lastName 
                             ? `${property.owner.firstName} ${property.owner.lastName}`
                             : property.ownerName || 'Property Owner'}
@@ -1028,8 +1024,10 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                         width: '100%',
                         height: '100%',
                         objectFit: 'cover',
+                        objectPosition: 'center',
                         transition: 'transform 0.3s ease',
-                        display: 'block'
+                        display: 'block',
+                        transform: 'scale(1.15)'
                       }}
                     />
                     
@@ -1130,18 +1128,12 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                       </div>
                       <div>
                         <p style={{
-                          fontSize: '0.85rem',
-                          color: '#999',
-                          marginBottom: '2px'
-                        }}>
-                          Listed by
-                        </p>
-                        <p style={{
                           fontSize: '0.9rem',
                           color: '#fff',
                           fontWeight: '600',
                           marginBottom: '0'
                         }}>
+                          <span style={{ fontSize: '0.85rem', color: '#999', fontWeight: 'normal' }}>Listed by </span>
                           {property.owner?.firstName && property.owner?.lastName 
                             ? `${property.owner.firstName} ${property.owner.lastName}`
                             : property.ownerName || 'Property Owner'}

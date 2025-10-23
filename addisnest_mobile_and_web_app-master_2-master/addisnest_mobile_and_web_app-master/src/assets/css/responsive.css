@@ -451,7 +451,8 @@
   .property-card .property-image img {
     width: 100vw !important;
     height: 100% !important;
-    object-fit: cover !important;
+    object-fit: contain !important;
+    background-color: #f5f5f5;
     display: block !important;
     border-radius: 0 !important;
     margin: 0 auto !important;
