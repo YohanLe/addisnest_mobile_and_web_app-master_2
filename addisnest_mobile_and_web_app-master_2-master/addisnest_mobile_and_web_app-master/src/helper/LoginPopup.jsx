@@ -131,48 +131,51 @@ const [loginError, setLoginError] = useState("");
                 console.error('Login error:', error);
                 setLoading(false);
                 
+                // Handle network errors first
                 if (!error.response) {
-                    setLoginError('Network connection failed. Please check your internet connection.');
+                    if (error.message === 'Network Error' || error.code === 'ERR_NETWORK') {
+                        setLoginError('Unable to connect. Please check your internet connection and try again.');
+                    } else {
+                        setLoginError('Connection failed. Please try again.');
+                    }
                     return;
                 }
                 
-                // Display user-friendly error messages for different error scenarios
-                if (error.response) {
-                    const { status, data } = error.response;
-                    
-                    // Check message content first regardless of status code
-                    if (data?.message) {
-                        if (data.message.toLowerCase().includes('password')) {
-                            setLoginError('The password you entered is incorrect. Please try again.');
-                        } else if (data.message.toLowerCase().includes('not found') || 
-                                  data.message.toLowerCase().includes('not registered') ||
-                                  data.message.toLowerCase().includes('email')) {
-                            setLoginError('This email is not registered. Please check your email or sign up.');
-                        } else if (status === 404) {
-                            setLoginError('Account not found. Please check your email or create a new account.');
-                        } else if (status === 403) {
-                            setLoginError('Your account is locked. Please contact support for assistance.');
-                        } else if (status >= 500) {
-                            setLoginError('We\'re having a temporary issue with our system. Please try again in a moment or contact support if the problem persists.');
-                        } else {
-                            setLoginError('Unable to sign in. Please check your credentials and try again.');
-                        }
-                    } else {
-                        // Fallback for cases where no message is provided
-                        if (status === 401) {
-                            setLoginError('Invalid email or password. Please check your credentials and try again.');
-                        } else if (status === 404) {
-                            setLoginError('Account not found. Please check your email or create a new account.');
-                        } else if (status === 403) {
-                            setLoginError('Your account is locked. Please contact support for assistance.');
-                        } else if (status >= 500) {
-                            setLoginError('We\'re having a temporary issue with our system. Please try again in a moment or contact support if the problem persists.');
-                        } else {
-                            setLoginError('Login failed. Please try again.');
-                        }
-                    }
+                // Display user-friendly error messages based on response
+                const { status, data } = error.response;
+                const message = data?.message || '';
+                const lowerMessage = message.toLowerCase();
+                
+                // Check message content first for most specific errors
+                if (lowerMessage.includes('password') && (lowerMessage.includes('incorrect') || lowerMessage.includes('wrong') || lowerMessage.includes('invalid'))) {
+                    setLoginError('The password you entered is incorrect. Please double-check and try again.');
+                } else if (lowerMessage.includes('user not found') || lowerMessage.includes('email not found') || lowerMessage.includes('not registered')) {
+                    setLoginError('This email address is not registered. Please check your email or sign up for a new account.');
+                } else if (lowerMessage.includes('account') && lowerMessage.includes('locked')) {
+                    setLoginError('Your account has been locked. Please contact support for assistance.');
+                } else if (lowerMessage.includes('account') && lowerMessage.includes('suspended')) {
+                    setLoginError('Your account has been suspended. Please contact support for more information.');
+                } else if (status === 401) {
+                    // 401 Unauthorized - typically wrong credentials
+                    setLoginError('Invalid email or password. Please check your credentials and try again.');
+                } else if (status === 404) {
+                    // 404 Not Found - user/account not found
+                    setLoginError('Account not found. Please check your email or create a new account.');
+                } else if (status === 403) {
+                    // 403 Forbidden - account locked or restricted
+                    setLoginError('Access denied. Your account may be restricted. Please contact support.');
+                } else if (status === 429) {
+                    // 429 Too Many Requests - rate limiting
+                    setLoginError('Too many login attempts. Please wait a few minutes and try again.');
+                } else if (status >= 500) {
+                    // 500+ Server errors
+                    setLoginError('Server error. Our system is experiencing issues. Please try again in a few minutes.');
+                } else if (message) {
+                    // If we have a message but didn't match any specific patterns
+                    setLoginError(message);
                 } else {
-                    setLoginError('An error occurred during login. Please try again.');
+                    // Generic fallback
+                    setLoginError('Login failed. Please verify your email and password and try again.');
                 }
             } finally {
                 setLoading(false);

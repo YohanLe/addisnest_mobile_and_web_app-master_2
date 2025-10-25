@@ -7,8 +7,13 @@ import {
   /* SvgLinkedInIcon */
 } from '../../../assets/svg-files/SvgFiles';
 import { Logo } from '../../../assets/images';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTranslations } from '../../../locales/translations';
 
 const Footer = () => {
+  const { language } = useLanguage();
+  const t = useTranslations(language);
+  
   return (
     <>
       {/* Main Footer - Enhanced with modern design */}
@@ -47,7 +52,7 @@ const Footer = () => {
                 marginBottom: '5px',
                 maxWidth: '90%'
               }}>
-                Connecting you to the best properties across Ethiopia.
+                {t.footerTagline}
               </p>
             </div>
             
@@ -91,7 +96,7 @@ const Footer = () => {
                         onMouseOver={(e) => e.target.style.color = '#b9f73e'}
                         onMouseOut={(e) => e.target.style.color = '#e0e0e0'}
                       >
-                        Buy a house
+                        {t.buyHouse}
                       </Link>
                     </li>
                     <li style={{ marginBottom: '8px' }}>
@@ -112,7 +117,7 @@ const Footer = () => {
                         onMouseOver={(e) => e.target.style.color = '#b9f73e'}
                         onMouseOut={(e) => e.target.style.color = '#e0e0e0'}
                       >
-                        Sell a house
+                        {t.sellHouse}
                       </Link>
                     </li>
                   </ul>
@@ -126,7 +131,7 @@ const Footer = () => {
                     color: '#b9f73e',
                     fontWeight: '600'
                   }}>
-                    Quick Links
+                    {t.quickLinks}
                   </h5>
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                     <li style={{ marginBottom: '8px' }}>
@@ -139,7 +144,7 @@ const Footer = () => {
                       onMouseOver={(e) => e.target.style.color = '#b9f73e'}
                       onMouseOut={(e) => e.target.style.color = '#e0e0e0'}
                       >
-                        About Us
+                        {t.aboutUs}
                       </Link>
                     </li>
                     <li style={{ marginBottom: '8px' }}>
@@ -152,7 +157,7 @@ const Footer = () => {
                       onMouseOver={(e) => e.target.style.color = '#b9f73e'}
                       onMouseOut={(e) => e.target.style.color = '#e0e0e0'}
                       >
-                        Contact
+                        {t.contact}
                       </Link>
                     </li>
                     <li style={{ marginBottom: '8px' }}>
@@ -165,7 +170,7 @@ const Footer = () => {
                       onMouseOver={(e) => e.target.style.color = '#b9f73e'}
                       onMouseOut={(e) => e.target.style.color = '#e0e0e0'}
                       >
-                        Privacy Policy
+                        {t.privacyPolicy}
                       </Link>
                     </li>
                     <li style={{ marginBottom: '8px' }}>
@@ -178,7 +183,7 @@ const Footer = () => {
                       onMouseOver={(e) => e.target.style.color = '#b9f73e'}
                       onMouseOut={(e) => e.target.style.color = '#e0e0e0'}
                       >
-                        Terms of Service
+                        {t.termsOfService}
                       </Link>
                     </li>
                   </ul>
@@ -192,7 +197,7 @@ const Footer = () => {
                     color: '#b9f73e',
                     fontWeight: '600'
                   }}>
-                    Connect With Us
+                    {t.connectWithUs}
                   </h5>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     <a 
@@ -321,7 +326,7 @@ const Footer = () => {
               fontSize: '14px', 
               color: '#e0e0e0',
               letterSpacing: '0.5px'
-            }}>&copy; {new Date().getFullYear()} Addisnest. All Rights Reserved.</p>
+            }}>&copy; {new Date().getFullYear()} Addisnest. {t.allRightsReserved}</p>
           </div>
         </div>
       </footer>

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { isAuthenticated, getTokenData } from "../../../utils/tokenHandler";
+import { useLanguage } from "../../../contexts/LanguageContext";
+import { useTranslations } from "../../../locales/translations";
 import {
     SvgMake1Icon as SvgAccountIcon,
     SvgLogOutIcon,
@@ -22,6 +24,8 @@ import "./mobile-account-management.css";
 const AccountMain = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const { language } = useLanguage();
+    const t = useTranslations(language);
     // Set Messages tab (index 0) as the default active tab
     const [activeTab, setActiveTab] = useState(0);
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -104,23 +108,23 @@ const AccountMain = () => {
     
     const tabs = [
         {
-            title: "Messages",
+            title: t.messages,
             ProfileIcon: <SvgMessagesIcon />,
             content: <Messages />,
         },
         {
-            title: "Listed Property Alert",
+            title: t.listedPropertyAlert,
             ProfileIcon: <SvgPropertyAlertIcon />,
             content: <PropertyAlert />,
         },
         {
-            title: "My profile",
+            title: t.myProfile,
             ProfileIcon: <SvgAccountIcon />,
             content: <MyProfileTab />,
         },
         {
             ProfileIcon: <SvgPasswordIcon />,
-            title: "Change password",
+            title: t.changePassword,
             content: <PasswordTab />,
         },
     ];
@@ -140,7 +144,7 @@ const AccountMain = () => {
                             <path d="M3 18H21" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                     </button>
-                    <h1 className="mobile-header-title">Account Management</h1>
+                    <h1 className="mobile-header-title">{t.accountManagement}</h1>
                     <div className="user-icon">
                         {agentInfo.name.charAt(0).toUpperCase()}
                     </div>
@@ -181,7 +185,7 @@ const AccountMain = () => {
                                     <em>
                                         <SvgLogOutIcon />
                                     </em>
-                                    <span className="tab-title">Logout</span>
+                                    <span className="tab-title">{t.logout}</span>
                                 </div>
                             </li>
                         </ul>

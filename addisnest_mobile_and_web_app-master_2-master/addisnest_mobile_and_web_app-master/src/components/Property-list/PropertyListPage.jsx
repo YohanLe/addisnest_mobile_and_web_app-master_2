@@ -8,6 +8,9 @@ import { Property1, Property2, Property3 } from '../../assets/images';
 
 // Utility function to fix broken image URLs
 const fixImageUrl = (imageUrl) => {
+  // Get API base URL
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7002';
+  
   // If no image URL provided, return default
   if (!imageUrl || imageUrl === 'undefined' || imageUrl === 'null' || imageUrl === '') {
     return Property1;
@@ -18,15 +21,15 @@ const fixImageUrl = (imageUrl) => {
     return imageUrl;
   }
 
-  // If it's a relative path, construct the full URL
+  // If it's a relative path, construct the full URL with API base URL
   if (imageUrl.startsWith('/uploads/') || imageUrl.startsWith('uploads/')) {
     const cleanPath = imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
-    return cleanPath;
+    return `${API_BASE_URL}${cleanPath}`;
   }
 
-  // If it's just a filename, construct the uploads URL
+  // If it's just a filename, construct the full uploads URL
   if (!imageUrl.includes('/')) {
-    return `/uploads/${imageUrl}`;
+    return `${API_BASE_URL}/uploads/${imageUrl}`;
   }
 
   // Default fallback
@@ -44,23 +47,36 @@ const getPropertyImage = (property) => {
     property.mainImage
   ];
 
+  console.log('=== Property Image Debug ===');
+  console.log('Property ID:', property._id);
+  console.log('Property title:', property.title);
+  console.log('property.images:', property.images);
+  console.log('property.images?.[0]?.url:', property.images?.[0]?.url);
+  console.log('All possible images:', possibleImages);
+
   for (const img of possibleImages) {
     if (img && img !== 'undefined' && img !== 'null' && img !== '') {
-      return fixImageUrl(img);
+      const finalUrl = fixImageUrl(img);
+      console.log('Using image:', img);
+      console.log('Final URL:', finalUrl);
+      return finalUrl;
     }
   }
 
+  console.log('No valid image found, using default');
   // Return a random default image for variety
   const defaultImages = [Property1, Property2, Property3];
   const randomIndex = Math.abs(property._id?.toString().charCodeAt(0) || 0) % defaultImages.length;
   return defaultImages[randomIndex];
 };
-import { applyFilters, parseQueryParams, createFilterParams, FILTER_OPTIONS } from '../../utils/propertyFilters';
+import { applyFilters, parseQueryParams, createFilterParams, getFilterOptions } from '../../utils/propertyFilters';
 import '../../assets/css/mobile-property-list.css';
 import api from '../../Apis/Api';
 import Select from 'react-select';
 import { removeDuplicateProperties, logPropertyStats } from '../../utils/propertyDeduplication';
 import { getSafeMongoId } from '../../utils/mongoIdHelper';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useTranslations } from '../../locales/translations';
 
 // Get API base URL for owner profile images
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7002';
@@ -84,6 +100,8 @@ const getOwnerImageUrl = (imagePath) => {
 
 const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: homePagePropertyType }) => {
   const dispatch = useDispatch();
+  const { language } = useLanguage();
+  const t = useTranslations(language);
   const { data, pending } = useSelector((state) => state.Home?.HomeData || { data: null, pending: false });
   const userPayments = useSelector((state) => state.Payments?.userPayments || { data: null, pending: false });
   const isLoggedIn = isAuthenticated();
@@ -109,6 +127,9 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
   const [filtersVisible, setFiltersVisible] = useState(!isHomePage);
   const [totalPropertyCount, setTotalPropertyCount] = useState(0);
   const navigate = useNavigate();
+  
+  // Get translated filter options
+  const filterOptions = getFilterOptions(t);
 
   // Normalization function for partial matching
   const normalized = (text) => text.toLowerCase().trim();
@@ -627,10 +648,10 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                   }
                 }}
               >
-                {location.search.includes('rent') ? 'Properties for Rent' : 'Properties for Sale'}
+                {location.search.includes('rent') ? t.propertiesForRent : t.propertiesForSale}
               </Link>
             </h1>
-            <p className="text-muted">Find the perfect property to call home in Ethiopia</p>
+            <p className="text-muted">{t.findPerfectProperty}</p>
           </div>
         )}
         
@@ -657,7 +678,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style={{ marginRight: '8px' }}>
                 <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
               </svg>
-              {filtersVisible ? 'Hide Filters' : 'Show Filters'}
+              {filtersVisible ? t.hideFilters : t.showFilters}
             </button>
           </div>
         )}
@@ -692,11 +713,11 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                 fontWeight: '600', 
                 marginBottom: '8px', 
                 color: '#444'
-              }}>Search</label>
+              }}>{t.search}</label>
               <input
                 type="text"
                 className="form-control"
-                placeholder="Enter keywords..."
+                placeholder={t.enterKeywords}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{ 
@@ -719,7 +740,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                 fontWeight: '600', 
                 marginBottom: '8px', 
                 color: '#444'
-              }}>Price Range</label>
+              }}>{t.priceRange}</label>
               <select 
                 className="form-select" 
                 value={priceRange}
@@ -741,7 +762,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                   backgroundPosition: 'right 12px center'
                 }}
               >
-                {FILTER_OPTIONS.priceRanges.map(option => (
+                {filterOptions.priceRanges.map(option => (
                   <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
               </select>
@@ -754,7 +775,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                 fontWeight: '600', 
                 marginBottom: '8px', 
                 color: '#444'
-              }}>Regional State</label>
+              }}>{t.regionalState}</label>
               <select 
                 className="form-select"
                 value={regionalState}
@@ -776,7 +797,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                   backgroundPosition: 'right 12px center'
                 }}
               >
-                {FILTER_OPTIONS.regionalStates.map(option => (
+                {filterOptions.regionalStates.map(option => (
                   <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
               </select>
@@ -789,7 +810,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                 fontWeight: '600', 
                 marginBottom: '8px', 
                 color: '#444'
-              }}>Property Type</label>
+              }}>{t.propertyType}</label>
               <select 
                 className="form-select"
                 value={propertyType}
@@ -811,7 +832,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                   backgroundPosition: 'right 12px center'
                 }}
               >
-                {FILTER_OPTIONS.propertyTypes.map(option => (
+                {filterOptions.propertyTypes.map(option => (
                   <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
               </select>
@@ -824,7 +845,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                 fontWeight: '600', 
                 marginBottom: '8px', 
                 color: '#444'
-              }}>Bedrooms</label>
+              }}>{t.bedrooms}</label>
               <select 
                 className="form-select"
                 value={bedrooms}
@@ -846,7 +867,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                   backgroundPosition: 'right 12px center'
                 }}
               >
-                {FILTER_OPTIONS.bedBathOptions.map(option => (
+                {filterOptions.bedBathOptions.map(option => (
                   <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
               </select>
@@ -859,7 +880,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                 fontWeight: '600', 
                 marginBottom: '8px', 
                 color: '#444'
-              }}>Bathrooms</label>
+              }}>{t.bathrooms}</label>
               <select 
                 className="form-select"
                 value={bathrooms}
@@ -881,7 +902,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                   backgroundPosition: 'right 12px center'
                 }}
               >
-                {FILTER_OPTIONS.bedBathOptions.map(option => (
+                {filterOptions.bedBathOptions.map(option => (
                   <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
               </select>
@@ -894,7 +915,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                 fontWeight: '600', 
                 marginBottom: '8px', 
                 color: '#444'
-              }}>Sort By</label>
+              }}>{t.sortBy}</label>
               <select 
                 className="form-select"
                 value={sortBy}
@@ -916,7 +937,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                   backgroundPosition: 'right 12px center'
                 }}
               >
-                {FILTER_OPTIONS.sortOptions.map(option => (
+                {filterOptions.sortOptions.map(option => (
                   <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
               </select>
@@ -972,7 +993,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
         {/* Property results count */}
         <div className="results-header mb-4">
           <h3 style={{ fontSize: '1.3rem', fontWeight: '600', color: '#333', marginBottom: '10px' }}>
-            <span style={{ color: '#0066cc' }}>{totalPropertyCount > 0 ? totalPropertyCount : properties.length}</span> Properties Found
+            <span style={{ color: '#0066cc' }}>{totalPropertyCount > 0 ? totalPropertyCount : properties.length}</span> {t.propertiesFound}
           </h3>
         </div>
         
@@ -982,7 +1003,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
             <div className="spinner-border text-primary" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
-            <p className="mt-3">Loading properties...</p>
+            <p className="mt-3">{t.loadingProperties}</p>
           </div>
         ) : (
           <div className="row" style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
@@ -1063,9 +1084,9 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                       color: '#e0e0e0',
                       marginBottom: '10px'
                     }}>
-                      <span>{getBeds(property)} beds</span>
+                      <span>{getBeds(property)} {t.beds}</span>
                       <span>•</span>
-                      <span>{getBaths(property)} baths</span>
+                      <span>{getBaths(property)} {t.baths}</span>
                       <span>•</span>
                       <span>{getArea(property).size} {getArea(property).unit}</span>
                     </div>
@@ -1133,7 +1154,7 @@ const PropertyListPage = ({ isHomePage = false, propertyCount, propertyType: hom
                           fontWeight: '600',
                           marginBottom: '0'
                         }}>
-                          <span style={{ fontSize: '0.85rem', color: '#999', fontWeight: 'normal' }}>Listed by </span>
+                          <span style={{ fontSize: '0.85rem', color: '#999', fontWeight: 'normal' }}>{t.listedBy} </span>
                           {property.owner?.firstName && property.owner?.lastName 
                             ? `${property.owner.firstName} ${property.owner.lastName}`
                             : property.ownerName || 'Property Owner'}

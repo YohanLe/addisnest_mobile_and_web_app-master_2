@@ -1365,12 +1365,12 @@ const EditPropertyForm = () => {
         try {
             setLoading(true);
             
-            // File validation
-            const maxSize = 5 * 1024 * 1024; // 5MB
+            // File validation - very generous limit for high-quality photos
+            const maxSize = 500 * 1024 * 1024; // 500MB
             const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
             
             if (file.size > maxSize) {
-                toast.error("File size too large! Please select an image under 5MB.");
+                toast.error("File size too large! Please select an image under 500MB.");
                 setUploadingStates(prev => ({ ...prev, [index]: false }));
                 setLoading(false);
                 return;

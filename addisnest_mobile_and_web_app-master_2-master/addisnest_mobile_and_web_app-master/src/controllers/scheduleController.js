@@ -164,7 +164,7 @@ class ScheduleController extends BaseController {
 
             // Make internal API call to send email
             try {
-              await axios.post(`${process.env.API_BASE_URL || 'http://localhost:7002'}/api/notifications/send-email`, emailData);
+              await axios.post(`${process.env.API_BASE_URL || 'http://localhost:5000'}/api/notifications/send-email`, emailData);
               console.log(`✅ Email notification sent successfully to: ${propertyOwnerUser.email}`);
             } catch (emailError) {
               console.error('⚠️  Failed to send email notification:', emailError.message);

@@ -25,6 +25,7 @@ import PropertyEditForm from './components/property-edit-form';
 import ChoosePromotion from './components/payment-method/choose-propmo';
 import { AuthUserDetails } from './Redux-store/Slices/AuthSlice';
 import { isAuthenticated } from './utils/tokenHandler';
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 
 // Simple placeholder component for missing routes
 const PlaceholderPage = ({ title }) => (
@@ -34,8 +35,10 @@ const PlaceholderPage = ({ title }) => (
   </div>
 );
 
-const App = () => {
+const AppContent = () => {
   const dispatch = useDispatch();
+  const { language } = useLanguage();
+  const [showLoginPopup, setShowLoginPopup] = React.useState(false);
 
   // Initialize user authentication on app load
   useEffect(() => {
@@ -45,12 +48,17 @@ const App = () => {
     }
   }, [dispatch]);
 
+  // Update document lang attribute when language changes
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
+
   return (
     <div className="app">
-      <Header />
-      <main className="main-content">
+        <Header showLoginPopup={showLoginPopup} setShowLoginPopup={setShowLoginPopup} />
+        <main className="main-content">
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<HomePage setShowLoginPopup={setShowLoginPopup} />} />
           <Route path="/property-list" element={<PropertyListPage />} />
           <Route path="/property-detail/:id" element={<PropertyDetail />} />
           <Route path="/property/:id" element={<PropertyDetail />} />
@@ -80,9 +88,17 @@ const App = () => {
           <Route path="/mortgage-calculator" element={<PlaceholderPage title="Mortgage Calculator" />} />
           <Route path="*" element={<PlaceholderPage title="Page Not Found" />} />
         </Routes>
-      </main>
-      <Footer />
-    </div>
+        </main>
+        <Footer />
+      </div>
+  );
+};
+
+const App = () => {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 };
 

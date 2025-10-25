@@ -10,6 +10,8 @@ import Api from "../../../Apis/Api";
 import "../property-list-form.css";
 import "../mobile-property-list-form.css"; // Import mobile-specific styles
 import "../../../components/property-form-styles.css";
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTranslations } from '../../../locales/translations';
 
 const PropertyTypeList = [
     { value: 'House', label: 'House' },
@@ -56,65 +58,66 @@ const SubCityList = [
     { value: 'Lemi Kura', label: 'Lemi Kura' }
 ];
 
-// Property Amenities Data (organized in three categories for 3-column layout)
-// IDs updated to use hyphens to match backend schema enum for features.amenities
-const amenitiesData = {
-    basicFeatures: [
-        { id: 'parking-space', label: 'Parking Space' },
-        { id: 'garage', label: 'Garage' },
-        { id: 'garden-yard', label: 'Garden/Yard' },
-        { id: 'balcony-terrace', label: 'Balcony/Terrace' },
-        { id: 'elevator', label: 'Elevator' },
-        { id: 'internet', label: 'Internet/WiFi' }, // Matched to schema: 'internet'
-        { id: 'electricity', label: 'Electricity' }, // Not directly in schema amenities, but in features.utilities
-        { id: 'water-supply', label: 'Water Supply' }, // Not directly in schema amenities
-        { id: 'backup-generator', label: 'Backup Generator' }, // Not in schema
-        { id: 'solar-panels', label: 'Solar Power' }, // Matched to schema: 'solar-panels'
-        { id: 'laundry', label: 'Laundry Room/Service' }, // Matched to schema: 'laundry'
-        { id: 'air-conditioning', label: 'Air Conditioning' },
-        { id: 'heating', label: 'Heating System' }, // Matched to schema: 'heating'
-        { id: 'ceiling-fans', label: 'Ceiling Fans' }, // Not in schema
-        { id: 'equipped-kitchen', label: 'Fully Equipped Kitchen' }, // Not in schema
-        { id: 'kitchen-appliances', label: 'Kitchen Appliances' }, // Not in schema
-        { id: 'furnished', label: 'Furnished' }, // This is also a top-level property 'furnishingStatus'
-        { id: 'storage', label: 'Storage Space' } // Matched to schema: 'storage'
-    ],
-    securityComfort: [
-        { id: '24-7-security', label: '24/7 Security' },
-        { id: 'cctv-surveillance', label: 'CCTV Surveillance' },
-        { id: 'security-alarm', label: 'Security Alarm' },
-        { id: 'gated-community', label: 'Gated Community' },
-        { id: 'intercom-system', label: 'Intercom System' },
-        { id: 'security-guard', label: 'Security Guard' }, // Not in schema
-        { id: 'cleaning-service', label: 'Cleaning Service' }, // Not in schema
-        { id: 'maid-room', label: 'Maid\'s Room' }, // Not in schema
-        { id: 'guest-room', label: 'Guest Room' }, // Not in schema
-        { id: 'home-office', label: 'Home Office/Study' }, // Not in schema
-        { id: 'built-in-wardrobes', label: 'Built-in Wardrobes' }, // Not in schema
-        { id: 'dining-area', label: 'Dining Area' }, // Not in schema
-        { id: 'pantry-storage', label: 'Pantry/Storage' }, // Not in schema
-        { id: 'rooftop-access', label: 'Rooftop Access' }, // Not in schema
-        { id: 'courtyard', label: 'Courtyard' }, // Not in schema
-        { id: 'covered-parking', label: 'Covered Parking' }, // Not in schema (parking-space is)
-        { id: 'bbq-area', label: 'BBQ Area' }, // Not in schema
-        { id: 'wheelchair-accessible', label: 'Wheelchair Accessible' }
-    ],
-    recreationLocation: [
-        { id: 'gym-fitness-center', label: 'Gym/Fitness Center' },
-        { id: 'swimming-pool', label: 'Swimming Pool' },
-        { id: 'playground', label: 'Playground' },
-        { id: 'sports-facilities', label: 'Sports Facilities' },
-        { id: 'clubhouse', label: 'Clubhouse' },
-        { id: 'near-transport', label: 'Near Public Transport' }, // Not in schema as amenity
-        { id: 'near-shopping', label: 'Near Shopping Centers' }, // Not in schema as amenity
-        { id: 'near-schools', label: 'Near Schools' }, // Not in schema as amenity
-        { id: 'near-healthcare', label: 'Near Healthcare' }, // Not in schema as amenity
-        { id: 'near-mosque', label: 'Near Mosque' }, // Not in schema as amenity
-        { id: 'near-church', label: 'Near Church' } // Not in schema as amenity
-    ]
-};
-
 const PropertyListForm = () => {
+    const { language } = useLanguage();
+    const t = useTranslations(language);
+    
+    // Property Amenities Data with translations
+    const amenitiesData = {
+        basicFeatures: [
+            { id: 'parking-space', label: t.parkingSpace },
+            { id: 'garage', label: t.garage },
+            { id: 'garden-yard', label: t.gardenYard },
+            { id: 'balcony-terrace', label: t.balconyTerrace },
+            { id: 'elevator', label: t.elevator },
+            { id: 'internet', label: t.internetWiFi },
+            { id: 'electricity', label: t.electricity },
+            { id: 'water-supply', label: t.waterSupply },
+            { id: 'backup-generator', label: t.backupGenerator },
+            { id: 'solar-panels', label: t.solarPower },
+            { id: 'laundry', label: t.laundryRoomService },
+            { id: 'air-conditioning', label: t.airConditioning },
+            { id: 'heating', label: t.heatingSystem },
+            { id: 'ceiling-fans', label: t.ceilingFans },
+            { id: 'equipped-kitchen', label: t.fullyEquippedKitchen },
+            { id: 'kitchen-appliances', label: t.kitchenAppliances },
+            { id: 'furnished', label: t.furnishedLabel },
+            { id: 'storage', label: t.storageSpace }
+        ],
+        securityComfort: [
+            { id: '24-7-security', label: t.security247 },
+            { id: 'cctv-surveillance', label: t.cctvSurveillance },
+            { id: 'security-alarm', label: t.securityAlarm },
+            { id: 'gated-community', label: t.gatedCommunity },
+            { id: 'intercom-system', label: t.intercomSystem },
+            { id: 'security-guard', label: t.securityGuard },
+            { id: 'cleaning-service', label: t.cleaningService },
+            { id: 'maid-room', label: t.maidRoom },
+            { id: 'guest-room', label: t.guestRoom },
+            { id: 'home-office', label: t.homeOfficeStudy },
+            { id: 'built-in-wardrobes', label: t.builtInWardrobes },
+            { id: 'dining-area', label: t.diningArea },
+            { id: 'pantry-storage', label: t.pantryStorage },
+            { id: 'rooftop-access', label: t.rooftopAccess },
+            { id: 'courtyard', label: t.courtyard },
+            { id: 'covered-parking', label: t.coveredParking },
+            { id: 'bbq-area', label: t.bbqArea },
+            { id: 'wheelchair-accessible', label: t.wheelchairAccessible }
+        ],
+        recreationLocation: [
+            { id: 'gym-fitness-center', label: t.gymFitnessCenter },
+            { id: 'swimming-pool', label: t.swimmingPool },
+            { id: 'playground', label: t.playground },
+            { id: 'sports-facilities', label: t.sportsFacilities },
+            { id: 'clubhouse', label: t.clubhouse },
+            { id: 'near-transport', label: t.nearPublicTransport },
+            { id: 'near-shopping', label: t.nearShoppingCenters },
+            { id: 'near-schools', label: t.nearSchools },
+            { id: 'near-healthcare', label: t.nearHealthcare },
+            { id: 'near-mosque', label: t.nearMosque },
+            { id: 'near-church', label: t.nearChurch }
+        ]
+    };
     const navigate = useNavigate();
     const location = useLocation();
     const [PropertyType, setPropertyType] = useState(null);
@@ -224,13 +227,17 @@ const PropertyListForm = () => {
         // Basic validation
         if (!file) return;
         
-        if (file.size > 5 * 1024 * 1024) {
-            toast.error('File too large (max 5MB)');
+        // Very generous file size limit to support high-quality photos (500MB)
+        const maxSize = 500 * 1024 * 1024; // 500MB
+        if (file.size > maxSize) {
+            toast.error(`File too large. Maximum size is ${maxSize / (1024 * 1024)}MB`);
             return;
         }
         
-        if (!['image/jpeg', 'image/png', 'image/webp', 'image/jpg'].includes(file.type)) {
-            toast.error('Only JPG, PNG, or WEBP allowed');
+        // More flexible MIME type check for mobile compatibility
+        // Check if it's an image file (allows any image type)
+        if (!file.type.startsWith('image/')) {
+            toast.error('Please select an image file');
             return;
         }
 
@@ -723,7 +730,7 @@ const PropertyListForm = () => {
         <section className="common-section property-form-section">
             <div className="container">
                 <div className="property-heading-form">
-                    <h3>Property Listing Form</h3>
+                    <h3>{t.propertyListingForm}</h3>
                 </div>
                 <div className="property-form-main">
                     
@@ -732,7 +739,7 @@ const PropertyListForm = () => {
                             <div className="step-indicator">
                                 <span className="step-number">1</span>
                             </div>
-                            <h4>What are you offering?</h4>
+                            <h4>{t.whatAreYouOffering}</h4>
                         </div>
                         
                         <div className="offering-options">
@@ -743,8 +750,8 @@ const PropertyListForm = () => {
                                 <div className="card-icon">
                                     <div className="icon-circle green">🏠</div>
                                 </div>
-                                <h5>For Sale</h5>
-                                <p>Sell your property</p>
+                                <h5>{t.forSale}</h5>
+                                <p>{t.sellYourProperty}</p>
                             </div>
                             
                             <div 
@@ -754,8 +761,8 @@ const PropertyListForm = () => {
                                 <div className="card-icon">
                                     <div className="icon-circle blue">🔑</div>
                                 </div>
-                                <h5>For Rent</h5>
-                                <p>Rent out your property</p>
+                                <h5>{t.forRent}</h5>
+                                <p>{t.rentOutYourProperty}</p>
                             </div>
                         </div>
                     </div>
@@ -765,46 +772,46 @@ const PropertyListForm = () => {
                             <div className="step-indicator">
                                 <span className="step-number">2</span>
                             </div>
-                            <h4>Complete Property Information</h4>
+                            <h4>{t.completePropertyInfo}</h4>
                         </div>
                         
                         <div className="step-content">
                             <div className="form-row-3-cols">
                                 <div className="form-col-33">
                                     <div className={`form-group required ${validationErrors.property_type ? 'has-error' : ''}`}>
-                                        <label>Property Type *</label>
+                                        <label>{t.propertyType} *</label>
                                         <div className="select-wrapper">
                                             <Select
                                                 options={PropertyTypeList}
-                                                placeholder="Select type"
+                                                placeholder={t.selectType}
                                                 value={PropertyType}
                                                 onChange={(e) => handleChange(e, "Property")}
                                                 className="react-select"
                                             />
                                         </div>
                                         {validationErrors.property_type && (
-                                            <span className="error-msg">Property type is required</span>
+                                            <span className="error-msg">{t.propertyTypeRequired}</span>
                                         )}
                                     </div>
                                 </div>
                                 <div className="form-col-33">
                                     <div className={`form-group required ${validationErrors.title ? 'has-error' : ''}`}>
-                                        <label>Title *</label>
+                                        <label>{t.title} *</label>
                                         <input
                                             type="text"
-                                            placeholder="Enter property title"
+                                            placeholder={t.enterPropertyTitle}
                                             name="title"
                                             onChange={onInpChanged}
                                             value={inps?.title}
                                         />
                                         {validationErrors.title && (
-                                            <span className="error-msg">Title is required</span>
+                                            <span className="error-msg">{t.titleRequired}</span>
                                         )}
                                     </div>
                                 </div>
                                 <div className="form-col-33">
                                     <div className={`form-group required ${validationErrors.total_price ? 'has-error' : ''}`}>
-                                        <label>{activeTab === "For Rent" ? "Monthly Rent *" : "Sale Price (ETB) *"}</label>
+                                        <label>{activeTab === "For Rent" ? t.monthlyRent + " *" : t.salePrice + " *"}</label>
                                         <div className="price-input" style={{ position: 'relative' }}>
                                                 <input
                                                     type="text"
@@ -852,7 +859,7 @@ const PropertyListForm = () => {
                             <div className="form-row-3-cols">
                                 <div className="form-col-33">
                                     <div className={`form-group required ${validationErrors.number_of_bedrooms ? 'has-error' : ''}`}>
-                                        <label>Number of Bedrooms *</label>
+                                        <label>{t.numberOfBedrooms} *</label>
                                         <input
                                             type="text"
                                             inputMode="numeric"
@@ -862,13 +869,13 @@ const PropertyListForm = () => {
                                             value={inps?.number_of_bedrooms}
                                         />
                                         {validationErrors.number_of_bedrooms && (
-                                            <span className="error-msg">Number of bedrooms is required</span>
+                                            <span className="error-msg">{t.bedroomsRequired}</span>
                                         )}
                                     </div>
                                 </div>
                                 <div className="form-col-33">
                                     <div className={`form-group required ${validationErrors.number_of_bathrooms ? 'has-error' : ''}`}>
-                                        <label>Number of Bathrooms *</label>
+                                        <label>{t.numberOfBathrooms} *</label>
                                         <input
                                             type="text"
                                             inputMode="numeric"
@@ -878,17 +885,17 @@ const PropertyListForm = () => {
                                             value={inps?.number_of_bathrooms}
                                         />
                                         {validationErrors.number_of_bathrooms && (
-                                            <span className="error-msg">Number of bathrooms is required</span>
+                                            <span className="error-msg">{t.bathroomsRequired}</span>
                                         )}
                                     </div>
                                 </div>
                                 <div className="form-col-33">
                                     <div className="form-group">
-                                        <label>Furnishing</label>
+                                        <label>{t.furnishing}</label>
                                         <div className="select-wrapper">
                                             <Select
                                                 options={HomeFurnishing}
-                                                placeholder="Select furnishing"
+                                                placeholder={t.selectFurnishing}
                                                 value={FurnishingType}
                                                 onChange={(e) => handleChange(e, "Furnishing")}
                                                 className="react-select"
@@ -901,7 +908,7 @@ const PropertyListForm = () => {
                             <div className="form-row-3-cols">
                                 <div className="form-col-33">
                                     <div className={`form-group required ${validationErrors.property_size ? 'has-error' : ''}`}>
-                                        <label>Property Size (sq ft) *</label>
+                                        <label>{t.propertySizeSqFt} *</label>
                                         <input
                                             type="text"
                                             inputMode="numeric"
@@ -911,7 +918,7 @@ const PropertyListForm = () => {
                                             value={inps?.property_size}
                                         />
                                         {validationErrors.property_size && (
-                                            <span className="error-msg">Property size is required</span>
+                                            <span className="error-msg">{t.propertySizeRequired}</span>
                                         )}
                                     </div>
                                 </div>
@@ -919,16 +926,16 @@ const PropertyListForm = () => {
                             <div className="form-row">
                                 <div className="form-col-100">
                                     <div className={`form-group required ${validationErrors.description ? 'has-error' : ''}`}>
-                                        <label>Property Description *</label>
+                                        <label>{t.propertyDescription} *</label>
                                         <textarea
                                             name="description"
-                                            placeholder="Describe your property in detail..."
+                                            placeholder={t.describeProperty}
                                             rows="3"
                                             onChange={onInpChanged}
                                             value={inps?.description}
                                         />
                                         {validationErrors.description && (
-                                            <span className="error-msg">Description is required</span>
+                                            <span className="error-msg">{t.descriptionRequired}</span>
                                         )}
                                     </div>
                                 </div>
@@ -941,14 +948,14 @@ const PropertyListForm = () => {
                             <div className="step-indicator">
                                 <span className="step-number">3</span>
                             </div>
-                            <h4>Property Location</h4>
+                            <h4>{t.propertyLocation}</h4>
                         </div>
                         
                         <div className="step-content">
                             <div className="form-row-3-cols">
                                 <div className="form-col-33">
                                     <div className={`form-group required ${validationErrors.regional_state ? 'has-error' : ''}`}>
-                                        <label>Regional State *</label>
+                                        <label>{t.regionalState} *</label>
                                         <div className="select-wrapper">
                                             <Select
                                                 options={RegionalStateList}
@@ -964,11 +971,11 @@ const PropertyListForm = () => {
                                     <div className="form-group">
                                         {RegionalStateType?.value === 'Addis Ababa City Administration' ? (
                                             <>
-                                                <label>Sub-City</label>
+                                                <label>{t.subCity}</label>
                                                 <div className="select-wrapper">
                                                     <Select
                                                         options={SubCityList}
-                                                        placeholder="Select sub-city"
+                                                        placeholder={t.selectSubCity}
                                                         value={SubCityList.find(c => c.value === inps.subCity)}
                                                         onChange={(e) => handleChange(e, "SubCity")}
                                                         className="react-select"
@@ -977,10 +984,10 @@ const PropertyListForm = () => {
                                             </>
                                         ) : (
                                             <>
-                                                <label>City/Sub-City</label>
+                                                <label>{t.citySubCity}</label>
                                                 <input
                                                     type="text"
-                                                    placeholder="Enter city or sub-city"
+                                                    placeholder={t.enterCitySubCity}
                                                     name="subCity"
                                                     onChange={onInpChanged}
                                                     value={inps?.subCity}
@@ -991,10 +998,10 @@ const PropertyListForm = () => {
                                 </div>
                                 <div className="form-col-33">
                                     <div className="form-group">
-                                        <label>Country</label>
+                                        <label>{t.country}</label>
                                         <input
                                             type="text"
-                                            placeholder="Country"
+                                            placeholder={t.country}
                                             name="country"
                                             value={inps?.country || "Ethiopia"}
                                             disabled
@@ -1009,7 +1016,7 @@ const PropertyListForm = () => {
                                             color: '#666',
                                             fontSize: '12px' 
                                         }}>
-                                            Default: Ethiopia
+                                            {t.defaultEthiopia}
                                         </small>
                                     </div>
                                 </div>
@@ -1022,8 +1029,8 @@ const PropertyListForm = () => {
                             <div className="step-indicator">
                                 <span className="step-number">4</span>
                             </div>
-                            <h4>Property Images</h4>
-                            <p className="step-description">Add photos of your property. The first image will be your main property photo.</p>
+                            <h4>{t.propertyImages}</h4>
+                            <p className="step-description">{t.addPhotosDescription}</p>
                         </div>
                         
                         <div className="step-content">
@@ -1043,10 +1050,10 @@ const PropertyListForm = () => {
                                     alignItems: 'center',
                                     gap: '6px'
                                 }}>
-                                    <span>💡</span> Upload Tips:
+                                    <span>💡</span> {t.uploadTips}
                                 </div>
                                 <p style={{ fontSize: '13px', margin: '0', color: '#333' }}>
-                                    For best results, upload photos captured <strong>HORIZONTALLY</strong>.
+                                    {t.uploadHorizontally}
                                 </p>
                             </div>
                             <div className="image-upload-grid-horizontal">
@@ -1068,9 +1075,9 @@ const PropertyListForm = () => {
                                                     <div className="upload-icon">
                                                         {index === 0 ? '🏠' : '📷'}
                                                     </div>
-                                                    <p>{index === 0 ? 'Main Photo' : 'Choose Image'}</p>
-                                                    <span>Click to upload</span>
-                                                    {index === 0 && <small>This will be your featured image</small>}
+                                                    <p>{index === 0 ? t.mainPhoto : t.chooseImage}</p>
+                                                    <span>{t.clickToUpload}</span>
+                                                    {index === 0 && <small>{t.featuredImage}</small>}
                                                 </div>
                                             </div>
                                         )}
@@ -1106,7 +1113,7 @@ const PropertyListForm = () => {
                                                             animation: 'spin 1s linear infinite'
                                                         }}>⏳</div>
                                                         <div style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '8px' }}>
-                                                            Uploading...
+                                                            {t.uploading}
                                                         </div>
                                                         <div className="progress-bar" style={{
                                                             width: '80%',
@@ -1125,7 +1132,7 @@ const PropertyListForm = () => {
                                                             }}></div>
                                                         </div>
                                                         <div style={{ fontSize: '12px' }}>
-                                                            {uploadProgress[index] || 0}% uploaded
+                                                            {uploadProgress[index] || 0}% {t.uploaded}
                                                         </div>
                                                         <style dangerouslySetInnerHTML={{__html: `
                                                             @keyframes spin {
@@ -1177,7 +1184,7 @@ const PropertyListForm = () => {
                                                     }}>
                                                         <div style={{ fontSize: '24px', marginBottom: '8px' }}>❌</div>
                                                         <div style={{ fontSize: '12px', textAlign: 'center', marginBottom: '8px' }}>
-                                                            Upload Failed
+                                                            {t.uploadFailed}
                                                         </div>
                                                         <div style={{ fontSize: '10px', textAlign: 'center', marginBottom: '10px', opacity: 0.8 }}>
                                                             {uploadErrors[index] || 'Unknown error'}
@@ -1198,7 +1205,7 @@ const PropertyListForm = () => {
                                                                 fontWeight: 'bold'
                                                             }}
                                                         >
-                                                            🔄 Retry
+                                                            🔄 {t.retry}
                                                         </button>
                                                     </div>
                                                 )}
@@ -1254,9 +1261,9 @@ const PropertyListForm = () => {
                                         transition: 'all 0.3s ease'
                                     }}
                                 >
-                                    ➕ Add More Photos
+                                    {t.addMorePhotos}
                                 </a>
-                                <p>Upload additional photos to showcase your property better (recommended)</p>
+                                <p>{t.uploadAdditionalPhotos}</p>
                             </div>
                         </div>
                     </div>
@@ -1272,8 +1279,8 @@ const PropertyListForm = () => {
                                 <span className="step-number">5</span>
                             </div>
                             <div className="header-content">
-                                <h4>Property Amenities</h4>
-                                <p className="step-description">Select all that apply</p>
+                                <h4>{t.propertyAmenities}</h4>
+                                <p className="step-description">{t.selectAllThatApply}</p>
                             </div>
                             <div className="collapse-toggle">
                                 <span className={`toggle-icon ${collapsedSections.propertyAmenities ? 'collapsed' : 'expanded'}`}>
@@ -1289,7 +1296,7 @@ const PropertyListForm = () => {
                                     {/* Basic Features Column */}
                                     <div className="amenities-column">
                                         <h3 className="amenities-category-title">
-                                            🏠 Basic Features
+                                            {t.basicFeatures}
                                         </h3>
                                         <div className="amenities-grid">
                                             {amenitiesData.basicFeatures.map((amenity) => (
@@ -1315,7 +1322,7 @@ const PropertyListForm = () => {
                                     {/* Security & Comfort Column */}
                                     <div className="amenities-column">
                                         <h3 className="amenities-category-title">
-                                            🛡️ Security & Comfort
+                                            {t.securityComfort}
                                         </h3>
                                         <div className="amenities-grid">
                                             {amenitiesData.securityComfort.map((amenity) => (
@@ -1341,7 +1348,7 @@ const PropertyListForm = () => {
                                     {/* Recreation & Location Column */}
                                     <div className="amenities-column">
                                         <h3 className="amenities-category-title">
-                                            🏖️ Recreation & Location
+                                            {t.recreationLocation}
                                         </h3>
                                         <div className="amenities-grid">
                                             {amenitiesData.recreationLocation.map((amenity) => (
@@ -1383,7 +1390,7 @@ const PropertyListForm = () => {
                                             alignItems: 'center',
                                             gap: '8px'
                                         }}>
-                                            ✨ Selected Amenities ({getSelectedAmenitiesArray().length})
+                                            {t.selectedAmenities} ({getSelectedAmenitiesArray().length})
                                         </h4>
                                         <div className="selected-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                                             {getSelectedAmenitiesArray().map((amenityId) => {
@@ -1442,7 +1449,7 @@ const PropertyListForm = () => {
                                             color: '#666',
                                             fontStyle: 'italic'
                                         }}>
-                                            💡 These amenities will help potential tenants/buyers find your property
+                                            {t.amenitiesHelp}
                                         </div>
                                     </div>
                                 )}
@@ -1453,7 +1460,7 @@ const PropertyListForm = () => {
                     <div className="form-submit-section">
                         <div className="submit-actions">
                             <Link to="/property-list" className="back-btn">
-                                ← Back to Properties
+                                {t.backToProperties}
                             </Link>
                             <button
                                 type="button"
@@ -1474,16 +1481,16 @@ const PropertyListForm = () => {
                                 {Loading ? (
                                     <>
                                         <span className="loading-spinner">⏳</span>
-                                        Processing...
+                                        {t.processing}
                                     </>
                                 ) : hasUploadsInProgress() ? (
                                     <>
                                         <span className="loading-spinner">📤</span>
-                                        Uploading Images...
+                                        {t.uploadingImages}
                                     </>
                                 ) : (
                                     <>
-                                        Continue to Promotion
+                                        {t.continueToPromotion}
                                         <SvgRightIcon />
                                     </>
                                 )}
@@ -1491,7 +1498,7 @@ const PropertyListForm = () => {
                         </div>
                         
                         <div className="form-progress">
-                            <p>Step 5 of 6 - Choose your property promotion package next</p>
+                            <p>{t.stepXofY}</p>
                         </div>
                     </div>
                 </div>

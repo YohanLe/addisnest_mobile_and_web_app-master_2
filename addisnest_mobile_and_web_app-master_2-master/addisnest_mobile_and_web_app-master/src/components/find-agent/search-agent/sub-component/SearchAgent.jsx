@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { FaMapMarkerAlt, FaSearch, FaUserTie, FaLanguage, FaStar, FaShieldAlt, FaBriefcase, FaUsers, FaHome, FaFilter } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { GetAgentAll } from '../../../../Redux-store/Slices/AgentAllSlice';
+import { useLanguage } from '../../../../contexts/LanguageContext';
+import { useTranslations } from '../../../../locales/translations';
 import '../../find-agent.css';
 
 const RegionalStateList = [
@@ -16,6 +18,8 @@ const RegionalStateList = [
 const SearchAgent = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { language } = useLanguage();
+  const t = useTranslations(language);
   const [searchForm, setSearchForm] = useState({
     region: '',
     specialty: '',
@@ -54,21 +58,21 @@ const SearchAgent = () => {
       <div className="hero-section">
         <div className="hero-content">
           <div className="hero-text">
-            <h1 style={{ color: 'white' }}>Connect with Top Real Estate Agents</h1>
-            <p style={{ color: 'white' }}>Find experienced professionals who will help you buy, sell, or rent your perfect property</p>
+            <h1 style={{ color: 'white' }}>{t.connectWithTopAgents}</h1>
+            <p style={{ color: 'white' }}>{t.findExperiencedProfessionals}</p>
           </div>
           <div className="hero-stats">
             <div className="stat">
-              <span className="stat-number">500+</span>
-              <span className="stat-label">Verified Agents</span>
+              <span className="stat-number">XXX</span>
+              <span className="stat-label">{t.verifiedAgents}</span>
             </div>
             <div className="stat">
-              <span className="stat-number">98%</span>
-              <span className="stat-label">Success Rate</span>
+              <span className="stat-number">XXX</span>
+              <span className="stat-label">{t.successRate}</span>
             </div>
             <div className="stat">
-              <span className="stat-number">24/7</span>
-              <span className="stat-label">Support</span>
+              <span className="stat-number">XXX</span>
+              <span className="stat-label">{t.support}</span>
             </div>
           </div>
         </div>
@@ -78,13 +82,13 @@ const SearchAgent = () => {
       <div className="search-section">
         <div className="container">
           <div className="search-wrapper">
-            <h2>Find Your Perfect Agent</h2>
+            <h2>{t.findYourPerfectAgent}</h2>
             <form className="agent-form" onSubmit={handleSubmit}>
               <div className="form-row">
                 <div className="form-field">
                   <FaMapMarkerAlt className="field-icon" />
                   <select name="region" value={searchForm.region} onChange={handleInputChange}>
-                    <option value="">Select Location</option>
+                    <option value="">{t.selectLocation}</option>
                     {RegionalStateList.map(region => (
                       <option key={region.value} value={region.value}>
                         {region.label}
@@ -96,27 +100,27 @@ const SearchAgent = () => {
                 <div className="form-field">
                   <FaBriefcase className="field-icon" />
                   <select name="specialty" value={searchForm.specialty} onChange={handleInputChange}>
-                    <option value="">Property Type</option>
-                    <option value="buying">Buying</option>
-                    <option value="selling">Selling</option>
-                    <option value="renting">Renting</option>
-                    <option value="commercial">Commercial</option>
-                    <option value="residential">Residential</option>
-                    <option value="luxury">Luxury</option>
-                    <option value="farmland">Farmland</option>
-                    <option value="investment">Investment</option>
+                    <option value="">{t.propertyTypeLabel}</option>
+                    <option value="buying">{t.buying}</option>
+                    <option value="selling">{t.selling}</option>
+                    <option value="renting">{t.renting}</option>
+                    <option value="commercial">{t.commercial}</option>
+                    <option value="residential">{t.residential}</option>
+                    <option value="luxury">{t.luxury}</option>
+                    <option value="farmland">{t.farmland}</option>
+                    <option value="investment">{t.investment}</option>
                   </select>
                 </div>
 
                 <div className="form-field">
                   <FaLanguage className="field-icon" />
                   <select name="language" value={searchForm.language} onChange={handleInputChange}>
-                    <option value="">Language</option>
-                    <option value="amharic">Amharic</option>
-                    <option value="afaan-oromo">Afaan Oromo</option>
-                    <option value="english">English</option>
-                    <option value="tigrinya">Tigrinya</option>
-                    <option value="somali">Somali</option>
+                    <option value="">{t.language}</option>
+                    <option value="amharic">{t.amharic}</option>
+                    <option value="afaan-oromo">{t.afaanOromo}</option>
+                    <option value="english">{t.english}</option>
+                    <option value="tigrinya">{t.tigrinya}</option>
+                    <option value="somali">{t.somali}</option>
                   </select>
                 </div>
 
@@ -131,18 +135,18 @@ const SearchAgent = () => {
                     onChange={handleInputChange}
                   />
                   <span className="toggle-slider"></span>
-                  <span className="toggle-text">Verified agents only</span>
+                  <span className="toggle-text">{t.verifiedAgentsOnly}</span>
                 </label>
               </div>
 
               <div className="form-actions">
                 <button type="submit" className="search-button">
                   <FaSearch />
-                  Find Agents
+                  {t.findAgents}
                 </button>
                 <button type="button" onClick={handleBrowseAll} className="browse-button">
                   <FaUsers />
-                  Browse All
+                  {t.browseAll}
                 </button>
               </div>
             </form>
@@ -153,28 +157,28 @@ const SearchAgent = () => {
       {/* Benefits Section */}
       <div className="benefits-section">
         <div className="container">
-          <h2>Why Choose Our Platform?</h2>
+          <h2>{t.whyChooseOurPlatform}</h2>
           <div className="benefits-grid">
             <div className="benefit-card">
               <div className="benefit-icon">
                 <FaShieldAlt />
               </div>
-              <h3>Verified Professionals</h3>
-              <p>Every agent is thoroughly vetted, licensed, and background-checked for your peace of mind.</p>
+              <h3>{t.verifiedProfessionals}</h3>
+              <p>{t.verifiedProfessionalsDesc}</p>
             </div>
             <div className="benefit-card">
               <div className="benefit-icon">
                 <FaStar />
               </div>
-              <h3>Proven Track Record</h3>
-              <p>Browse real client reviews and ratings to find agents with proven success in your area.</p>
+              <h3>{t.provenTrackRecord}</h3>
+              <p>{t.provenTrackRecordDesc}</p>
             </div>
             <div className="benefit-card">
               <div className="benefit-icon">
                 <FaUserTie />
               </div>
-              <h3>Expert Guidance</h3>
-              <p>Get professional support and personalized service throughout your real estate journey.</p>
+              <h3>{t.expertGuidance}</h3>
+              <p>{t.expertGuidanceDesc}</p>
             </div>
           </div>
         </div>

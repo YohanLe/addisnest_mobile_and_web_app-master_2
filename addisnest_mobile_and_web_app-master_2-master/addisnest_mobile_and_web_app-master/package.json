@@ -5,7 +5,7 @@
   "description": "Frontend for Addinest real estate platform",
   "scripts": {
     "dev": "concurrently \"npm:start\" \"npm:frontend\"",
-    "build": "VITE_API_BASE_URL=http://3.144.240.220:3000/api vite build && cp _redirects dist/_redirects",
+    "build": "vite build && cp _redirects dist/_redirects",
     "preview": "vite preview",
     "frontend": "vite",
     "start": "node server.js",

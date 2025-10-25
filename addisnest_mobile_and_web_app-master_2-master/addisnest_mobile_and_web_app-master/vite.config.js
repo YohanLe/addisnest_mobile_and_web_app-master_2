@@ -16,10 +16,10 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0', // Bind to all interfaces
-    port: 5174,
-    strictPort: false,
+    port: 5175,
+    strictPort: true,
     hmr: {
-      port: 5174,
+      clientPort: 5175,
       host: 'localhost',
       protocol: 'ws'
     },

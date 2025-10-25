@@ -199,6 +199,10 @@ class UserController extends BaseController {
 
     console.log('Login attempt for email:', email);
 
+    // Validate input
+    if (!email || !password) {
+      return this.sendError(res, new ErrorResponse('Please provide email and password', 400));
+    }
 
     try {
       // Set a timeout for database operations (5 seconds)
@@ -213,13 +217,23 @@ class UserController extends BaseController {
       ]);
 
       if (!user) {
-        return this.sendError(res, new ErrorResponse('Email not registered. Please check your email or sign up.', 401));
+        console.log(`Login failed: User not found for email ${email}`);
+        return this.sendError(res, new ErrorResponse('Invalid email or password', 401), 401);
       }
 
-      // Check password
-      const isMatch = await user.matchPassword(password);
+      // Check password with proper error handling
+      let isMatch = false;
+      try {
+        isMatch = await user.matchPassword(password);
+      } catch (passwordError) {
+        console.error('Password comparison error:', passwordError);
+        // If password comparison fails, treat it as invalid credentials
+        return this.sendError(res, new ErrorResponse('Invalid email or password', 401), 401);
+      }
+
       if (!isMatch) {
-        return this.sendError(res, new ErrorResponse('The password you entered is incorrect. Please try again.', 401));
+        console.log(`Login failed: Incorrect password for email ${email}`);
+        return this.sendError(res, new ErrorResponse('Invalid email or password', 401), 401);
       }
 
       // Generate token
@@ -236,14 +250,14 @@ class UserController extends BaseController {
         token
       });
     } catch (error) {
-      console.error('Database error during login:', error.message);
+      console.error('Error during login:', error.message);
       
       // If it's a database timeout, provide a helpful error message
       if (error.message.includes('timed out') || error.message.includes('buffering timed out')) {
         return this.sendError(res, new ErrorResponse('We are experiencing temporary database connectivity issues. Please try again in a moment or use the OTP login option.', 503));
       }
       
-      // For other database errors
+      // For other database errors, still return 503 (Service Unavailable) not 500
       return this.sendError(res, new ErrorResponse('Login service temporarily unavailable. Please try again later.', 503));
     }
   });

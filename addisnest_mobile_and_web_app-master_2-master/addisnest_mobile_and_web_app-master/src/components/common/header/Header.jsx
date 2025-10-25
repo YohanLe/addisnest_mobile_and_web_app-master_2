@@ -7,12 +7,13 @@ import MobileBottomNav from '../MobileBottomNav';
 import { isAuthenticated, getTokenData } from '../../../utils/tokenHandler';
 import { useSelector } from 'react-redux';
 import messageNotificationService from '../../../utils/messageNotifications';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTranslations } from '../../../locales/translations';
 import './Header.css';
 
-const Header = () => {
+const Header = ({ showLoginPopup, setShowLoginPopup }) => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [showRegisterPopup, setShowRegisterPopup] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMortgageCalculator, setShowMortgageCalculator] = useState(false);
@@ -22,6 +23,10 @@ const Header = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.Auth.Details.data);
   const userMenuRef = useRef(null);
+  
+  // Language context and translations
+  const { language, toggleLanguage } = useLanguage();
+  const t = useTranslations(language);
   
   // Get user data from token as fallback if Redux store doesn't have it
   const tokenData = getTokenData();
@@ -97,6 +102,18 @@ const Header = () => {
     };
   }, []);
 
+  // Add event listener for custom showLoginPopup event from BannerSection
+  useEffect(() => {
+    const handleShowLoginPopup = (event) => {
+      setShowLoginPopup(true);
+    };
+
+    window.addEventListener('showLoginPopup', handleShowLoginPopup);
+    return () => {
+      window.removeEventListener('showLoginPopup', handleShowLoginPopup);
+    };
+  }, []);
+
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
@@ -121,8 +138,21 @@ const Header = () => {
           <div className="logo-area">
             <Link to="/" className="logo">
               <div className="logo-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="house-icon">
-                  <path d="M12 2.1L1 12h3v9h7v-6h2v6h7v-9h3L12 2.1zm0 2.691l6 5.4V19h-3v-6H9v6H6v-8.809l6-5.4z" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" className="house-icon">
+                  {/* Main A-shaped house in blue */}
+                  <path d="M 50 10 L 90 60 L 80 60 L 80 85 L 20 85 L 20 60 L 10 60 Z" fill="#5fa8d3"/>
+                  
+                  {/* Yellow window with grid */}
+                  <rect x="40" y="40" width="20" height="20" fill="#f4d03f"/>
+                  <rect x="43" y="43" width="4" height="4" fill="#2e3e4e"/>
+                  <rect x="51" y="43" width="4" height="4" fill="#2e3e4e"/>
+                  <rect x="43" y="51" width="4" height="4" fill="#2e3e4e"/>
+                  <rect x="51" y="51" width="4" height="4" fill="#2e3e4e"/>
+                  
+                  {/* Ethiopian flag stripes (Green, Yellow, Red) */}
+                  <polygon points="20,65 32,50 38,56 26,70" fill="#22b14c"/>
+                  <polygon points="26,70 38,56 44,62 32,76" fill="#f4d03f"/>
+                  <polygon points="32,76 44,62 50,68 38,82" fill="#ff0000"/>
                 </svg>
               </div>
               <div className="logo-text">
@@ -153,29 +183,27 @@ const Header = () => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                 >
-                  <span>Buy/Rent</span>
+                  <span>{t.buyRent}</span>
                   <span className={`toggle-indicator ${buyRentMode}`}>
-                    {buyRentMode === 'buy' ? 'Buy' : 'Rent'}
+                    {buyRentMode === 'buy' ? t.buy : t.rent}
                   </span>
                 </div>
               </li>
               <li>
-                <Link
-                  to="/sell"
-                  className={`${isActive('/sell')} nav-link`}
-                  onClick={(e) => {
+                <div
+                  className={`${isActive('/property-list-form')} nav-link`}
+                  onClick={() => {
                     if (!isAuthenticated()) {
-                      e.preventDefault();
                       setShowLoginPopup(true);
                     } else {
-                      e.preventDefault();
                       navigate('/property-list-form');
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }
                   }}
+                  style={{ cursor: 'pointer' }}
                 >
-                  Sell
-                </Link>
+                  {t.sell}
+                </div>
               </li>
               <li>
                 <div
@@ -183,7 +211,7 @@ const Header = () => {
                   onClick={() => setShowMortgageCalculator(true)}
                   style={{ cursor: 'pointer' }}
                 >
-                  Mortgage Calculator
+                  {t.mortgageCalculator}
                 </div>
               </li>
               <li>
@@ -191,7 +219,7 @@ const Header = () => {
                   to="/find-agent"
                   className={`${isActive('/find-agent')} nav-link`}
                 >
-                  Find Agent
+                  {t.findAgent}
                 </Link>
               </li>
             </ul>
@@ -199,6 +227,34 @@ const Header = () => {
           )}
 
           <div className="right-section">
+            {/* Language Toggle Button */}
+            <button
+              onClick={toggleLanguage}
+              className="language-toggle"
+              style={{
+                backgroundColor: 'transparent',
+                border: '2px solid #a4ff2a',
+                borderRadius: '20px',
+                padding: '6px 12px',
+                marginRight: '15px',
+                color: '#333',
+                fontWeight: '600',
+                fontSize: '14px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                fontFamily: language === 'am' ? "'Noto Sans Ethiopic', sans-serif" : 'inherit'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#a4ff2a';
+                e.target.style.color = '#000';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'transparent';
+                e.target.style.color = '#333';
+              }}
+            >
+              {language === 'en' ? 'አማ' : 'EN'}
+            </button>
             
             {isAuthenticated() ? (
               <>
@@ -316,13 +372,13 @@ const Header = () => {
                   className="login-btn"
                   onClick={() => setShowLoginPopup(true)}
                 >
-                  Login
+                  {t.login}
                 </button>
                 <button
                   onClick={() => setShowRegisterPopup(true)}
                   className="register-btn"
                 >
-                  Register
+                  {t.register}
                 </button>
               </div>
             )}

@@ -5,15 +5,22 @@ import { SvgSearchIcon } from '../../../assets/svg-files/SvgFiles.jsx';
 import { useNavigate } from 'react-router-dom';
 import { GetHomeData } from '../../../Redux-store/Slices/HomeSlice';
 import { isAuthenticated } from '../../../utils/tokenHandler';
-import { applyFilters, FILTER_OPTIONS } from '../../../utils/propertyFilters';
+import { applyFilters, getFilterOptions } from '../../../utils/propertyFilters';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTranslations } from '../../../locales/translations';
 import './BannerSection.css';
 
-const BannerSection = () => {
+const BannerSection = ({ setShowLoginPopup }) => {
   const [searchType, setSearchType] = useState('buy');
   const [buyRentToggle, setBuyRentToggle] = useState('buy'); // New state for Buy/Rent toggle
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  
+  // Language context and translations
+  const { language } = useLanguage();
+  const t = useTranslations(language);
+  const filterOptions = getFilterOptions(t);
   
   // Filter states
   const [priceRange, setPriceRange] = useState('any');
@@ -149,7 +156,7 @@ const BannerSection = () => {
           <div className="col-md-8">
             <div className="banner-content">
               <h1>
-                Find the perfect home<br />for your family
+                {t.heroHeadline}<br />{t.heroSubtitle}
               </h1>
 
               <div className="search-tabs-container">
@@ -160,7 +167,7 @@ const BannerSection = () => {
                         className={`nav-link ${searchType === 'for-sale' ? 'active' : ''}`}
                         onClick={() => handleTabClick('for-sale')}
                       >
-                        For Sale
+                        {t.forSale}
                       </button>
                     </li>
                     <li className="nav-item">
@@ -168,7 +175,7 @@ const BannerSection = () => {
                         className={`nav-link ${searchType === 'for-rent' ? 'active' : ''}`}
                         onClick={() => handleTabClick('for-rent')}
                       >
-                        For Rent
+                        {t.forRent}
                       </button>
                     </li>
                     <li className="nav-item">
@@ -177,10 +184,10 @@ const BannerSection = () => {
                         onClick={(e) => {
                           setSearchType('sell');
                           if (!isAuthenticated()) {
-                            // If not authenticated, show login popup with redirect target
-                            window.dispatchEvent(new CustomEvent('showLoginPopup', {
-                              detail: { redirectTo: '/property-list-form' }
-                            }));
+                            // If not authenticated, show login popup
+                            if (setShowLoginPopup) {
+                              setShowLoginPopup(true);
+                            }
                           } else {
                             // If authenticated, navigate to property list form
                             navigate('/property-list-form');
@@ -188,7 +195,7 @@ const BannerSection = () => {
                           }
                         }}
                       >
-                        Sell
+                        {t.sell}
                       </button>
                     </li>
 
@@ -199,7 +206,7 @@ const BannerSection = () => {
                   <input
                     type="text"
                     className="form-control search-input"
-                    placeholder="City, School, Agent, ZIP"
+                    placeholder={t.searchPlaceholder}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
@@ -228,7 +235,7 @@ const BannerSection = () => {
                       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
                     }}
                   >
-                    {showFilters ? 'Hide Filters' : 'Show Filters'}
+                    {showFilters ? t.hideFilters : t.showFilters}
                   </button>
                 </div>
 
@@ -252,7 +259,7 @@ const BannerSection = () => {
                         marginBottom: '5px', 
                         color: '#333',
                         display: 'block'
-                      }}>Price Range</label>
+                      }}>{t.priceRange}</label>
                       <select 
                         value={priceRange}
                         onChange={(e) => setPriceRange(e.target.value)}
@@ -265,7 +272,7 @@ const BannerSection = () => {
                           fontSize: '13px'
                         }}
                       >
-                        {FILTER_OPTIONS.priceRanges.map(option => (
+                        {filterOptions.priceRanges.map(option => (
                           <option key={option.value} value={option.value}>{option.label}</option>
                         ))}
                       </select>
@@ -279,7 +286,7 @@ const BannerSection = () => {
                         marginBottom: '5px', 
                         color: '#333',
                         display: 'block'
-                      }}>Regional State</label>
+                      }}>{t.regionalState}</label>
                       <select 
                         value={regionalState}
                         onChange={(e) => setRegionalState(e.target.value)}
@@ -292,7 +299,7 @@ const BannerSection = () => {
                           fontSize: '13px'
                         }}
                       >
-                        {FILTER_OPTIONS.regionalStates.map(option => (
+                        {filterOptions.regionalStates.map(option => (
                           <option key={option.value} value={option.value}>{option.label}</option>
                         ))}
                       </select>
@@ -306,7 +313,7 @@ const BannerSection = () => {
                         marginBottom: '5px', 
                         color: '#333',
                         display: 'block'
-                      }}>Property Type</label>
+                      }}>{t.propertyType}</label>
                       <select 
                         value={propertyType}
                         onChange={(e) => setPropertyType(e.target.value)}
@@ -319,7 +326,7 @@ const BannerSection = () => {
                           fontSize: '13px'
                         }}
                       >
-                        {FILTER_OPTIONS.propertyTypes.map(option => (
+                        {filterOptions.propertyTypes.map(option => (
                           <option key={option.value} value={option.value}>{option.label}</option>
                         ))}
                       </select>
@@ -333,7 +340,7 @@ const BannerSection = () => {
                         marginBottom: '5px', 
                         color: '#333',
                         display: 'block'
-                      }}>Bedrooms</label>
+                      }}>{t.bedrooms}</label>
                       <select 
                         value={bedrooms}
                         onChange={(e) => setBedrooms(e.target.value)}
@@ -346,7 +353,7 @@ const BannerSection = () => {
                           fontSize: '13px'
                         }}
                       >
-                        {FILTER_OPTIONS.bedBathOptions.map(option => (
+                        {filterOptions.bedBathOptions.map(option => (
                           <option key={option.value} value={option.value}>{option.label}</option>
                         ))}
                       </select>
@@ -360,7 +367,7 @@ const BannerSection = () => {
                         marginBottom: '5px', 
                         color: '#333',
                         display: 'block'
-                      }}>Bathrooms</label>
+                      }}>{t.bathrooms}</label>
                       <select 
                         value={bathrooms}
                         onChange={(e) => setBathrooms(e.target.value)}
@@ -373,7 +380,7 @@ const BannerSection = () => {
                           fontSize: '13px'
                         }}
                       >
-                        {FILTER_OPTIONS.bedBathOptions.map(option => (
+                        {filterOptions.bedBathOptions.map(option => (
                           <option key={option.value} value={option.value}>{option.label}</option>
                         ))}
                       </select>
@@ -387,7 +394,7 @@ const BannerSection = () => {
                         marginBottom: '5px', 
                         color: '#333',
                         display: 'block'
-                      }}>Apply</label>
+                      }}>{t.apply}</label>
                       <button
                         onClick={(e) => handleSearch(e)}
                         className="btn"
@@ -403,7 +410,7 @@ const BannerSection = () => {
                           cursor: 'pointer'
                         }}
                       >
-                        Apply Filters
+                        {t.applyFilters}
                       </button>
                     </div>
                   </div>

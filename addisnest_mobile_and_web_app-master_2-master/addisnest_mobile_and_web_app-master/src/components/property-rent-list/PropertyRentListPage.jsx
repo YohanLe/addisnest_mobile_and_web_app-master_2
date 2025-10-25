@@ -5,6 +5,58 @@ import { GetAllPropertyListings } from '../../Redux-store/Slices/HomeSlice';
 import { Property1, Property2, Property3 } from '../../assets/images';
 import { getSafeMongoId } from '../../utils/mongoIdHelper';
 
+// Get API base URL for property images
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7002';
+
+// Utility function to fix broken image URLs
+const fixImageUrl = (imageUrl) => {
+  // If no image URL provided, return default
+  if (!imageUrl || imageUrl === 'undefined' || imageUrl === 'null' || imageUrl === '') {
+    return Property1;
+  }
+
+  // If it's already a valid HTTP/HTTPS URL, return as is
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    return imageUrl;
+  }
+
+  // If it's a relative path, construct the full URL with API base URL
+  if (imageUrl.startsWith('/uploads/') || imageUrl.startsWith('uploads/')) {
+    const cleanPath = imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
+    return `${API_BASE_URL}${cleanPath}`;
+  }
+
+  // If it's just a filename, construct the full uploads URL
+  if (!imageUrl.includes('/')) {
+    return `${API_BASE_URL}/uploads/${imageUrl}`;
+  }
+
+  // Default fallback
+  return Property1;
+};
+
+// Function to get property image with multiple fallbacks
+const getPropertyImage = (property) => {
+  const possibleImages = [
+    property.images?.[0]?.url,
+    property.imageUrl,
+    property.image,
+    property.photos?.[0],
+    property.mainImage
+  ];
+
+  for (const img of possibleImages) {
+    if (img && img !== 'undefined' && img !== 'null' && img !== '') {
+      return fixImageUrl(img);
+    }
+  }
+
+  // Return a random default image for variety
+  const defaultImages = [Property1, Property2, Property3];
+  const randomIndex = Math.abs(property._id?.toString().charCodeAt(0) || 0) % defaultImages.length;
+  return defaultImages[randomIndex];
+};
+
 const PropertyRentListPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

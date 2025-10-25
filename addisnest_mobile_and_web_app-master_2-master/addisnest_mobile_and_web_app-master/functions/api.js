@@ -46,12 +46,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: '500mb' }));
+app.use(express.urlencoded({ extended: true, limit: '500mb' }));
 app.use(fileUpload({
   createParentPath: true,
   limits: { 
-    fileSize: 50 * 1024 * 1024 // 50MB max file size
+    fileSize: 500 * 1024 * 1024 // 500MB max file size - supports high-quality photos
   },
   abortOnLimit: false,
   responseOnLimit: "File size limit has been reached",

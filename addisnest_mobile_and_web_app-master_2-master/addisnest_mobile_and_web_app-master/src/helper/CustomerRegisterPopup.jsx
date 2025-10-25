@@ -197,7 +197,7 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                         fontSize: '1.5rem',
                                         fontWeight: '600',
                                         margin: 0
-                                    }}>{userType === 'AGENT' ? 'Agent Register' : 'Customer Register'}</h3>
+                                    }}>{userType === 'AGENT' ? 'ወኪል ምዝገባ' : 'ደንበኛ ምዝገባ'}</h3>
                                 </div>
                                 <div className="close-icon" onClick={handlePopup} style={{
                                     cursor: 'pointer'
@@ -217,7 +217,7 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                             fontWeight: '500',
                                             marginBottom: '12px',
                                             color: '#555'
-                                        }}>Welcome to Addisnest</h4>
+                                        }}>ወደ አዲስነስት እንኳን በደህና መጡ</h4>
                                     </div>
                                     <form onSubmit={handleSubmit}>
                                     <div className="form-flex" style={{ marginBottom: '20px' }}>
@@ -230,7 +230,7 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                                     fontWeight: '500',
                                                     color: '#444'
                                                 }}>
-                                                    Account Type<i style={{color: 'red'}}>*</i>
+                                                    የመለያ አይነት<i style={{color: 'red'}}>*</i>
                                                 </label>
                                                 <div style={{ 
                                                     display: 'flex', 
@@ -260,7 +260,7 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                                                 cursor: 'pointer'
                                                             }}
                                                         >
-                                                            Customer
+                                                            ደንበኛ
                                                         </label>
                                                     </div>
                                                     <div style={{ 
@@ -286,7 +286,7 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                                                 cursor: 'pointer'
                                                             }}
                                                         >
-                                                            Agent
+                                                            ወኪል
                                                         </label>
                                                     </div>
                                                 </div>
@@ -307,12 +307,12 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                                     fontWeight: '500',
                                                     color: '#444'
                                                 }}>
-                                                    Full Name<i style={{color: 'red'}}>*</i>
+                                                    ሙሉ ስም<i style={{color: 'red'}}>*</i>
                                                 </label>
                                                 <input
                                                     type="text"
                                                     name="fullName"
-                                                    placeholder="Enter Your Full Name"
+                                                    placeholder="ሙሉ ስምዎን ያስገቡ"
                                                     onChange={handleInputChange}
                                                     value={formData.fullName}
                                                     style={{
@@ -339,7 +339,7 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                                     fontWeight: '500',
                                                     color: '#444'
                                                 }}>
-                                                    Regional State<i style={{color: 'red'}}>*</i>
+                                                    ክልል<i style={{color: 'red'}}>*</i>
                                                 </label>
                                                 <select 
                                                     name="regionalState"
@@ -359,20 +359,20 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                                         backgroundPosition: 'right 12px center'
                                                     }}
                                                 >
-                                                    <option value="Addis Ababa City Administration">Addis Ababa City Administration</option>
-                                                    <option value="Afar Region">Afar Region</option>
-                                                    <option value="Amhara Region">Amhara Region</option>
-                                                    <option value="Benishangul-Gumuz Region">Benishangul-Gumuz Region</option>
-                                                    <option value="Dire Dawa City Administration">Dire Dawa City Administration</option>
-                                                    <option value="Gambela Region">Gambela Region</option>
-                                                    <option value="Harari Region">Harari Region</option>
-                                                    <option value="Oromia Region">Oromia Region</option>
-                                                    <option value="Sidama Region">Sidama Region</option>
-                                                    <option value="Somali Region">Somali Region</option>
-                                                    <option value="South Ethiopia Region">South Ethiopia Region</option>
-                                                    <option value="South West Ethiopia Peoples' Region">South West Ethiopia Peoples' Region</option>
-                                                    <option value="Tigray Region">Tigray Region</option>
-                                                    <option value="Central Ethiopia Region">Central Ethiopia Region</option>
+                                                    <option value="Addis Ababa City Administration">አዲስ አበባ ከተማ አስተዳደር</option>
+                                                    <option value="Afar Region">አፋር ክልል</option>
+                                                    <option value="Amhara Region">አማራ ክልል</option>
+                                                    <option value="Benishangul-Gumuz Region">ቤንሻንጉል ጉሙዝ ክልል</option>
+                                                    <option value="Dire Dawa City Administration">ድሬዳዋ ከተማ አስተዳደር</option>
+                                                    <option value="Gambela Region">ጋምቤላ ክልል</option>
+                                                    <option value="Harari Region">ሐረሪ ክልል</option>
+                                                    <option value="Oromia Region">ኦሮሚያ ክልል</option>
+                                                    <option value="Sidama Region">ሲዳማ ክልል</option>
+                                                    <option value="Somali Region">ሶማሌ ክልል</option>
+                                                    <option value="South Ethiopia Region">ደቡብ ኢትዮጵያ ክልል</option>
+                                                    <option value="South West Ethiopia Peoples' Region">ደቡብ ምዕራብ ኢትዮጵያ ህዝቦች ክልል</option>
+                                                    <option value="Tigray Region">ትግራይ ክልል</option>
+                                                    <option value="Central Ethiopia Region">መካከለኛ ኢትዮጵያ ክልል</option>
                                                 </select>
                                                 {errors.regionalState && <p style={{
                                                     color: 'red',
@@ -396,12 +396,12 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                                         fontWeight: '500',
                                                         color: '#444'
                                                     }}>
-                                                        Email<i style={{color: 'red'}}>*</i>
+                                                    ኢሜይል<i style={{color: 'red'}}>*</i>
                                                     </label>
                                                     <input
                                                         type="email"
                                                         name="email"
-                                                        placeholder="Enter Your Email Id"
+                                                        placeholder="ኢሜይልዎን ያስገቡ"
                                                         onChange={handleInputChange}
                                                         value={formData.email}
                                                         style={{
@@ -428,12 +428,12 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                                         fontWeight: '500',
                                                         color: '#444'
                                                     }}>
-                                                        Password<i style={{color: 'red'}}>*</i>
+                                                        የይለፍ ቃል<i style={{color: 'red'}}>*</i>
                                                     </label>
                                                     <div className="password-inputs" style={{ position: 'relative' }}>
                                                         <input
                                                             type={isPasswordVisible ? "text" : "password"}
-                                                            placeholder="Enter Your Password"
+                                                            placeholder="የይለፍ ቃልዎን ያስገቡ"
                                                             name="password"
                                                             onChange={handleInputChange}
                                                             value={formData.password}
@@ -493,12 +493,12 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                                         fontWeight: '500',
                                                         color: '#444'
                                                     }}>
-                                                        Confirm Password<i style={{color: 'red'}}>*</i>
+                                                        የይለፍ ቃል አረጋግጥ<i style={{color: 'red'}}>*</i>
                                                     </label>
                                                     <div className="password-inputs" style={{ position: 'relative' }}>
                                                         <input
                                                             type={isConfirmPasswordVisible ? "text" : "password"}
-                                                            placeholder="Enter Your Password"
+                                                            placeholder="የይለፍ ቃልዎን ያረጋግጡ"
                                                             name="confirmPassword"
                                                             onChange={handleInputChange}
                                                             value={formData.confirmPassword}
@@ -561,12 +561,12 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                                                 fontWeight: '500',
                                                                 color: '#444'
                                                             }}>
-                                                                Experience<i style={{color: 'red'}}>*</i>
+                                                                ልምድ<i style={{color: 'red'}}>*</i>
                                                             </label>
                                                             <input
                                                                 type="number"
                                                                 name="experience"
-                                                                placeholder="Years of Experience"
+                                                                placeholder="የልምድ ዓመታት"
                                                                 onChange={handleInputChange}
                                                                 value={formData.experience}
                                                                 min="0"
@@ -610,7 +610,7 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                                 onMouseOver={(e) => e.target.style.background = '#98f01c'}
                                                 onMouseOut={(e) => e.target.style.background = '#a4ff2a'}
                                             >
-                                                {loading ? "Processing..." : "Continue"}
+                                                {loading ? "በሂደት ላይ..." : "ቀጥል"}
                                             </button>
                                         </div>
                                     </form>
@@ -631,7 +631,7 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                             padding: '0 15px',
                                             color: '#888',
                                             fontSize: '0.9rem'
-                                        }}>OR</p>
+                                        }}>ወይም</p>
                                     </div>
                                     
                                     <div className="auth-social-btn" style={{
@@ -668,7 +668,7 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                                     <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
                                                 </svg>
                                             </span>
-                                            Log in with Google
+                                            በጉግል ግባ
                                         </button>
                                         
                                         <button 
@@ -696,7 +696,7 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                                     <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
                                                 </svg>
                                             </span>
-                                            Log in with Apple
+                                            በአፕል ግባ
                                         </button>
                                     </div>
                                     
@@ -706,7 +706,7 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                         color: '#666'
                                     }}>
                                         <p>
-                                            Already have an Account?
+                                            መለያ አለዎት?
                                             <Link 
                                                 to="#" 
                                                 onClick={handleLogin} 
@@ -717,7 +717,7 @@ const CustomerRegisterPopup = ({ handlePopup, handleLogin }) => {
                                                     marginLeft: '5px'
                                                 }}
                                             >
-                                                Login
+                                                ግባ
                                             </Link>
                                         </p>
                                     </div>

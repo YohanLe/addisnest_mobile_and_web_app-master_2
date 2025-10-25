@@ -41,6 +41,7 @@
     font-size: 1.5rem;
     line-height: 1.1;
     margin-top: 0;
+    margin-bottom: 0.3rem;
   }
   
   .banner-content {
@@ -48,8 +49,8 @@
   }
   
   .search-tabs .nav-link {
-    padding: 8px 15px;
-    font-size: 13px;
+    padding: 6px 10px;
+    font-size: 12px;
   }
   
   .filter-toggle {
@@ -88,6 +89,14 @@
   overflow: hidden;
   animation: slideUp 0.8s ease-out;
   transform: translateZ(0);
+}
+
+/* Mobile responsive styles for search container */
+@media screen and (max-width: 767px) {
+  .search-tabs-container {
+    max-width: 90%;
+    margin: 0 auto;
+  }
 }
 
 @keyframes slideUp {
@@ -166,6 +175,34 @@
   justify-content: center;
   height: 48px;
   transition: all 0.3s ease;
+}
+
+/* Mobile responsive styles for search form */
+@media screen and (max-width: 767px) {
+  .search-form {
+    padding: 8px 10px;
+  }
+  
+  .search-input {
+    height: 36px;
+    font-size: 13px;
+    padding: 6px 10px;
+    flex: 1;
+  }
+  
+  .search-button {
+    height: 36px;
+    padding: 0;
+    width: 40px !important;
+    max-width: 40px !important;
+    min-width: 40px !important;
+    flex-shrink: 0;
+  }
+  
+  .search-button svg {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 .search-button:hover {

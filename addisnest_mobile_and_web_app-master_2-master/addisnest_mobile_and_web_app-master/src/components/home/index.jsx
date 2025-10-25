@@ -7,7 +7,7 @@ import BannerSection from './sub-component/BannerSection';
 //import CTASection from './sub-component/CTASection';
 //import NeighborhoodGuide from './sub-component/NeighborhoodGuide';
 
-const HomePage = () => {
+const HomePage = ({ setShowLoginPopup }) => {
   const dispatch = useDispatch();
   const homeData = useSelector((state) => state.Home?.HomeData);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -56,7 +56,7 @@ const HomePage = () => {
       overflow: 'hidden',
       position: 'relative'
     }}>
-      <BannerSection />
+      <BannerSection setShowLoginPopup={setShowLoginPopup} />
       
       <div className="property-section" style={{ marginTop: '40px', marginBottom: '50px' }}>
         <PropertyListPage isHomePage={true} propertyCount={propertyCount} propertyType="mixed" />

@@ -31,6 +31,8 @@ const getOwnerImageUrl = (imagePath) => {
 import AboutThisHome from "./AboutThisHome";
 import SafetyTipsSection from "./SafetyTipsSection";
 import MortgageCalculatorModern from "../../mortgage-calculator/MortgageCalculatorModern";
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTranslations } from '../../../locales/translations';
 import {
     SvgArrowLeftIcon,
     SvgArrowRightIcon,
@@ -63,6 +65,9 @@ const MakeFormat = (data) => {
 
 // Main PropertyDetail component
 const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
+    const { language } = useLanguage();
+    const t = useTranslations(language);
+    
     const formatFeatureName = (key) => {
         return key
             .replace(/_/g, ' ')
@@ -146,10 +151,10 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
             <div className="property-not-found-container">
                 <div className="container">
                     <div className="property-not-found">
-                        <h2>Property Not Found</h2>
-                        <p>The property you're looking for is not available or doesn't exist.</p>
+                        <h2>{t.propertyNotFound}</h2>
+                        <p>{t.propertyNotFoundMessage}</p>
                         <Link to="/property-list" className="back-to-list">
-                            Browse Available Properties
+                            {t.browseAvailableProperties}
                         </Link>
                     </div>
                 </div>
@@ -506,7 +511,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                         margin: '0',
                                         fontWeight: '600'
                                     }}>
-                                        Listed by {PropertyDetails?.ownerName || 
+                                        {t.listedBy} {PropertyDetails?.ownerName || 
                                         (PropertyDetails?.owner && typeof PropertyDetails.owner === 'object' ? 
                                         `${PropertyDetails.owner.firstName || ''} ${PropertyDetails.owner.lastName || ''}` : 
                                         '')}
@@ -541,7 +546,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                             textDecoration: 'underline', 
                                             textUnderlineOffset: '4px', 
                                             textDecorationStyle: 'dotted' 
-                                        }}>ACTIVE</span>
+                                        }}>{t.active}</span>
                                     </span>
                                 </div>
                                 
@@ -602,7 +607,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                             textAlign: 'center' 
                                         }}>🏠</div>
                                         <div>
-                                            <div style={{ fontWeight: '600', color: '#555', marginBottom: '4px' }}>Property Type</div>
+                                            <div style={{ fontWeight: '600', color: '#555', marginBottom: '4px' }}>{t.propertyType}</div>
                                             <div>{
                                               typeof PropertyDetails?.property_type === 'object' && PropertyDetails?.property_type?.label ? 
                                                 PropertyDetails?.property_type?.label : 
@@ -625,7 +630,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                             textAlign: 'center' 
                                         }}>🛏️</div>
                                         <div>
-                                            <div style={{ fontWeight: '600', color: '#555', marginBottom: '4px' }}>Bedrooms</div>
+                                            <div style={{ fontWeight: '600', color: '#555', marginBottom: '4px' }}>{t.bedrooms}</div>
                                             <div>{PropertyDetails?.number_of_bedrooms || PropertyDetails?.bedrooms || PropertyDetails?.specifications?.bedrooms}</div>
                                         </div>
                                     </div>
@@ -639,7 +644,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                             textAlign: 'center' 
                                         }}>🚿</div>
                                         <div>
-                                            <div style={{ fontWeight: '600', color: '#555', marginBottom: '4px' }}>Bathrooms</div>
+                                            <div style={{ fontWeight: '600', color: '#555', marginBottom: '4px' }}>{t.bathrooms}</div>
                                             <div>{PropertyDetails?.number_of_bathrooms || PropertyDetails?.bathrooms || PropertyDetails?.specifications?.bathrooms}</div>
                                         </div>
                                     </div>
@@ -653,7 +658,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                             textAlign: 'center' 
                                         }}>📏</div>
                                         <div>
-                                            <div style={{ fontWeight: '600', color: '#555', marginBottom: '4px' }}>Living Area</div>
+                                            <div style={{ fontWeight: '600', color: '#555', marginBottom: '4px' }}>{t.livingArea}</div>
                                             <div>{PropertyDetails?.property_size || PropertyDetails?.size || PropertyDetails?.specifications?.area?.size} sqm</div>
                                         </div>
                                     </div>
@@ -668,7 +673,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                             textAlign: 'center' 
                                         }}>📅</div>
                                         <div>
-                                            <div style={{ fontWeight: '600', color: '#555', marginBottom: '4px' }}>Days on Addisnest</div>
+                                            <div style={{ fontWeight: '600', color: '#555', marginBottom: '4px' }}>{t.daysOnAddisnest}</div>
                                             <div>1 days</div>
                                         </div>
                                     </div>
@@ -922,7 +927,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                 fontWeight: '600',
                                 marginBottom: '12px',
                                 color: '#333'
-                            }}>Message the Agent</h2>
+                            }}>{t.messageTheAgent}</h2>
                             
                             {/* Message form */}
                             <div style={{ marginBottom: '12px' }}>
@@ -931,12 +936,12 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                     fontWeight: '500', 
                                     marginBottom: '8px',
                                     color: '#555'
-                                }}>Have questions about this property?</p>
+                                }}>{t.haveQuestions}</p>
                                 
                                 {/* Message textarea */}
                                 <div style={{ marginBottom: '10px' }}>
                                     <textarea 
-                                        placeholder="I'm interested in this property and would like to know more about..."
+                                        placeholder={t.messagePlaceholder}
                                         rows="3"
                                         id="property-message-content"
                                         style={{
@@ -976,7 +981,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                             lineHeight: '1.4'
                                         }}
                                     >
-                                        I agree to be contacted by Addisnest regarding this property and other relevant services.
+                                        {t.agreeToContact}
                                     </label>
                                 </div>
                             </div>
@@ -1157,7 +1162,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#1E88E5'}
                                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#2196F3'}
                             >
-                                <span style={{ fontSize: '18px', marginRight: '8px' }}>📧</span> Send Message
+                                <span style={{ fontSize: '18px', marginRight: '8px' }}>📧</span> {t.sendMessage}
                             </button>
                         </div>
                     </div>
@@ -1176,7 +1181,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                 fontWeight: '600',
                                 marginBottom: '12px',
                                 color: '#333'
-                            }}>Find Your Perfect Time to Visit</h2>
+                            }}>{t.findPerfectTime}</h2>
                             
                             {/* Tour Type Selection */}
                             <div style={{ marginBottom: '12px' }}>
@@ -1185,7 +1190,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                     fontWeight: '500', 
                                     marginBottom: '8px',
                                     color: '#555'
-                                }}>Select tour type:</p>
+                                }}>{t.selectTourType}</p>
                                 
                                 <div style={{ 
                                     display: 'flex', 
@@ -1209,7 +1214,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                             fontWeight: selectedTourType === 'in-person' ? '600' : '500',
                                             color: selectedTourType === 'in-person' ? '#4a6cf7' : '#555'
                                         }}>
-                                            In-Person Tour
+                                            {t.inPersonTour}
                                         </span>
                                     </div>
                                     
@@ -1231,7 +1236,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                             fontWeight: selectedTourType === 'video' ? '600' : '500',
                                             color: selectedTourType === 'video' ? '#4a6cf7' : '#555'
                                         }}>
-                                            Video Tour
+                                            {t.videoTour}
                                         </span>
                     </div>
                 </div>
@@ -1244,7 +1249,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                     fontWeight: '600', 
                                     marginBottom: '8px',
                                     color: '#333'
-                                }}>Select Date</p>
+                                }}>{t.selectDate}</p>
                                 
                                 <div style={{
                                     border: '1px solid #e0e0e0',
@@ -1289,7 +1294,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                     fontWeight: '600', 
                                     marginBottom: '8px',
                                     color: '#333'
-                                }}>Select Time</p>
+                                }}>{t.selectTime}</p>
                                 
                                 <select 
                                     id="schedule-time-select"
@@ -1303,7 +1308,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                         marginBottom: '0px'
                                     }}
                                 >
-                                    <option value="">Select a time</option>
+                                    <option value="">{t.selectATime}</option>
                                     <option value="09:00">9:00 AM</option>
                                     <option value="09:30">9:30 AM</option>
                                     <option value="10:00">10:00 AM</option>
@@ -1331,12 +1336,12 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                     fontWeight: '600', 
                                     marginBottom: '8px',
                                     color: '#333'
-                                }}>Your Email Address</p>
+                                }}>{t.yourEmail}</p>
                                 
                                 <input 
                                     type="email"
                                     id="schedule-email-input"
-                                    placeholder="Enter your email address"
+                                    placeholder={t.enterEmail}
                                     style={{
                                         width: '100%',
                                         padding: '8px 12px',
@@ -1356,12 +1361,12 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                     fontWeight: '600', 
                                     marginBottom: '8px',
                                     color: '#333'
-                                }}>Your Phone Number</p>
+                                }}>{t.yourPhone}</p>
                                 
                                 <input 
                                     type="tel"
                                     id="schedule-phone-input"
-                                    placeholder="Enter your phone number"
+                                    placeholder={t.enterPhone}
                                     style={{
                                         width: '100%',
                                         padding: '8px 12px',
@@ -1585,7 +1590,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                 onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#43A047'}
                                 onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4CAF50'}
                             >
-                                <span style={{ fontSize: '18px', marginRight: '8px' }}>📅</span> Schedule Now
+                                <span style={{ fontSize: '18px', marginRight: '8px' }}>📅</span> {t.scheduleNow}
                             </button>
                         </div>
                     </div>
@@ -1605,7 +1610,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                 fontWeight: '600',
                                 marginBottom: '12px',
                                 color: '#333'
-                            }}>Calculate Your Mortgage</h2>
+                            }}>{t.calculateMortgage}</h2>
                             
                             {/* Simple mortgage calculator */}
                             <div>
@@ -1618,7 +1623,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                         marginBottom: '5px',
                                         color: '#555'
                                     }}>
-                                        Home Price
+                                        {t.homePrice}
                                     </label>
                                     <input 
                                         type="text" 
@@ -1643,7 +1648,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                         marginBottom: '5px',
                                         color: '#555'
                                     }}>
-                                        Down Payment (20%)
+                                        {t.downPayment}
                                     </label>
                                     <input 
                                         type="text" 
@@ -1668,7 +1673,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                         marginBottom: '5px',
                                         color: '#555'
                                     }}>
-                                        Interest Rate (%)
+                                        {t.interestRate}
                                     </label>
                                     <input 
                                         type="text" 
@@ -1693,7 +1698,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                         marginBottom: '5px',
                                         color: '#555'
                                     }}>
-                                        Loan Term (years)
+                                        {t.loanTerm}
                                     </label>
                                     <select style={{
                                         width: '100%',
@@ -1719,7 +1724,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                         marginBottom: '5px',
                                         color: '#555'
                                     }}>
-                                        Result
+                                        {t.result}
                                     </label>
                                     <div style={{
                                         width: '100%',
@@ -1918,7 +1923,7 @@ const PropertyDetail = ({ PropertyDetails, similarProperties }) => {
                                         onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#43A047'}
                                         onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#4CAF50'}
                                     >
-                                        <span style={{ fontSize: '18px', marginRight: '8px' }}>💰</span> Calculate
+                                        <span style={{ fontSize: '18px', marginRight: '8px' }}>💰</span> {t.calculate}
                                     </button>
                                 </div>
                             </div>

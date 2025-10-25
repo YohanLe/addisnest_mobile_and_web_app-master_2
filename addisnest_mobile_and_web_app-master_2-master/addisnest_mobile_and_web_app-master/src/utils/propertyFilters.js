@@ -93,7 +93,62 @@ export const parseQueryParams = (searchParams) => {
   };
 };
 
-// Filter options for dropdowns
+// Filter options for dropdowns - now supports translations
+export const getFilterOptions = (t) => ({
+  priceRanges: [
+    { value: 'any', label: t.anyPrice },
+    { value: '0-20000', label: 'ETB 0 - 20,000' },
+    { value: '20000-1000000', label: 'ETB 20,000 - 1,000,000' },
+    { value: '1000000-5000000', label: 'ETB 1,000,000 - 5,000,000' },
+    { value: '5000000-10000000', label: 'ETB 5,000,000 - 10,000,000' },
+    { value: '10000000-20000000', label: 'ETB 10,000,000 - 20,000,000' },
+    { value: '20000000+', label: 'ETB 20,000,000+' }
+  ],
+  
+  propertyTypes: [
+    { value: 'all', label: t.allTypes },
+    { value: 'Apartment', label: t.apartment },
+    { value: 'House', label: t.house },
+    { value: 'Villa', label: t.villa },
+    { value: 'Studio', label: t.studio },
+    { value: 'Land', label: t.land }
+  ],
+  
+  bedBathOptions: [
+    { value: 'any', label: t.any },
+    { value: '1', label: '1+' },
+    { value: '2', label: '2+' },
+    { value: '3', label: '3+' },
+    { value: '4', label: '4+' },
+    { value: '5', label: '5+' }
+  ],
+  
+  regionalStates: [
+    { value: 'all', label: t.allRegions },
+    { value: 'Addis Ababa City Administration', label: t.addisAbaba },
+    { value: 'Afar Region', label: t.afar },
+    { value: 'Amhara Region', label: t.amhara },
+    { value: 'Benishangul-Gumuz Region', label: t.benishangul },
+    { value: 'Dire Dawa City Administration', label: t.direDawa },
+    { value: 'Gambela Region', label: t.gambela },
+    { value: 'Harari Region', label: t.harari },
+    { value: 'Oromia Region', label: t.oromia },
+    { value: 'Sidama Region', label: t.sidama },
+    { value: 'Somali Region', label: t.somali },
+    { value: 'South Ethiopia Region', label: t.southEthiopia },
+    { value: 'South West Ethiopia Peoples\' Region', label: t.southWest },
+    { value: 'Tigray Region', label: t.tigray },
+    { value: 'Central Ethiopia Region', label: t.centralEthiopia }
+  ],
+  
+  sortOptions: [
+    { value: 'newest', label: t.newest },
+    { value: 'price-asc', label: t.priceLowToHigh },
+    { value: 'price-desc', label: t.priceHighToLow }
+  ]
+});
+
+// Legacy export for backward compatibility
 export const FILTER_OPTIONS = {
   priceRanges: [
     { value: 'any', label: 'Any Price' },

@@ -71,16 +71,16 @@
 }
 
 .logo-icon {
-  background: linear-gradient(135deg, #b9f73e 0%, #84c800 100%);
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
+  background: #2e3e4e;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  overflow: visible;
   position: relative;
   transition: all 0.3s ease;
 }
@@ -88,13 +88,13 @@
 /* Responsive logo size for mobile */
 @media screen and (max-width: 767px) {
   .logo-icon {
-    width: 30px;
-    height: 30px;
-    margin-right: 5px;
+    width: 36px;
+    height: 36px;
+    margin-right: 8px;
   }
   
   .logo-text {
-    font-size: 16px;
+    font-size: 18px;
   }
 }
 
@@ -105,16 +105,16 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom right, rgba(255,255,255,0.2), rgba(255,255,255,0));
+  background: linear-gradient(to bottom right, rgba(255,255,255,0.1), rgba(255,255,255,0));
   pointer-events: none;
+  border-radius: 8px;
 }
 
 .logo-icon .house-icon {
-  width: 26px;
-  height: 26px;
-  fill: #333;
+  width: 100%;
+  height: 100%;
   transition: transform 0.3s ease;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
 }
 
 .logo-text {
@@ -127,15 +127,15 @@
 }
 
 .logo-text .addis {
-  color: #333333;
+  color: #5fa8d3;
   text-shadow: 0 1px 1px rgba(0,0,0,0.05);
 }
 
 .logo-text .nest {
-  color: #84c800;
+  color: #f4d03f;
   font-weight: 800;
   text-shadow: 0 1px 1px rgba(0,0,0,0.1);
-  background: linear-gradient(to right, #84c800, #a4ff2a);
+  background: linear-gradient(to right, #f4d03f, #f0c420);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
