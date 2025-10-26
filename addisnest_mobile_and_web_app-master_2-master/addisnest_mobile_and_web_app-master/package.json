@@ -55,6 +55,8 @@
     "concurrently": "^8.2.2",
     "jest": "^30.0.0",
     "open": "^10.1.2",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vite-plugin-pwa": "^1.1.0",
+    "workbox-window": "^7.3.0"
   }
 }

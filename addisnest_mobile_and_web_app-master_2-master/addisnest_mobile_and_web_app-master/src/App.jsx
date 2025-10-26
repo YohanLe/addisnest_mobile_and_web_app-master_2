@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import Header from './components/common/header/Header';
 import Footer from './components/common/footer/Footer';
+import InstallPrompt from './components/pwa/InstallPrompt';
 import HomePage from './components/home';
 import PropertyListPage from './components/Property-list/PropertyListPage';
 import PropertyDetail from './components/property-detail';
@@ -55,6 +56,7 @@ const AppContent = () => {
 
   return (
     <div className="app">
+        <InstallPrompt />
         <Header showLoginPopup={showLoginPopup} setShowLoginPopup={setShowLoginPopup} />
         <main className="main-content">
         <Routes>
