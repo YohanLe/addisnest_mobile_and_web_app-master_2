@@ -1,0 +1,44 @@
+/* Fix for making property cards clickable */
+.property-card-link {
+  position: relative;
+  display: block;
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+
+.property-card-link:hover {
+  transform: translateY(-5px);
+}
+
+.property-card-link:hover .property-card {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.property-card-link:hover .view-property-btn {
+  background-color: #4a6cf7;
+  color: white;
+}
+
+/* Ensure the favorite button doesn't interfere with clicking */
+.property-card .favorite-btn {
+  position: relative;
+  z-index: 10;
+}
+
+/* Make the entire area clickable by having a pseudo-element cover it */
+.property-card-link::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+/* Make sure elements that should be clickable stay above the pseudo-element */
+.property-card .favorite-btn {
+  z-index: 2;
+}

@@ -1,0 +1,34 @@
+/* Global styles for Amharic language support */
+html[lang="am"],
+html[lang="am"] * {
+  font-family: 'Noto Sans Ethiopic', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+/* Ensure proper rendering of Ethiopic script */
+html[lang="am"] {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Adjust line-height for better Amharic text rendering */
+html[lang="am"] body,
+html[lang="am"] p,
+html[lang="am"] span,
+html[lang="am"] div {
+  line-height: 1.6;
+}
+
+/* Language toggle button styling */
+.language-toggle {
+  transition: all 0.3s ease;
+}
+
+.language-toggle:hover {
+  transform: scale(1.05);
+}
+
+.language-toggle:active {
+  transform: scale(0.95);
+}

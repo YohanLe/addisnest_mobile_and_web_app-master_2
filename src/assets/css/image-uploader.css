@@ -1,0 +1,221 @@
+/* Image Uploader Styles */
+.fileuploder-main {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.fileuploder-errors {
+  margin-bottom: 15px;
+  border-radius: 4px;
+  background-color: #fff8f8;
+  border: 1px solid #ffcdd2;
+  padding: 10px;
+}
+
+.fileuploder-error {
+  color: #d32f2f;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.fileuploder-error:last-child {
+  margin-bottom: 0;
+}
+
+.error-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background-color: #d32f2f;
+  color: white;
+  border-radius: 50%;
+  margin-right: 8px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.fileuploder-imgemain {
+  border: 2px dashed #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+}
+
+.fileuploder-imgemain.dragging {
+  border-color: #ED2024;
+  background-color: rgba(237, 32, 36, 0.05);
+}
+
+.fileuploder-label {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.fileuploder-label-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.upload-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(237, 32, 36, 0.1);
+  margin-bottom: 10px;
+}
+
+.uploder-descrp {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.uploder-note {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 0;
+}
+
+.drop-indicator {
+  margin-top: 10px;
+  font-weight: 600;
+  color: #ED2024;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Image preview styles */
+.fileuplodr-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.filuploadr-image {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.fileclose-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 2;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: white;
+  padding: 0;
+}
+
+.fileclose-icon:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* PDF preview styles */
+.fileuplodr-sheet-main {
+  margin-top: 15px;
+}
+
+.fileuplodr-sheet {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 15px;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.pdffile-descrp {
+  display: flex;
+  align-items: center;
+}
+
+.pdficon-img {
+  margin-right: 15px;
+}
+
+.pdf-file-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.pdf-filename {
+  font-weight: 600;
+  margin-bottom: 2px;
+  color: #333;
+  font-size: 14px;
+}
+
+.pdf-filesize {
+  font-size: 12px;
+  color: #777;
+  margin: 0;
+}
+
+.remove-pdficon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.remove-pdficon:hover svg path {
+  stroke: #ED2024;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .filuploadr-image {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .fileuploder-label {
+    padding: 15px 10px;
+  }
+  
+  .uploder-descrp {
+    font-size: 14px;
+  }
+  
+  .uploder-note {
+    font-size: 12px;
+  }
+}
