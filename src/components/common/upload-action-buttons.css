@@ -1,0 +1,153 @@
+/*
+ * src/components/common/upload-action-buttons.css
+ *
+ * Styles the mobile-only "Take Photo" / "Gallery" buttons that appear in
+ * the property list form and the property edit form. Shown alongside the
+ * dashed upload placeholder; hidden on desktop where the click-anywhere
+ * pattern is preserved.
+ *
+ * Imported globally from src/main.jsx so both forms pick it up. Reversible:
+ * delete this file and remove the import — the buttons will still work,
+ * they just won't have the styling.
+ *
+ * 2026-05 visibility fix: on mobile the additional photo slots are short
+ * (120 px) and the slot has overflow:hidden, which was clipping the
+ * "Take Photo" / "Gallery" labels. We now:
+ *   - stack the two action buttons vertically (full-width pills) so the
+ *     labels never get cut off, even in the smallest slot;
+ *   - bump the font-size / weight so the text is clearly legible at a
+ *     glance on Android phones;
+ *   - allow the slot itself to grow tall enough to fit them.
+ */
+
+.upload-action-buttons {
+    display: flex;
+    flex-direction: column;          /* stack vertically — labels stay readable */
+    gap: 6px;
+    margin-top: 10px;
+    width: 100%;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.upload-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1.5px solid #d1d5db;
+    background-color: #ffffff;
+    color: #1f2937;
+    font-size: 14px;                 /* bumped from 13 → 14 for legibility */
+    font-weight: 700;                /* bumped from 600 → 700 (was hard to read) */
+    cursor: pointer;
+    line-height: 1.1;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    width: 100%;                     /* full width inside the slot */
+    white-space: nowrap;             /* never wrap "Take Photo" / "Gallery" */
+    text-overflow: ellipsis;
+    overflow: hidden;
+    letter-spacing: 0.2px;
+    transition: transform 0.08s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.upload-action-btn:active {
+    transform: scale(0.97);
+}
+
+/* "Take Photo" – primary action on mobile */
+.upload-action-btn.camera-btn {
+    background-color: #16a34a;        /* green-600 — matches the brand */
+    border-color: #15803d;
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(22, 163, 74, 0.25);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15); /* sharper white text on green */
+}
+.upload-action-btn.camera-btn:hover {
+    background-color: #15803d;
+    border-color: #166534;
+}
+
+/* "Gallery" – secondary action */
+.upload-action-btn.gallery-btn {
+    background-color: #ffffff;
+    border-color: #9ca3af;            /* darker border for contrast on light bg */
+    color: #111827;                   /* near-black for max readability */
+}
+.upload-action-btn.gallery-btn:hover {
+    background-color: #f3f4f6;
+    border-color: #6b7280;
+}
+
+.upload-action-btn .action-icon {
+    font-size: 15px;
+    line-height: 1;
+}
+
+/* When the upload-drop-zone has the mobile actions, give the inner
+   content a bit more breathing room so the two pills don't crowd
+   the icon/title. Also let it grow vertically inside the slot.
+   This applies at ALL viewport sizes (web view + mobile) — without it,
+   the smaller additional photo slots (140 px high with overflow:hidden)
+   clipped the second "Gallery" button on desktop browsers that report
+   as "mobile" (touchscreen laptops, narrow windows, Capacitor WebView). */
+.upload-drop-zone.has-mobile-actions {
+    padding: 10px 8px 12px;
+    justify-content: flex-start;      /* anchor content to top, buttons follow naturally */
+    gap: 4px;
+    min-height: 200px;                /* fits icon + title + 2 stacked action pills */
+}
+
+/* Make the slot itself tall enough to fit the icon, title and the two
+   stacked action buttons. The previous rule was scoped to
+   `@media (max-width: 767px)` only, which is why the web view (>=768 px)
+   showed "Take Photo" but clipped "Gallery" on the smaller additional
+   photo slots. Applying it at all sizes keeps both buttons visible. */
+.image-upload-slot:has(.upload-drop-zone.has-mobile-actions) {
+    height: auto !important;
+    min-height: 210px;                /* ≥ drop-zone min-height + slot padding */
+}
+
+/* Make the slot itself tall enough to fit the icon, title and two
+   stacked action buttons on mobile. Without this, the slot's
+   overflow:hidden was clipping "Take Photo" / "Gallery" labels. */
+@media (max-width: 767px) {
+    .image-upload-slot:has(.upload-drop-zone.has-mobile-actions) {
+        height: auto !important;
+        min-height: 180px;
+    }
+
+    /* Fallback for browsers that don't support :has() yet — slightly
+       taller fixed height so buttons fit without clipping. */
+    .upload-drop-zone.has-mobile-actions {
+        min-height: 170px;
+    }
+
+    /* Tighten the icon/label so we leave more vertical room for the
+       two action buttons in additional (non-main) photo slots. */
+    .upload-drop-zone.has-mobile-actions .upload-icon {
+        font-size: 22px;
+        margin-bottom: 2px;
+    }
+    .upload-drop-zone.has-mobile-actions p {
+        font-size: 13px;
+        font-weight: 600;
+        margin: 0 0 2px 0;
+    }
+    .upload-drop-zone.has-mobile-actions small {
+        margin-top: 0;
+        font-size: 10px;
+    }
+}
+
+/* On very narrow phones (<360 px) keep buttons stacked but slightly
+   smaller so they still fit. */
+@media (max-width: 360px) {
+    .upload-action-btn {
+        padding: 9px 12px;
+        font-size: 13px;
+    }
+}

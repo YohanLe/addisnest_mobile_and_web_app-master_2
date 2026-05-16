@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark navy blue matching the AddisNest logo background -->
+    <color name="ic_launcher_background">#1A2744</color>
+</resources>

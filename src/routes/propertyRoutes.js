@@ -10,9 +10,6 @@ router.get('/search', propertyController.searchProperties);
 router.get('/featured', propertyController.getFeaturedProperties);
 router.get('/mongo-id/:id', propertyController.getPropertyByMongoId);
 router.get('/user/:userId', propertyController.getPropertiesByUser);
-/* === VIEW_COUNT_FEATURE_START === */
-router.patch('/:id/view', propertyController.incrementViewCount);
-/* === VIEW_COUNT_FEATURE_END === */
 // Property detail route must be public (before protect middleware)
 router.get('/:id', propertyController.getPropertyById);
 

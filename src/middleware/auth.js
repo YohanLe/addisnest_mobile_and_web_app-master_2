@@ -34,20 +34,18 @@ exports.protect = asyncHandler(async (req, res, next) => {
     console.log('Decoded token:', decoded);
 
     // Handle hardcoded admin user for development
-    const User = require('../models/User');
-
-const user = await User.findById(decoded.id);
-
-if (!user) {
-  return res.status(401).json({
-    success: false,
-    message: 'User not found'
-  });
-}
-
-req.user = user;
-
-next();
+    if (decoded.id === 'admin-user-id') {
+      req.user = {
+        _id: 'admin-user-id',
+        id: 'admin-user-id',
+        firstName: 'Admin',
+        lastName: 'User',
+        email: 'admin@addisnest.com',
+        role: 'admin'
+      };
+      console.log('Using hardcoded admin user for authentication');
+      return next();
+    }
 
     // Get user from the token for regular users
     req.user = await User.findById(decoded.id).select('-password');

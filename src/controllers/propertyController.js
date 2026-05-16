@@ -107,7 +107,7 @@ class PropertyController extends BaseController {
 
       const property = await Property.create(propertyData);
       console.log('Property created successfully:', property._id);
-    return this.sendResponse(res, property, 201);
+      this.sendResponse(res, property, 201);
     } catch (err) {
       console.error('Create property error:', err);
       if (err.name === 'ValidationError') {
@@ -290,7 +290,7 @@ class PropertyController extends BaseController {
         
         // Use Promise.race to implement custom timeout with better error handling
         const queryPromise = Property.find(query)
-          .select('title description propertyType offeringType status price bedrooms bathrooms squareFeet area address images createdAt updatedAt owner ownerName views likes')
+          .select('title description propertyType offeringType status price bedrooms bathrooms squareFeet area address images createdAt updatedAt owner ownerName')
           .populate({
             path: 'owner',
             select: 'firstName lastName profileImage profile_img'
@@ -830,7 +830,7 @@ class PropertyController extends BaseController {
       console.log('Property created successfully with ID:', property._id);
       
       // Return the created property
-    return this.sendResponse(res, property, 201);
+      this.sendResponse(res, property, 201);
     } catch (err) {
       console.error('Submit property error:', err);
       if (err.name === 'ValidationError') {
@@ -838,7 +838,7 @@ class PropertyController extends BaseController {
         const messages = Object.values(err.errors).map(val => val.message);
         return this.sendError(res, new ErrorResponse(messages.join(', '), 400));
       }
-     return this.sendError(res, new ErrorResponse(err.message || 'Error submitting property', 500));
+      this.sendError(res, new ErrorResponse(err.message || 'Error submitting property', 500));
     }
   });
 
@@ -1072,22 +1072,6 @@ class PropertyController extends BaseController {
       data: properties
     });
   });
-
-  /* === VIEW_COUNT_FEATURE_START === */
-  incrementViewCount = this.asyncHandler(async (req, res) => {
-    const propertyId = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(propertyId)) {
-      return this.sendError(res, new ErrorResponse('Invalid property ID', 400));
-    }
-    const property = await Property.findById(propertyId);
-    if (!property) {
-      return this.sendError(res, new ErrorResponse('Property not found', 404));
-    }
-    const updated = await Property.findByIdAndUpdate(propertyId, { $inc: { views: 1 } }, { new: true });
-    res.status(200).json({ success: true, views: updated.views });
-  });
-  /* === VIEW_COUNT_FEATURE_END === */
-
 }
 
 module.exports = new PropertyController();
